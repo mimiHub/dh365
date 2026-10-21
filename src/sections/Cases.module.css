@@ -1,0 +1,34 @@
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-8); }
+.tabs { margin-top: var(--space-10); }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-10) var(--space-6); margin-top: var(--space-8); }
+.card { display: block; }
+.media { aspect-ratio: 16 / 10; }
+.media { isolation: isolate; } /* Safari: 확대 중 모서리 삐져나옴 방지 */
+/* 켄번즈 — 마우스를 떼면 0.6s로 빠르게 복귀 */
+.media :global(img) { transform: scale(1); transition: transform .6s cubic-bezier(.22,1,.36,1); will-change: transform; }
+/* 올려 두면 6초 내내 아주 천천히 1 → 1.08 */
+.card:hover .media :global(img),
+.card:focus-visible .media :global(img) { transform: scale(1.08); transition: transform 6s cubic-bezier(.25,.46,.45,.94); }
+@media (prefers-reduced-motion: reduce) { .media :global(img) { transition: none; } .card:hover .media :global(img), .card:focus-visible .media :global(img) { transform: none; } }
+.card:hover .media { filter: brightness(1.15); }
+.card:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.badge { margin-top: var(--space-5); }
+.title { margin-top: var(--space-3); font-size: 19px; line-height: 28px; font-weight: 600; letter-spacing: -0.015em; }
+.card:hover .title { text-decoration: underline; text-underline-offset: 4px; }
+.empty { margin-top: var(--space-8); padding: var(--space-16) 0; text-align: center; color: var(--ink-subtle); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+@media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 767px) {
+  .top { flex-direction: column; align-items: flex-start; }
+  .grid { grid-template-columns: 1fr; gap: var(--space-8); }
+}
+
+/* 더보기 */
+.more { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin-top: var(--space-12); }
+.count { font-size: 14px; color: var(--ink-subtle); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+.count strong { color: var(--ink); }
+.more :global(.dh-btn) { min-width: 200px; }
+/* 새로 붙는 카드는 살짝 올라오며 등장 */
+.added { animation: addIn .5s cubic-bezier(.22,1,.36,1) both; }
+@keyframes addIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .added { animation: none; } }
+@media (max-width: 767px) { .more { margin-top: var(--space-10); } .more :global(.dh-btn) { width: 100%; } }

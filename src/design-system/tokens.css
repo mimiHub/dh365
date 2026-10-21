@@ -1,0 +1,97 @@
+/* 대한방화 — generated from tokens.json. 직접 수정하지 말고 tokens.json을 고친 뒤 npm run tokens */
+:root, [data-theme="light"] {
+  --surface: #ffffff;
+  --surface-alt: #f2f4f7;
+  --surface-raised: #ffffff;
+  --surface-inverse: #0a2a66;
+  --ink: #0f1626;
+  --ink-muted: #525c6b;
+  --ink-subtle: #626c7a;
+  --ink-inverse: #ffffff;
+  --line: #e2e6ec;
+  --line-strong: #7e8796;
+  --brand: #0a2a66;
+  --accent: #0163ce;
+  --accent-hover: #0150a8;
+  --accent-text: #0153b5;
+  --accent-soft: #e8f0fb;
+  --on-accent: #ffffff;
+  --fire: #d2231a;
+  --fire-text: #d2231a;
+  --fire-soft: #fdedeb;
+  --steel: #2a3446;
+  --silver: #c4c8cf;
+  --scrim: rgba(6, 14, 30, 0.55);
+  --focus: var(--accent);
+  --link: var(--accent-text);
+  --shadow-card: 0 12px 32px rgba(10, 42, 102, 0.08);
+  --shadow-float: 0 24px 60px rgba(10, 42, 102, 0.16);
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --surface: #0b1424;
+  --surface-alt: #101b30;
+  --surface-raised: #17233a;
+  --surface-inverse: #f2f4f7;
+  --ink: #eef1f6;
+  --ink-muted: #a3adbd;
+  --ink-subtle: #8592a6;
+  --ink-inverse: #0f1626;
+  --line: #22304a;
+  --line-strong: #62728f;
+  --brand: #1c3f86;
+  --accent: #0163ce;
+  --accent-hover: #1a74dc;
+  --accent-text: #6aa6f5;
+  --accent-soft: #13305a;
+  --on-accent: #ffffff;
+  --fire: #d2231a;
+  --fire-text: #f75a50;
+  --fire-soft: #3a1714;
+  --steel: #2a3a55;
+  --silver: #8f98a8;
+  --scrim: rgba(6, 14, 30, 0.62);
+  --focus: var(--accent);
+  --link: var(--accent-text);
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-float: 0 24px 60px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --space-12: 80px;
+  --space-16: 120px;
+  --space-20: 160px;
+  --radius-0: 0px;
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --container: 1440px;
+  --container-narrow: 1200px;
+  --gutter: 40px;
+  --header-height: 90px;
+  --z-indicator: 50;
+  --z-header: 100;
+  --z-modal: 1000;
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+.t-display-xl { font-size: 88px; line-height: 96px; font-weight: 700; letter-spacing: -0.03em; }
+.t-display { font-size: 64px; line-height: 76px; font-weight: 700; letter-spacing: -0.03em; }
+.t-h1 { font-size: 48px; line-height: 62px; font-weight: 700; letter-spacing: -0.025em; }
+.t-h2 { font-size: 36px; line-height: 50px; font-weight: 700; letter-spacing: -0.02em; }
+.t-h3 { font-size: 26px; line-height: 36px; font-weight: 600; letter-spacing: -0.02em; }
+.t-h4 { font-size: 20px; line-height: 30px; font-weight: 600; letter-spacing: -0.015em; }
+.t-eyebrow { font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.t-button { font-size: 15px; line-height: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.t-caption { font-size: 13px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+.t-body-lg { font-size: 18px; line-height: 30px; font-weight: 400; letter-spacing: -0.01em; }
+.t-body { font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: -0.01em; }
+.t-body-sm { font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: -0.005em; }

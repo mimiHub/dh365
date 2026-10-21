@@ -1,0 +1,24 @@
+/* 도크: 오른쪽 아래. 안에서 퀵메뉴 → 채팅상담 순서로 쌓임 */
+/* transform으로 가운데 정렬하지 않음: transform이 걸린 요소 안에서는 position:fixed가 화면이 아니라
+   그 요소 기준이 되어 채팅 패널 위치가 틀어짐 → 위아래 0 + flex로 아래 정렬 */
+.dock { position: fixed; top: 0; bottom: 0; right: calc(var(--space-5) + env(safe-area-inset-right, 0px)); z-index: var(--z-modal); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: var(--space-4); padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px) + var(--dock-lift, 0px)); pointer-events: none; transition: opacity .2s ease, visibility .2s; }
+.dock > * { pointer-events: auto; } /* 도크 빈 영역(세로 전체)은 아래 페이지 클릭을 막지 않게 */
+/* 모바일 전체 메뉴가 열리면 도크 전체 숨김 (Header가 body[data-menu-open]을 붙임) */
+:global(body[data-menu-open]) .dock { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.quick { display: flex; flex-direction: column; width: 88px; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 0 0 2px #ffffff, var(--shadow-float); /* 흰 링: 네이비 푸터 위에서도 윗부분 윤곽 유지 */ background: var(--surface); transform: translateX(140%); opacity: 0; transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .3s ease; }
+.show { transform: none; opacity: 1; }
+.call { display: flex; flex-direction: column; align-items: center; padding: var(--space-4) var(--space-2); background: var(--brand); color: #ffffff; text-align: center; }
+.callLabel { font-size: 12px; font-weight: 600; opacity: .8; }
+.callNum { margin-top: 4px; font-size: 15px; line-height: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.btn { display: grid; place-items: center; height: 56px; font-size: 13px; font-weight: 700; border-top: 1px solid var(--line); color: var(--ink); }
+.btn:hover { color: var(--accent-text); background: var(--surface-alt); }
+.top { font-size: 12px; letter-spacing: 0.1em; color: var(--ink-subtle); }
+@media (max-width: 767px) {
+  /* 모바일: 도크를 오른쪽 아래로 */
+  .dock { top: auto; bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px) + var(--dock-lift, 0px)); right: calc(var(--space-4) + env(safe-area-inset-right, 0px)); padding-bottom: 0; gap: var(--space-3); }
+  .quick { width: 60px; }
+  .call { padding: var(--space-3) 4px; }
+  .callNum { font-size: 11px; line-height: 15px; }
+  .btn:not(.top) { display: none; }
+}

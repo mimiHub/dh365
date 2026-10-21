@@ -1,0 +1,85 @@
+.products { background: var(--surface-alt); overflow: hidden; }
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-8); }
+.nav { flex: none; display: flex; align-items: center; gap: var(--space-2); }
+.count { margin-right: var(--space-3); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+.count strong { color: var(--ink); }
+.arrow { width: 56px; height: 56px; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.arrow:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+/* 끝에 닿으면 비활성 — 눌러도 안 움직이는 버튼을 남겨두지 않음 */
+.arrow:disabled { opacity: .35; cursor: default; }
+.arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* 왼쪽은 컨테이너에 맞추고 오른쪽은 화면 끝까지 흘러가게 (코아드식 블리드 슬라이더) */
+/* 슬라이더 치수는 전부 '섹션 폭(cqw)'에서 계산 — 화면 폭이 달라도 항상
+   [카드 --full장 온전히] + [다음 카드 --peek 만큼 살짝]이 컨테이너 안에 들어오고,
+   컨테이너 밖으로 나간 부분은 페이드 처리됨.
+   100vw 대신 cqw: 100vw는 세로 스크롤바 폭까지 포함해서 제목 시작선과 몇 px 어긋났음 */
+.products { container-type: inline-size; }
+.track {
+  --full: 3; --peek: .3;
+  --inset: max(var(--gutter), calc((100cqw - var(--container)) / 2));  /* 컨테이너 왼쪽 시작선 */
+  --gap: var(--space-6);
+  --card: calc((100cqw - 2 * var(--inset) - var(--full) * var(--gap)) / (var(--full) + var(--peek)));
+  /* 페이드는 컨테이너 '바깥'(좌우 여백)에서만: 컨테이너 끝선까지는 그대로 보이고 화면 끝은 안 보임.
+     여백이 좁은 화면에서도 그라데이션이 느껴지도록 최소 64px 확보 */
+  --fade: max(var(--inset), 64px);
+  /* 직선(linear) 그라데이션은 시작·끝 지점에서 기울기가 갑자기 바뀌어 '선'이 보임(마하 밴드).
+     smoothstep(3t²−2t³) 곡선으로 단계를 찍어, 시작과 끝을 완만하게 → 경계가 안 보이고 자연스럽게 사라짐.
+     화면 바깥쪽 35%는 완전 투명으로 비워 둠(외곽은 확실히 안 보이게), 나머지 65% 구간에서 서서히 나타남 */
+  --stops:
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) calc(var(--fade) * 0.35),
+    rgba(0, 0, 0, 0.028) calc(var(--fade) * 0.415),
+    rgba(0, 0, 0, 0.104) calc(var(--fade) * 0.48),
+    rgba(0, 0, 0, 0.216) calc(var(--fade) * 0.545),
+    rgba(0, 0, 0, 0.352) calc(var(--fade) * 0.61),
+    rgba(0, 0, 0, 0.5) calc(var(--fade) * 0.675),
+    rgba(0, 0, 0, 0.648) calc(var(--fade) * 0.74),
+    rgba(0, 0, 0, 0.784) calc(var(--fade) * 0.805),
+    rgba(0, 0, 0, 0.896) calc(var(--fade) * 0.87),
+    rgba(0, 0, 0, 0.972) calc(var(--fade) * 0.935),
+    rgba(0, 0, 0, 1.0) calc(var(--fade) * 1.0);
+  --fade-r: linear-gradient(to left, var(--stops));
+  --fade-l: linear-gradient(to right, var(--stops));
+  /* overflow-x:auto를 주면 CSS 규칙상 overflow-y도 auto(=잘림)가 됨 → hover로 떠오르는 카드 윗부분과 그림자가 잘렸음.
+     위·아래에 여유 공간(--room)을 padding으로 만들고, 같은 값만큼 margin을 빼서 레이아웃 간격은 그대로 유지 */
+  --room-t: 20px; --room-b: 64px; --space-above: var(--space-10);
+  display: flex; gap: var(--gap);
+  margin-top: calc(var(--space-above) - var(--room-t)); margin-bottom: calc(var(--space-4) - var(--room-b));
+  padding: var(--room-t) var(--inset) var(--room-b); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: var(--inset); scrollbar-width: none;
+  -webkit-mask-image: var(--fade-r);
+          mask-image: var(--fade-r); }
+/* 한 칸이라도 넘기면 왼쪽 페이드도 겹침(두 마스크의 교집합), 끝까지 가면 오른쪽 페이드 제거 */
+.track.scrolled {
+  -webkit-mask-image: var(--fade-l), var(--fade-r); -webkit-mask-composite: source-in;
+          mask-image: var(--fade-l), var(--fade-r);         mask-composite: intersect; }
+.track.scrolled.atEnd {
+  -webkit-mask-image: var(--fade-l);
+          mask-image: var(--fade-l); }
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: none; width: var(--card); scroll-snap-align: start; }
+.card { display: block; height: 100%; background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 0 0 1px transparent; transition: box-shadow .35s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1); }
+/* hover·키보드 포커스 강조: 더 높이 뜨고(-12px) + 블루 링 + 깊은 그림자 + 제목 블루 + 이미지 살짝 확대 */
+.card:hover, .card:focus-visible { transform: translateY(-12px); box-shadow: 0 0 0 2px var(--accent), 0 28px 48px rgba(10, 42, 102, 0.18); outline: none; }
+.card:hover .name, .card:focus-visible .name { color: var(--accent-text); }
+.card .media { transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.card:hover .media, .card:focus-visible .media { transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) { .card, .card .media { transition: box-shadow .2s ease; } .card:hover, .card:focus-visible { transform: none; } .card:hover .media, .card:focus-visible .media { transform: none; } }
+.media { aspect-ratio: 4 / 3; }
+.body { padding: var(--space-6); }
+.no { font-size: 12px; line-height: 18px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-text); }
+.name { margin-top: var(--space-2); font-size: 24px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em; transition: color .25s ease; }
+.desc { margin-top: var(--space-2); min-height: 44px; font-size: 15px; line-height: 22px; color: var(--ink-muted); }
+.tags { display: flex; gap: var(--space-2); margin-top: var(--space-5); }
+
+@media (max-width: 1024px) { .track { --full: 2; --peek: .25; } }
+@media (max-width: 767px) {
+  .top { flex-direction: column; align-items: stretch; gap: var(--space-6); }
+  /* 모바일: 제목 아래 오른쪽 정렬, 카운터는 왼쪽 끝으로 */
+  .nav { justify-content: flex-end; }
+  .count { margin-right: auto; }
+  .arrow { width: 44px; height: 44px; } /* 터치 타깃 최소 44px */
+  .track { --space-above: var(--space-6); --full: 1; --peek: .18; --gap: var(--space-4); }
+  /* 모바일은 좌우 여백이 좁아 페이드가 카드를 갉아먹어 보임 → 마스크 제거 (.scrolled 등 모든 상태) */
+  .track, .track.scrolled, .track.scrolled.atEnd { -webkit-mask-image: none; mask-image: none; }
+}

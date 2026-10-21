@@ -1,0 +1,397 @@
+/* 메가메뉴 높이를 한 곳에서 관리 — 배경판과 각 2뎁스 컬럼이 같은 값을 씀 */
+.header {
+  --mega-h: 300px;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  color: #ffffff;
+  transition: background-color .3s ease, color .3s ease, box-shadow .3s ease;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.18);
+  transition: background-color .3s ease;
+}
+
+.solid {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.solid::after {
+  background: var(--line);
+}
+
+.compact {
+  box-shadow: var(--shadow-float);
+}
+
+.bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  transition: height .3s ease;
+}
+
+.compact .bar {
+  height: 72px;
+}
+
+.logo {
+  flex: none;
+  display: block;
+  width: 168px;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+  transition: filter .3s ease;
+}
+
+/* 투명 상태: 화이트 로고 원본이 없어 임시로 필터 처리 → 반전 로고 파일 받으면 교체 */
+.header:not(.solid) .logo img {
+  filter: brightness(0) invert(1);
+}
+
+.gnb {
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+}
+
+.depth1 {
+  display: flex;
+  height: 100%;
+}
+
+/* 1뎁스 폭을 화면에 비례(10.3vw)시키되 96~148px 사이로 제한 → 1025~1440 사이 어느 폭에서도 로고·메뉴·버튼이 한 줄에 들어감 */
+.depth1>li {
+  position: relative;
+  width: clamp(96px, 10.3vw, 148px);
+}
+
+.d1link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: color .2s ease;
+}
+
+.d1link:hover,
+.d1link:focus-visible {
+  color: var(--accent-text);
+}
+
+.header:not(.solid) .d1link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
+
+.depth2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: var(--mega-h);
+  box-sizing: border-box;
+  padding: var(--space-6) 0;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s;
+}
+
+.depth2Open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.depth1>li:hover .depth2 {
+  background: var(--surface-alt);
+}
+
+.depth2 a {
+  display: block;
+  padding: 6px var(--space-2);
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--ink-muted);
+}
+
+.depth2 a:hover,
+.depth2 a:focus-visible {
+  color: var(--accent-text);
+}
+
+.megaBg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 1;
+  height: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 24px 40px rgba(10, 42, 102, 0.08);
+  transition: height .3s cubic-bezier(.22, 1, .36, 1);
+  overflow: hidden;
+}
+
+.megaBgOpen {
+  height: var(--mega-h);
+}
+
+.util {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.burger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.burger svg {
+  display: block;
+  overflow: visible;
+}
+
+.burger rect {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .4s cubic-bezier(.22, 1, .36, 1), opacity .2s ease;
+}
+
+/* 열림 상태는 aria-expanded로 표시 — 스크린리더용 상태와 시각 상태가 한 값에서 나옴.
+   각 줄을 자기 중심에서 회전(fill-box) 후 가운데 줄 위치(y=12)로 6px 이동 → X */
+.burger[aria-expanded="true"] .l1 {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.burger[aria-expanded="true"] .l2 {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.burger[aria-expanded="true"] .l3 {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ---------- 모바일 전체 메뉴 ----------
+   네이비 면이 햄버거 버튼 위치에서 원으로 퍼지며 열림(clip-path circle).
+   --origin = 햄버거 중심: 오른쪽 거터 + 버튼 반폭(22px), 바 높이 절반(36px) */
+.mobile {
+  --origin: calc(100% - var(--gutter) - 22px) 36px;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--brand);
+  color: #ffffff;
+  padding: calc(72px + var(--space-6)) var(--gutter) var(--space-10);
+  clip-path: circle(0px at var(--origin));
+  visibility: hidden;
+  transition: clip-path .6s cubic-bezier(.65, 0, .35, 1), visibility 0s linear .6s;
+}
+
+.mobileOpen {
+  clip-path: circle(150% at var(--origin));
+  visibility: visible;
+  transition: clip-path .6s cubic-bezier(.65, 0, .35, 1), visibility 0s;
+}
+
+/* 로고 엠블럼의 슬랫 모티프 — 오른쪽 아래 장식 */
+.mobile::after {
+  content: "";
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  height: 180px;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0 18px, transparent 18px 22px);
+  border-bottom: 8px solid var(--accent);
+  pointer-events: none;
+}
+
+/* 항목은 원이 어느 정도 퍼진 뒤(.2s) 70ms 간격으로 아래에서 올라옴 */
+.mItem,
+.mTel {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+
+.mobileOpen .mItem,
+.mobileOpen .mTel {
+  opacity: 1;
+  transform: none;
+  transition: opacity .5s cubic-bezier(.22, 1, .36, 1), transform .5s cubic-bezier(.22, 1, .36, 1);
+  transition-delay: calc(.2s + var(--i) * 70ms);
+}
+
+.mItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.mHead {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-5) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mHead::after {
+  content: "+";
+  font-weight: 300;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: transform .3s ease;
+}
+
+.mHead[aria-expanded="true"] {
+  color: #8fbdf7;
+}
+
+.mHead[aria-expanded="true"]::after {
+  content: "−";
+  color: #8fbdf7;
+}
+
+.mHead:focus-visible,
+.mSub a:focus-visible,
+.mTel:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.mSub {
+  padding: 0 0 var(--space-5);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--space-4);
+}
+
+.mSub a {
+  display: block;
+  padding: var(--space-2) 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.mSub a:hover {
+  color: #ffffff;
+}
+
+.mTel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-8);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.mTel span {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: .85;
+}
+
+/* 메뉴 열림: 헤더는 투명, 글자·로고 흰색, 하단 라인 숨김 */
+.menuOpen {
+  background: transparent;
+  color: #ffffff;
+}
+
+.menuOpen::after {
+  background: transparent;
+}
+
+.menuOpen .logo img {
+  filter: brightness(0) invert(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .burger rect,
+  .mItem,
+  .mTel {
+    transition: none !important;
+  }
+
+  .mobile,
+  .mobileOpen {
+    clip-path: none;
+    transition: visibility 0s;
+  }
+}
+
+@media (max-width: 1024px) {
+
+  /* GNB(flex:1)가 빠지면서 유틸이 로고 옆으로 붙음 → 바 자체를 양끝 정렬 */
+  .bar,
+  .compact .bar {
+    height: 72px;
+    justify-content: space-between;
+  }
+
+  .gnb,
+  .megaBg,
+  .cta {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
+
+  .logo {
+    width: 136px;
+  }
+}

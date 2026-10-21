@@ -1,0 +1,133 @@
+.hero { position: relative; height: 100vh; min-height: 720px; max-height: 1080px; overflow: hidden; color: #ffffff; background: #0b1424; }
+
+/* 배경 — 사진/영상이 들어올 자리 */
+.visual { position: absolute; inset: 0; background:
+  radial-gradient(1200px 600px at 75% 30%, rgba(1, 99, 206, 0.35), transparent 60%),
+  linear-gradient(160deg, #1c3f86 0%, #0b1424 70%); }
+/* 사진이 있는 슬라이드는 그라데이션 대신 사진을 배경으로 — scrim(::after)은 그대로 둬 글자 대비를 지킴 */
+.visual.hasPhoto { background: #0b1424; }
+/* 켄번즈 효과: 페이드인과 동시에 6초 동안 천천히 확대 — 정적인 사진에 생동감을 줌 */
+.bgImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: center; animation: fadeIn .8s ease both, kenBurns 6s ease-out both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes kenBurns { from { transform: scale(1); } to { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) {
+  .bgImg { animation: fadeIn .8s ease both; }
+}
+.visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--scrim) 0%, rgba(6, 14, 30, 0) 70%); }
+/* 실사진 배경은 원본 사진 밝기에 따라 글자 대비가 들쭉날쭉해서, 사진 전체를 한 번 더 어둡게 깔고
+   텍스트가 있는 좌측·하단을 추가로 더 어둡게 — 기본 스크림(.visual::after)보다 더 진하게 덮어씀 */
+.visual.hasPhoto::after {
+  background:
+    linear-gradient(90deg, rgba(6, 14, 30, 0.8) 0%, rgba(6, 14, 30, 0.5) 42%, rgba(6, 14, 30, 0.2) 72%, rgba(6, 14, 30, 0.05) 100%),
+    linear-gradient(0deg, rgba(6, 14, 30, 0.55) 0%, rgba(6, 14, 30, 0) 32%),
+    rgba(6, 14, 30, 0.22);
+}
+
+/* 내려오는 셔터 그래픽 (로고 엠블럼의 슬랫 + 블루 띠) */
+.shutter { position: absolute; top: 0; right: 8%; width: 38%; height: 72%; animation: drop 1.6s cubic-bezier(.22,1,.36,1) both; }
+.slats { position: absolute; inset: 0 0 18px; background:
+  repeating-linear-gradient(180deg, rgba(255,255,255,0.10) 0 30px, rgba(255,255,255,0.03) 30px 32px),
+  linear-gradient(90deg, rgba(196,200,207,0.25), rgba(196,200,207,0.08) 60%, rgba(196,200,207,0.18)); }
+.rail { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: var(--accent); }
+@keyframes drop { from { transform: translateY(-100%); } to { transform: none; } }
+
+/* ── 2번 슬라이드: 인정 사이즈 도면 애니메이션 ──
+   0~0.9s 개구부 너머 불빛 → 0.9s 스크린 하강(2s) → 2.2s 가로 치수선 → 2.6s 세로 치수선 → 3.0s~ 수치 등장 (슬라이드 6s 안에 끝남) */
+/* 배경 레이어: 블루 빛 덩어리 2개가 서로 다른 주기로 천천히 표류 → '일렁임'
+   blur 필터 대신 radial-gradient 자체의 부드러운 가장자리를 써서 성능 부담 없음 */
+.specWrap { position: absolute; inset: 0; }
+.aurora { position: absolute; inset: 0; overflow: hidden; animation: fadeIn 1.6s ease both; }
+.aurora::before, .aurora::after { content: ""; position: absolute; border-radius: 50%; will-change: transform; }
+.aurora::before { width: 70vw; height: 70vw; left: 40%; top: -30%; background: radial-gradient(closest-side, rgba(1, 99, 206, 0.55), transparent); animation: drift1 16s ease-in-out infinite alternate; }
+.aurora::after { width: 55vw; height: 55vw; left: 10%; top: 35%; background: radial-gradient(closest-side, rgba(70, 130, 255, 0.3), transparent); animation: drift2 21s ease-in-out infinite alternate; }
+@keyframes drift1 { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-12%, 10%, 0) scale(1.15); } }
+@keyframes drift2 { from { transform: translate3d(0, 0, 0) scale(1.1); } to { transform: translate3d(18%, -12%, 0) scale(.95); } }
+/* 개구부 안쪽 불빛 — 바닥에서 올라오는 붉은 빛이 약하게 일렁임. 레드는 이 한 곳에만 */
+.glow { position: absolute; inset: 0; background: radial-gradient(70% 90% at 50% 100%, rgba(232, 72, 44, 0.6), rgba(232, 72, 44, 0.12) 60%, transparent 80%); animation: flicker 2.8s ease-in-out infinite alternate; }
+@keyframes flicker { from { opacity: .65; } to { opacity: 1; } }
+
+.spec { position: absolute; top: 15%; right: 11%; width: 37%; aspect-ratio: 12000 / 8500; } /* 실제 비율 그대로 */
+/* 은은한 모눈(도면 느낌) — 가장자리는 마스크로 흐리게 */
+.spec::before { content: ""; position: absolute; inset: -22% -16%; background-image:
+  linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 40px 40px; mask-image: radial-gradient(closest-side, #000 45%, transparent); animation: fadeIn 1.2s ease both; }
+/* 개구부: 점선 테두리 + 상단 셔터 박스 */
+.opening { position: absolute; inset: 0; overflow: hidden; border: 1px dashed rgba(255,255,255,0.4); border-top: 12px solid rgba(196,200,207,0.4); }
+/* 스크린(원단) — 세로 직조 결 + 은회색 */
+.screen { position: absolute; inset: 0; background:
+  repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 2px, rgba(255,255,255,0.03) 2px 7px),
+  linear-gradient(180deg, rgba(196,200,207,0.32), rgba(196,200,207,0.12)),
+  rgba(16, 30, 58, 0.78); /* 바탕을 어느 정도 막아 줘야 덮였을 때 불빛이 '차단'되어 보임 */
+  animation: drop 2s cubic-bezier(.22,1,.36,1) .9s both; } /* 불빛을 0.9s 보여준 뒤 하강 */
+/* 원단 인쇄 로고: 원본은 네이비 글자라 어두운 원단 위에서 안 보이므로 흰색 단색으로 바꿔(brightness 0 → invert 1)
+   반투명하게 — 실제 셔터 원단에 찍힌 인쇄처럼 은은하게 */
+.screenLogo { position: absolute; left: 50%; top: 52%; width: 46%; height: auto; transform: translate(-50%, -50%); filter: brightness(0) invert(1); opacity: .72; }
+.screenRail { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: var(--accent); }
+/* 치수선 — scale 0 → 1 로 '그려지는' 느낌, 양 끝 틱은 가상요소 */
+.dimW, .dimH { position: absolute; background: rgba(255,255,255,0.75); }
+.dimW { left: 0; right: 0; bottom: -44px; height: 1px; transform: scaleX(0); animation: drawX .8s cubic-bezier(.22,1,.36,1) 2.2s forwards; }
+.dimH { top: 0; bottom: 0; right: -44px; width: 1px; transform: scaleY(0); animation: drawY .8s cubic-bezier(.22,1,.36,1) 2.6s forwards; }
+.dimW::before, .dimW::after { content: ""; position: absolute; top: -6px; width: 1px; height: 13px; background: inherit; }
+.dimW::before { left: 0; } .dimW::after { right: 0; }
+.dimH::before, .dimH::after { content: ""; position: absolute; left: -6px; width: 13px; height: 1px; background: inherit; }
+.dimH::before { top: 0; } .dimH::after { bottom: 0; }
+@keyframes drawX { to { transform: scaleX(1); } }
+@keyframes drawY { to { transform: scaleY(1); } }
+.dimLabel { position: absolute; font-size: 16px; font-weight: 600; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; color: #ffffff; white-space: nowrap; opacity: 0; animation: fadeIn .6s ease forwards; }
+.dimLabel small { margin-left: 3px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.7); }
+.dimW .dimLabel { left: 50%; top: 12px; transform: translateX(-50%); animation-delay: 3s; }
+.dimH .dimLabel { left: 12px; top: 50%; writing-mode: vertical-rl; transform: translateY(-50%); animation-delay: 3.4s; } /* 도면처럼 세로 표기 */
+@media (prefers-reduced-motion: reduce) {
+  .spec::before, .screen, .dimW, .dimH, .dimLabel, .aurora, .aurora::before, .aurora::after, .glow { animation: none; }
+  .dimW, .dimH { transform: none; }
+  .dimLabel { opacity: 1; }
+}
+
+.inner { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 120px; }
+
+.slide { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 200px; max-width: 760px; opacity: 0; visibility: hidden; transition: opacity .8s ease, visibility .8s; }
+.active { opacity: 1; visibility: visible; }
+.eyebrow { margin-bottom: var(--space-5); font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: 0.16em; color: rgba(255,255,255,0.75); }
+.title { font-size: 72px; line-height: 84px; font-weight: 700; letter-spacing: -0.035em; }
+.line { display: block; }
+.active .line { animation: rise .9s cubic-bezier(.22,1,.36,1) both; }
+.active .line + .line { animation-delay: .12s; }
+@keyframes rise { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+.desc { margin-top: var(--space-6); font-size: 19px; line-height: 30px; color: rgba(255,255,255,0.86); }
+.actions { margin-top: var(--space-10); display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+.controls { display: flex; align-items: center; gap: var(--space-4); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; }
+.num { font-variant-numeric: tabular-nums; }
+.bar { position: relative; width: 200px; height: 2px; background: rgba(255,255,255,0.25); overflow: hidden; }
+.fill { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+.running { animation-name: grow; animation-timing-function: linear; animation-fill-mode: forwards; }
+@keyframes grow { to { transform: scaleX(1); } }
+.ctrl { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,0.45); border-radius: 50%; background: transparent; color: #ffffff; font-size: 13px; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+.ctrl:first-of-type { margin-left: var(--space-4); }
+.ctrl:hover { background: #ffffff; color: var(--brand); }
+.ctrl:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+
+.scroll { position: absolute; z-index: 1; right: var(--gutter); bottom: 120px; writing-mode: vertical-rl; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; color: rgba(255,255,255,0.7); padding-bottom: 72px; }
+.scroll::after { content: ""; position: absolute; left: 50%; bottom: 0; width: 1px; height: 56px; background: linear-gradient(rgba(255,255,255,0.7), transparent); animation: line 1.8s ease-in-out infinite; }
+@keyframes line { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+@media (max-width: 1024px) {
+  .title { font-size: 52px; line-height: 64px; }
+  .shutter { right: 0; width: 60%; height: 50%; opacity: .6; }
+  .spec { top: 12%; right: 10%; width: 50%; opacity: .6; }
+}
+@media (max-width: 767px) {
+  .hero { min-height: 640px; }
+  .slide { bottom: 150px; }
+  .title { font-size: 36px; line-height: 46px; }
+  .desc { font-size: 16px; line-height: 26px; }
+  .actions { margin-top: var(--space-6); }
+  .inner { padding-bottom: 72px; }
+  .bar { width: 80px; }
+  .scroll { display: none; }
+  .spec { top: 12%; right: 16%; width: 62%; }
+  .dimLabel { font-size: 13px; }
+  .dimW { bottom: -32px; } .dimH { right: -28px; }
+  .dimH .dimLabel { left: 8px; }
+}

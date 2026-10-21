@@ -1,0 +1,151 @@
+/* 로고 네이비(surface-inverse) 위 — 글자는 ink-inverse 계열 투명도로 위계 */
+.footer {
+  background: var(--surface-inverse);
+  color: rgba(255, 255, 255, 0.72);
+  padding: var(--space-12) 0 var(--space-8);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-10);
+  padding-bottom: var(--space-10);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.logo {
+  width: 180px;
+  filter: brightness(0) invert(1);
+}
+
+.sitemap {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-5);
+}
+
+.d1 {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.sitemap li a {
+  display: block;
+  padding: 3px 0;
+}
+
+.sitemap a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding-top: var(--space-8);
+}
+
+.info {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info span+span::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  margin: 0 10px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.info strong {
+  color: #ffffff;
+  margin-right: 10px;
+}
+
+.label {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.label::before {
+  display: none !important;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.policy {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.policy strong {
+  color: #ffffff;
+}
+
+.policy a:hover,
+.family a:hover {
+  color: #ffffff;
+}
+
+.family {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.family a {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+}
+
+.copy {
+  margin-top: var(--space-8);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 1024px) {
+  .top {
+    grid-template-columns: 1fr;
+  }
+
+  .sitemap {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .bottom {
+    flex-direction: column;
+  }
+
+  .side {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 767px) {
+  .sitemap {
+    display: none;
+  }
+
+  .top {
+    padding-bottom: var(--space-6);
+  }
+}
