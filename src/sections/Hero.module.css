@@ -1,4 +1,6 @@
-.hero { position: relative; height: 100vh; min-height: 720px; max-height: 1080px; overflow: hidden; color: #ffffff; background: #0b1424; }
+/* 화면 높이를 항상 꽉 채움 — max-height를 두면 큰 모니터·브라우저 축소 시 아래에 흰 여백이 생김.
+   100svh: 모바일 주소창이 보이는 상태 기준 높이(100vh는 주소창을 무시해 아래가 잘림). 미지원 브라우저는 앞줄 100vh 사용 */
+.hero { position: relative; height: 100vh; height: 100svh; min-height: 720px; overflow: hidden; color: #ffffff; background: #0b1424; }
 
 /* 배경 — 사진/영상이 들어올 자리 */
 .visual { position: absolute; inset: 0; background:
