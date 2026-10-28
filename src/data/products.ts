@@ -7,7 +7,7 @@
 //   (카탈로그 문구 일부가 타사 브로슈어 문장 그대로라 원문 사용을 피함)
 // - todo : 카탈로그에 내용이 없거나 서로 맞지 않는 부분
 
-export type ProductCategory = 'fire' | 'aluminum' | 'security' | 'speed-door' | 'overhead-door';
+export type ProductCategory = 'screen' | 'steel' | 'aluminum' | 'speed-door' | 'overhead-door';
 
 export interface SpecRow {
   label: string;
@@ -36,38 +36,83 @@ export interface ProductDetail {
   todo?: string[];
 }
 
+/** 카테고리 안의 2단계 구분 (현재 알루미늄셔터만 사용) */
+export interface ProductGroup {
+  key: string;
+  label: string;
+  /** 이 구분을 고르면 카테고리 강조 문장 대신 노출 [가안] */
+  highlight?: string;
+  slugs: string[];
+}
+
 export interface CategoryInfo {
   key: ProductCategory;
   label: string;
   labelEn: string;
   /** 카드 아래 강조 문장 [가안]. *별표* 로 감싼 부분이 블루 강조 */
   highlight: string;
+  /** groups가 있으면 카드는 선택한 구분의 제품만 보여줌 */
+  groups?: ProductGroup[];
   slugs: string[];
 }
 
-/** 제품소개 카테고리 = 상단 탭. 순서는 「제품소개에 들어가는 내용」 그대로 */
+/** 구분 목록에서 slugs를 모아 카테고리 전체 slugs를 만듦 — 같은 목록을 두 번 적지 않게 */
+const withGroups = (c: Omit<CategoryInfo, 'slugs'> & { groups: ProductGroup[] }): CategoryInfo => ({
+  ...c,
+  slugs: c.groups.flatMap((g) => g.slugs),
+});
+
+/**
+ * 제품소개 카테고리 = 상단 탭(1단계). 「제품소개에 들어가는 내용」의 ⑴~⑸ 위계 그대로
+ * ⑴ 스크린방화셔터 ⑵ 철재방화셔터·철재단열방화셔터 ⑶ 알루미늄셔터(①~④ 구분) ⑷ 스피드도어 ⑸ 오버헤드도어
+ */
 export const PRODUCT_CATEGORIES: CategoryInfo[] = [
   {
-    key: 'fire',
-    label: '방화셔터',
-    labelEn: 'Fire Shutter',
-    highlight: '*화재 확산을 차단*하는 비차열 60분 인정제품에, 대한방화만의 *3가지 특허 안전장치*를 더했습니다.',
-    slugs: ['screen', 'steel', 'steel-insulated'],
+    key: 'screen',
+    label: '스크린방화셔터',
+    labelEn: 'Fire Screen Shutter',
+    highlight: '천장 속에 *감춰 설치*하는 가벼운 내화 스크린에, 대한방화만의 *3가지 특허 안전장치*를 더했습니다.',
+    slugs: ['screen'],
   },
   {
+    key: 'steel',
+    label: '철재방화셔터 / 철재단열방화셔터',
+    labelEn: 'Steel Fire Shutter',
+    highlight: '*밀폐성과 내구성*이 뛰어난 비차열 60분 인정 철재셔터에, *3가지 특허 안전장치*를 기본 적용합니다.',
+    slugs: ['steel', 'steel-insulated'],
+  },
+  withGroups({
     key: 'aluminum',
     label: '알루미늄셔터',
     labelEn: 'Aluminum Shutter',
-    highlight: '가벼운 알루미늄 이중압출 슬랫에 *단열*과 *내풍압* 성능을 더해, 강풍이 잦은 지역과 에너지 절약 건물에 맞춥니다.',
-    slugs: ['al-insulated', 'al-wind', 'al-wind-insulated'],
-  },
-  {
-    key: 'security',
-    label: '방범셔터',
-    labelEn: 'Security Shutter',
-    highlight: '스테인리스 파이프와 물결형 그물망으로 *침입은 막고*, 매장 안은 *보여주는* 방범셔터입니다.',
-    slugs: ['pipe-single', 'pipe-double', 'steel-security', 'wave'],
-  },
+    highlight: '가벼운 알루미늄 이중압출 슬랫에 *방범·단열·내풍압* 성능을 현장에 맞게 더합니다.',
+    groups: [
+      {
+        key: 'security',
+        label: '방범셔터',
+        highlight: '스테인리스 파이프와 물결형 그물망으로 *침입은 막고*, 매장 안은 *보여주는* 방범셔터입니다.',
+        slugs: ['pipe-single', 'pipe-double', 'steel-security', 'wave'],
+      },
+      {
+        key: 'insulated',
+        label: '단열셔터',
+        highlight: '우레탄을 충진한 슬랫으로 *열관류율 1.233W/㎡K*, *기밀성 1등급*을 확인받은 단열셔터입니다.',
+        slugs: ['al-insulated'],
+      },
+      {
+        key: 'wind',
+        label: '내풍압셔터',
+        highlight: '바람이 강한 *남부지방*과 해안가에서 *45m/s 강풍*을 견디는 내풍압셔터입니다.',
+        slugs: ['al-wind'],
+      },
+      {
+        key: 'wind-insulated',
+        label: '내풍압단열셔터',
+        highlight: '*50m/s 내풍압*에 *우레탄 단열*까지 더한 알루미늄셔터입니다.',
+        slugs: ['al-wind-insulated'],
+      },
+    ],
+  }),
   {
     key: 'speed-door',
     label: '스피드도어',
@@ -138,10 +183,10 @@ export const FIRE_SAFETY = {
 };
 
 export const PRODUCT_DETAILS: ProductDetail[] = [
-  // ─────────────────────────── 방화셔터 ───────────────────────────
+  // ─────────────────────────── ⑴ 스크린방화셔터 · ⑵ 철재방화셔터 ───────────────────────────
   {
     slug: 'screen',
-    category: 'fire',
+    category: 'screen',
     name: '스크린방화셔터',
     nameEn: 'Fire Screen Shutter',
     summary: '천장 속에 감춰 설치하는 가볍고 조용한 방화셔터',
@@ -177,7 +222,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
   },
   {
     slug: 'steel',
-    category: 'fire',
+    category: 'steel',
     name: '철재방화셔터',
     nameEn: 'Steel Fire Shutter',
     summary: '밀폐성과 내구성이 뛰어난 강판 슬랫 방화셔터',
@@ -209,7 +254,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
   },
   {
     slug: 'steel-insulated',
-    category: 'fire',
+    category: 'steel',
     name: '철재단열방화셔터',
     nameEn: 'Insulated Steel Fire Shutter',
     summary: '방화 성능에 단열을 더한 철재셔터',
@@ -221,7 +266,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     todo: ['카탈로그에 전용 내용 없음(회사개요에 "단열, 내풍압 철제 셔터" 한 줄뿐) — 제품 소개·사양·사진 요청 필요'],
   },
 
-  // ─────────────────────────── 알루미늄셔터 ───────────────────────────
+  // ─────────────────────────── ⑶ 알루미늄셔터 ② 단열 ③ 내풍압 ④ 내풍압단열 ───────────────────────────
   {
     slug: 'al-insulated',
     category: 'aluminum',
@@ -292,10 +337,10 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     todo: ['용도 목록은 시공실적(다산 해수담수화, 인천 금곡동 푸드존, 영종도 하수처리장 = 단열내풍압)에서 뽑은 것 — 확인'],
   },
 
-  // ─────────────────────────── 방범셔터 ───────────────────────────
+  // ─────────────────────────── ⑶ 알루미늄셔터 ① 방범셔터 ───────────────────────────
   {
     slug: 'pipe-single',
-    category: 'security',
+    category: 'aluminum',
     name: '싱글 스텐파이프셔터',
     nameEn: 'Stainless Pipe Shutter',
     summary: '부식에 강한 스테인리스 파이프 방범셔터',
@@ -312,7 +357,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
   },
   {
     slug: 'pipe-double',
-    category: 'security',
+    category: 'aluminum',
     name: '이중 스텐파이프셔터',
     nameEn: 'Double Stainless Pipe Shutter',
     summary: '파이프를 이중으로 배열해 강도를 높인 방범셔터',
@@ -328,7 +373,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
   },
   {
     slug: 'steel-security',
-    category: 'security',
+    category: 'aluminum',
     name: '철재방범셔터',
     nameEn: 'Steel Security Shutter',
     summary: '스텐판 슬랫으로 방범과 방화를 함께하는 셔터',
@@ -344,7 +389,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
   },
   {
     slug: 'wave',
-    category: 'security',
+    category: 'aluminum',
     name: '웨이브셔터',
     nameEn: 'Wave Shutter',
     summary: '물결무늬 파이프로 매장을 보여주는 방범셔터',
@@ -421,7 +466,9 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
 
 export const getCategory = (key: string | undefined) => PRODUCT_CATEGORIES.find((c) => c.key === key);
 export const getProduct = (slug: string | undefined) => PRODUCT_DETAILS.find((p) => p.slug === slug);
-export const productsOf = (category: CategoryInfo) => category.slugs.map((s) => getProduct(s)!);
+export const productsOf = (slugs: string[]) => slugs.map((s) => getProduct(s)!);
+/** 제품이 속한 2단계 구분 (구분이 없는 카테고리면 undefined) */
+export const groupOf = (category: CategoryInfo, slug: string) => category.groups?.find((g) => g.slugs.includes(slug));
 /** 상세 URL — 제품이 하나뿐인 카테고리는 slug를 생략 */
 export const productPath = (category: CategoryInfo, slug?: string) =>
   slug && category.slugs.length > 1 ? `/products/${category.key}/${slug}` : `/products/${category.key}`;

@@ -15,7 +15,7 @@
 .catLink:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
 /* ── 히어로 ── */
-.hero { position: relative; height: 560px; display: grid; place-items: center; color: #ffffff; background: #0b1424; overflow: hidden; }
+.hero { position: relative; height: 600px; display: grid; place-items: center; color: #ffffff; background: #0b1424; overflow: hidden; }
 .heroBg { position: absolute; inset: 0; background: radial-gradient(900px 500px at 70% 20%, rgba(1, 99, 206, 0.35), transparent 60%), linear-gradient(160deg, #1c3f86 0%, #0b1424 75%); }
 .heroBg.hasPhoto { background: #0b1424; }
 .heroBg > img { width: 100%; height: 100%; object-fit: cover; animation: heroZoom 8s ease-out both; }
@@ -26,13 +26,23 @@
 .heroTitle { font-size: 56px; line-height: 68px; font-weight: 800; letter-spacing: -0.03em; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3); }
 .heroEn { margin-top: var(--space-3); font-size: 28px; line-height: 36px; font-weight: 400; letter-spacing: 0.02em; opacity: .9; }
 
+/* 2단계 구분 — 사진 위 흰 알약 버튼 (선택: 흰 바탕 + 네이비 글자) */
+.groups { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-6); }
+.groupLink { display: inline-flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius-pill); font-size: 16px; font-weight: 600; color: #ffffff; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.groupLink:hover { border-color: #ffffff; background: rgba(255, 255, 255, 0.12); }
+.groupLink[aria-current="true"] { background: #ffffff; border-color: #ffffff; color: var(--brand); }
+.groupLink:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+.groupCount { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.2); font-size: 12px; font-variant-numeric: tabular-nums; }
+.groupLink[aria-current="true"] .groupCount { background: var(--accent-soft); color: var(--accent-text); }
+
 /* ── 제품 카드 ── */
 .cardsWrap { position: relative; max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin: -240px auto 0; padding: 0 var(--gutter); }
 /* align-items:flex-end → 선택 카드만 설명이 있어 키가 커지고, 자연스럽게 위로 솟음 */
 .cards { display: flex; align-items: flex-end; gap: var(--space-5); padding: var(--space-5) 4px var(--space-10); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .cards::-webkit-scrollbar { display: none; }
 /* 카드가 적을 땐 가운데, 넘치면 왼쪽부터 스크롤 — justify-content:center는 넘칠 때 왼쪽이 잘려 접근 불가라 auto 마진 사용 */
-.cardItem { flex: 0 0 300px; scroll-snap-align: center; }
+/* 4장까지는 줄어들어 한 줄에 다 보이고(최소 240px), 그보다 좁아지면 스와이프 */
+.cardItem { flex: 0 1 300px; min-width: 240px; scroll-snap-align: center; }
 .cardItem:first-child { margin-left: auto; }
 .cardItem:last-child { margin-right: auto; }
 
@@ -147,12 +157,14 @@
 @media (max-width: 767px) {
   .catLink { height: 48px; padding: 0 var(--space-4); font-size: 15px; }
   .hero { height: 400px; }
-  .heroText { margin-bottom: 160px; }
+  .heroText { margin-bottom: 160px; padding: 0 var(--gutter); }
+  .groups { margin-top: var(--space-4); gap: 6px; }
+  .groupLink { height: 36px; padding: 0 var(--space-4); font-size: 14px; }
   .heroTitle { font-size: 36px; line-height: 46px; }
   .heroEn { font-size: 18px; line-height: 26px; }
   .cardsWrap { margin-top: -200px; padding: 0; }
   .cards { padding-left: var(--gutter); padding-right: var(--gutter); }
-  .cardItem { flex-basis: 76%; }
+  .cardItem { flex: 0 0 76%; }
   .cardName { font-size: 22px; line-height: 32px; }
   .highlight { font-size: 17px; line-height: 28px; }
   .body { margin-top: var(--space-12); }

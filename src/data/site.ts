@@ -18,13 +18,13 @@ export const NAV: NavItem[] = [
     ],
   },
   {
-    // 「제품소개에 들어가는 내용」 기준 5개 카테고리 (구 메뉴의 제연스크린·망입유리는 빠짐 — 클라이언트 확인)
+    // 「제품소개에 들어가는 내용」 ⑴~⑸ (구 메뉴의 제연스크린·망입유리는 빠짐 — 클라이언트 확인)
     label: '제품소개',
-    href: '/products/fire',
+    href: '/products/screen',
     children: [
-      { label: '방화셔터', href: '/products/fire' },
+      { label: '스크린방화셔터', href: '/products/screen' },
+      { label: '철재방화셔터', href: '/products/steel' },
       { label: '알루미늄셔터', href: '/products/aluminum' },
-      { label: '방범셔터', href: '/products/security' },
       { label: '스피드도어', href: '/products/speed-door' },
       { label: '오버헤드도어', href: '/products/overhead-door' },
     ],

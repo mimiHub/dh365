@@ -5,6 +5,7 @@ import {
   PRODUCT_CATEGORIES,
   getCategory,
   getProduct,
+  groupOf,
   productPath,
   productsOf,
   type ProductCategory,
@@ -33,9 +34,9 @@ const PRODUCT_IMAGES: Partial<Record<string, string>> = {
   wave: waveImg,
 };
 const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
-  fire: screenShutterImg,
+  screen: screenShutterImg,
+  steel: steelShutterImg,
   aluminum: windShutterImg,
-  security: securityShutterImg,
 };
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -52,28 +53,36 @@ function Highlight({ text }: { text: string }) {
 
 /**
  * 제품소개 — 코아드 제품 페이지 구성
- * [카테고리 탭] → [히어로: 카테고리명] → [히어로에 걸친 제품 카드] → [강조 문장] → [선택한 제품 상세] → [견적상담]
+ * [카테고리 탭(1단계)] → [히어로: 카테고리명 + 구분 탭(2단계, 알루미늄셔터)] → [히어로에 걸친 제품 카드]
+ * → [강조 문장] → [선택한 제품 상세] → [견적상담]
  *
- * 선택 상태를 useState가 아니라 URL(/products/fire/steel)에 둠:
+ * 선택 상태를 useState가 아니라 URL(/products/aluminum/wave)에 둠:
  * 새로고침·공유·뒤로가기에도 같은 제품이 보이고, 메뉴에서 바로 특정 제품으로 들어올 수 있음.
  */
 export function ProductPage() {
   const { category: catKey, slug } = useParams();
   const navigate = useNavigate();
   const track = useRef<HTMLUListElement>(null);
+  const catList = useRef<HTMLUListElement>(null);
 
   const category = getCategory(catKey);
-  const items = category ? productsOf(category) : [];
-  const product = (slug && category?.slugs.includes(slug) ? getProduct(slug) : undefined) ?? items[0];
+  // 선택 제품 → 그 제품이 속한 구분 → 카드 목록 순으로 정해짐 (구분 탭의 선택 상태도 URL 하나로 결정)
+  const product = (slug && category?.slugs.includes(slug) ? getProduct(slug) : undefined) ?? (category && getProduct(category.slugs[0]));
+  const group = category && product ? groupOf(category, product.slug) : undefined;
+  const items = productsOf(group?.slugs ?? category?.slugs ?? []);
   const index = product ? items.indexOf(product) : 0;
 
-  // 모바일처럼 카드가 넘칠 때, 선택한 카드를 트랙 가운데로 (페이지 세로 스크롤은 건드리지 않음)
-  useEffect(() => {
-    const el = track.current;
-    const card = el?.children[index] as HTMLElement | undefined;
-    if (!el || !card || el.scrollWidth <= el.clientWidth) return;
-    el.scrollTo({ left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2, behavior: 'smooth' });
-  }, [index]);
+  // 가로로 넘치는 목록에서 선택 항목을 가운데로 (scrollIntoView는 페이지 세로 스크롤까지 움직여서 목록만 직접 스크롤)
+  const centerIn = (list: HTMLElement | null, i: number, behavior: ScrollBehavior) => {
+    const item = list?.children[i] as HTMLElement | undefined;
+    if (!list || !item || list.scrollWidth <= list.clientWidth) return;
+    list.scrollTo({ left: item.offsetLeft - (list.clientWidth - item.offsetWidth) / 2, behavior });
+  };
+  const catIndex = PRODUCT_CATEGORIES.findIndex((c) => c.key === category?.key);
+  // 카테고리 탭: 모바일에서 선택 탭이 화면 밖에 있으면 보이게 (페이지 진입 시라 애니메이션 없이)
+  useEffect(() => centerIn(catList.current, catIndex, 'instant'), [catIndex]);
+  // 제품 카드: 구분이 바뀌면 카드 목록이 새로 그려지므로 group도 의존성에 포함
+  useEffect(() => centerIn(track.current, index, 'smooth'), [index, group?.key]);
 
   // 잘못된 카테고리 주소 → 첫 카테고리로 (Hook 호출이 모두 끝난 뒤에 분기해야 Hook 순서 규칙을 지킴)
   if (!category || !product) return <Navigate to={productPath(PRODUCT_CATEGORIES[0])} replace />;
@@ -85,7 +94,7 @@ export function ProductPage() {
     <>
       {/* 카테고리 탭 — 코아드 상단 탭 바 */}
       <nav className={s.catBar} aria-label="제품 분류">
-        <ul className={cx('container', s.catList)}>
+        <ul ref={catList} className={cx('container', s.catList)}>
           {PRODUCT_CATEGORIES.map((c) => (
             <li key={c.key}>
               <Link to={productPath(c)} className={s.catLink} aria-current={c.key === category.key ? 'page' : undefined}>
@@ -103,11 +112,33 @@ export function ProductPage() {
         <div className={s.heroText}>
           <h1 id="product-cat-title" className={s.heroTitle}>{category.label}</h1>
           <p className={s.heroEn}>{category.labelEn}</p>
+          {category.groups && group && (
+            // 2단계 구분 — 각 구분의 첫 제품으로 이동. 구분 전환은 탭처럼 기록을 쌓지 않고 스크롤 유지
+            <nav aria-label={`${category.label} 구분`}>
+              <ul className={s.groups}>
+                {category.groups.map((g) => (
+                  <li key={g.key}>
+                    <Link
+                      to={productPath(category, g.slugs[0])}
+                      replace
+                      state={{ keepScroll: true }}
+                      className={s.groupLink}
+                      aria-current={g.key === group.key ? 'true' : undefined}
+                    >
+                      {g.label}
+                      {g.slugs.length > 1 && <span className={s.groupCount}>{g.slugs.length}</span>}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
         </div>
       </section>
 
       {/* 제품 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
-      <div className={s.cardsWrap}>
+      {/* key: 구분이 바뀌면 카드 목록을 새로 그려 트랙 스크롤 위치를 처음으로 */}
+      <div className={s.cardsWrap} key={group?.key ?? category.key}>
         {items.length > 1 && (
           <>
             <button type="button" className={cx(s.arrow, s.prev)} onClick={() => go(index - 1)} disabled={index === 0} aria-label="이전 제품">
@@ -118,7 +149,7 @@ export function ProductPage() {
             </button>
           </>
         )}
-        <ul ref={track} className={s.cards} aria-label={`${category.label} 제품`}>
+        <ul ref={track} className={s.cards} aria-label={`${group?.label ?? category.label} 제품`}>
           {items.map((p, i) => {
             const on = i === index;
             return (
@@ -143,7 +174,7 @@ export function ProductPage() {
       </div>
 
       <p className={cx('container', s.highlight)}>
-        <Highlight text={category.highlight} />
+        <Highlight text={group?.highlight ?? category.highlight} />
       </p>
 
       {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
