@@ -30,6 +30,7 @@ import overheadBannerImg from '../assets/banner-overhead-door.jpg';
 import overheadDoorImg from '../assets/product-overhead-door.jpg';
 import aluminumCardImg from '../assets/card-aluminum-shutter.jpg';
 import steelDrawingImg from '../assets/drawing-steel-shutter.png';
+import screenDrawingImg from '../assets/drawing-screen-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
 import s from './ProductPage.module.css';
 
@@ -53,6 +54,7 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
 // 제품 구조도(도면) — 있으면 사양표 옆에 나란히. caption은 도면 기준 치수 안내
 const DRAWINGS: Partial<Record<string, { src: string; caption: string }>> = {
   steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
+  screen: { src: screenDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
 };
 
 // 구조 상세 사진(부품·결속부 확대) — 있으면 '제품 특징'을 [사진 | 특징 목록]으로 배치
