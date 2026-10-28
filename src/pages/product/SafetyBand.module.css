@@ -1,0 +1,157 @@
+/* 방화 공통 안전 시스템 밴드 — data-theme="dark"로 토큰이 네이비 계열로 바뀜.
+   하드코딩은 장식용 빛·그리드(테마 무관)만 */
+
+.band { position: relative; margin-top: var(--space-16); padding: var(--space-20) 0; overflow: hidden; isolation: isolate; }
+/* 배경 장식: 블루 빛 두 덩어리 + 아주 옅은 도면 그리드 (사진 없이도 깊이감) */
+.decor { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(700px 420px at 85% 8%, rgba(1, 99, 206, 0.28), transparent 70%),
+    radial-gradient(600px 400px at 0% 70%, rgba(28, 63, 134, 0.35), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 56px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 56px 56px; }
+/* 그리드는 아래로 갈수록 사라지게 */
+.decor { -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); }
+.inner { position: relative; }
+
+/* ── 헤드라인 + 숫자 요약 ── */
+.head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--space-10); }
+.title { font-size: 44px; line-height: 58px; font-weight: 800; letter-spacing: -0.03em; }
+.title em { font-style: normal; color: var(--accent-text); }
+.lead { max-width: 560px; margin-top: var(--space-5); font-size: 17px; line-height: 28px; color: var(--ink-muted); }
+.stats { display: flex; margin: 0; }
+.stats div { min-width: 132px; padding: 0 var(--space-6); border-left: 1px solid var(--line); }
+.stats div:first-child { border-left: 0; padding-left: 0; }
+.stats dt { font-size: 14px; color: var(--ink-muted); }
+.stats dd { margin: var(--space-1) 0 0; font-size: 18px; font-weight: 600; color: var(--ink-muted); }
+.stats strong { margin-right: 2px; font-size: 56px; line-height: 64px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ── 특허 3종 ── */
+.patents { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-12); }
+.patent { position: relative; overflow: hidden; padding: var(--space-8); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, var(--surface-raised) 0%, rgba(23, 35, 58, 0.4) 100%);
+  transition: transform .35s cubic-bezier(.22,1,.36,1), border-color .35s ease, box-shadow .35s ease; }
+/* 위쪽 빛 라인 — 가운데가 밝은 그라데이션 */
+.patent::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-text), transparent); }
+/* hover: 카드 안쪽에 블루 빛이 번짐 */
+.patent::after { content: ""; position: absolute; inset: 0; background: radial-gradient(420px 220px at 50% 0%, rgba(1, 99, 206, 0.22), transparent 70%); opacity: 0; transition: opacity .35s ease; pointer-events: none; }
+.patent:hover { transform: translateY(-6px); border-color: rgba(106, 166, 245, 0.45); box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35); }
+.patent:hover::after { opacity: 1; }
+/* 큰 숫자 워터마크 */
+.ghost { position: absolute; right: var(--space-5); top: var(--space-2); font-size: 120px; line-height: 1; font-weight: 800; letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08); pointer-events: none; }
+.iconRing { position: relative; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; color: var(--accent-text);
+  background: radial-gradient(circle at 30% 30%, rgba(106, 166, 245, 0.25), rgba(1, 99, 206, 0.08)); box-shadow: inset 0 0 0 1px rgba(106, 166, 245, 0.35); }
+.iconRing svg { width: 26px; height: 26px; }
+.patentNo { position: relative; margin-top: var(--space-6); font-size: 13px; font-weight: 700; letter-spacing: 0.14em; color: var(--accent-text); }
+.patentTitle { position: relative; margin-top: var(--space-2); font-size: 26px; line-height: 36px; font-weight: 700; }
+.patentBody { position: relative; margin-top: var(--space-3); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
+
+/* ── 공통 카드 ── */
+.card { position: relative; overflow: hidden; padding: var(--space-8); border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(23, 35, 58, 0.55); backdrop-filter: blur(4px); }
+.cardTitle { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: 22px; line-height: 32px; font-weight: 700; }
+.cardBody { margin-top: var(--space-3); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
+
+.duo { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-5); margin-top: var(--space-5); }
+
+/* 장애물 감지: 텍스트 | 데모 */
+.obstacle { display: grid; grid-template-columns: 1fr 240px; gap: var(--space-8); align-items: center; }
+.steps { display: grid; gap: var(--space-2); margin-top: var(--space-6); }
+.steps li { display: flex; align-items: center; gap: var(--space-3); font-size: 15px; font-weight: 600; }
+.steps span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #ffffff; font-size: 13px; font-weight: 700; }
+
+/* ── 장애물 데모 애니메이션 (6초 루프) ──
+   0~40% 하강 → 40% 장애물 접촉(경고) → 45~60% 상승 → 60~85% 정지 → 100% 원위치 */
+.demo { text-align: center; }
+.demoFrame { position: relative; height: 220px; overflow: hidden; border: 1px solid var(--line-strong); border-top-width: 10px; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, rgba(1, 99, 206, 0.1), rgba(1, 99, 206, 0.02)); }
+.demoShutter { position: absolute; inset: 0; animation: demoShutter 6s cubic-bezier(.45,.05,.35,1) infinite; }
+.demoSlats { position: absolute; inset: 0 0 6px; background: repeating-linear-gradient(180deg, #8a95a8 0 9px, #6b778c 9px 11px); }
+.demoEdge { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: #c4c8cf; animation: demoEdge 6s linear infinite; }
+/* 장애물(상자) — 바닥 가운데 */
+.demoBox2 { position: absolute; left: 32%; right: 32%; bottom: 0; height: 22%; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, #e0a33a, #b97a1c); }
+.demoAlert { position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%); padding: 4px 10px; border-radius: var(--radius-pill); background: var(--fire); color: #ffffff; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; animation: demoAlert 6s linear infinite; }
+.demoCaption { margin-top: var(--space-3); font-size: 13px; color: var(--ink-subtle); }
+@keyframes demoShutter {
+  0% { transform: translateY(-100%); }
+  40% { transform: translateY(-22%); }   /* 상자 윗면에 닿음 (상자 높이 22%) */
+  45% { transform: translateY(-22%); }
+  60% { transform: translateY(-62%); }   /* 5초 상승 */
+  85% { transform: translateY(-62%); }   /* 정지 */
+  100% { transform: translateY(-100%); }
+}
+@keyframes demoEdge { 0%, 39% { background: #c4c8cf; } 40%, 58% { background: #d2231a; } 60%, 100% { background: #c4c8cf; } }
+/* 경고는 상자보다 위(셔터 하단 위)에 뜨므로 셔터가 올라간 뒤에만 보이게 — 겹침 방지 */
+@keyframes demoAlert { 0%, 46% { opacity: 0; } 52%, 82% { opacity: 1; } 88%, 100% { opacity: 0; } }
+
+/* 안전 브라켓트 */
+.bracket { display: flex; flex-direction: column; }
+.bracket .cardTitle { margin-top: var(--space-5); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: auto; padding-top: var(--space-6); }
+.chips li { padding: 6px 12px; border: 1px solid rgba(106, 166, 245, 0.35); border-radius: var(--radius-pill); background: rgba(1, 99, 206, 0.12); color: var(--ink); font-size: 13px; font-weight: 600; }
+
+/* ── 음성안내 ── */
+.voice { display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-10); align-items: center; margin-top: var(--space-5); }
+.speaker { position: relative; display: inline-flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); color: var(--accent-text); }
+.speaker > svg { width: 40px; height: 40px; }
+/* 이퀄라이저 막대 5개가 서로 다른 박자로 오르내림 */
+.wave { display: inline-flex; align-items: center; gap: 4px; height: 28px; }
+.wave i { width: 4px; height: 100%; border-radius: 2px; background: currentColor; transform-origin: center; animation: eq 1.1s ease-in-out infinite; }
+.wave i:nth-child(2) { animation-delay: -.2s; }
+.wave i:nth-child(3) { animation-delay: -.45s; }
+.wave i:nth-child(4) { animation-delay: -.7s; }
+.wave i:nth-child(5) { animation-delay: -.9s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+/* 말풍선 — 왼쪽 아래 꼬리 */
+.bubbles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.bubbles li { position: relative; padding: var(--space-4) var(--space-5); border-radius: 16px 16px 16px 4px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); font-size: 15px; line-height: 24px; color: var(--ink); transition: background-color .25s ease, border-color .25s ease; }
+.bubbles li:hover { background: rgba(1, 99, 206, 0.18); border-color: rgba(106, 166, 245, 0.45); }
+
+/* ── 세부 디테일 6 ── */
+.details { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-12); }
+.detail { display: flex; gap: var(--space-4); align-items: flex-start; padding: var(--space-5); border-radius: var(--radius-md); transition: background-color .25s ease; }
+.detail:hover { background: rgba(255, 255, 255, 0.04); }
+.detailIcon { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: rgba(1, 99, 206, 0.16); color: var(--accent-text); }
+.detail strong { display: block; font-size: 16px; line-height: 24px; }
+.detail div > span { display: block; margin-top: var(--space-1); font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+
+/* ── 모터 스케일 + 특허 등록 ── */
+.motor { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--space-10); margin-top: var(--space-10); padding: var(--space-6) var(--space-8); border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(23, 35, 58, 0.55); }
+.motorLabel { font-size: 18px; font-weight: 700; }
+.motorSub { margin-top: 2px; font-size: 13px; color: var(--ink-subtle); }
+/* 용량이 커질수록 점이 커지는 스케일 — 선 위에 7개 */
+.scale { position: relative; display: flex; justify-content: space-between; padding-top: 28px; }
+.scale::before { content: ""; position: absolute; left: 6px; right: 6px; top: 13px; height: 2px; background: linear-gradient(90deg, rgba(106, 166, 245, 0.3), var(--accent-text)); }
+.scale li { position: relative; display: flex; flex-direction: column; align-items: center; font-size: 13px; font-weight: 600; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.tick { position: absolute; top: -21px; width: 8px; aspect-ratio: 1; border-radius: 50%; background: var(--accent-text); box-shadow: 0 0 0 4px rgba(1, 99, 206, 0.25); }
+.scale li:nth-child(1) .tick { width: 8px; } .scale li:nth-child(2) .tick { width: 9px; } .scale li:nth-child(3) .tick { width: 10px; }
+.scale li:nth-child(4) .tick { width: 11px; } .scale li:nth-child(5) .tick { width: 12px; } .scale li:nth-child(6) .tick { width: 13px; }
+.scale li:nth-child(7) .tick { width: 14px; }
+.cert { display: flex; align-items: center; gap: var(--space-3); padding-left: var(--space-8); border-left: 1px solid var(--line); }
+.certSeal { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #e0b44a, #a87a1c); color: #1b1405; }
+.certNo { font-size: 15px; font-weight: 700; }
+.certTitle { margin-top: 2px; font-size: 13px; color: var(--ink-muted); }
+
+/* ── 반응형 ── */
+@media (max-width: 1024px) {
+  .band { padding: var(--space-16) 0; }
+  .head { grid-template-columns: 1fr; align-items: start; }
+  .title { font-size: 36px; line-height: 48px; }
+  .patents { grid-template-columns: 1fr; }
+  .duo, .voice { grid-template-columns: 1fr; gap: var(--space-6); }
+  .details { grid-template-columns: 1fr 1fr; }
+  .motor { grid-template-columns: 1fr; gap: var(--space-6); }
+  .cert { padding-left: 0; padding-top: var(--space-5); border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 767px) {
+  .band { margin-top: var(--space-12); padding: var(--space-12) 0; }
+  .title { font-size: 28px; line-height: 38px; }
+  .title br { display: none; }
+  .stats div { min-width: 0; flex: 1; padding: 0 var(--space-4); }
+  .stats strong { font-size: 40px; line-height: 48px; }
+  .patent, .card { padding: var(--space-6); }
+  .ghost { font-size: 88px; }
+  .obstacle { grid-template-columns: 1fr; }
+  .demo { max-width: 260px; margin: 0 auto; width: 100%; }
+  .bubbles, .details { grid-template-columns: 1fr; }
+  .detail { padding: var(--space-3) 0; }
+  .motor { padding: var(--space-5); }
+  .scale li { font-size: 11px; }
+}

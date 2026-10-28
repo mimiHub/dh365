@@ -1,7 +1,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
-  FIRE_SAFETY,
   PRODUCT_CATEGORIES,
   getCategory,
   getProduct,
@@ -15,6 +14,7 @@ import {
 import { COMPANY } from '../data/site';
 import { Badge, Button, Media, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
+import { SafetyBand } from './product/SafetyBand';
 import steelShutterImg from '../assets/product-steel-shutter.png';
 import screenShutterImg from '../assets/product-screen-shutter.png';
 import windShutterImg from '../assets/product-wind-shutter.png';
@@ -541,60 +541,6 @@ function SpecTable({ product: p }: { product: ProductDetail }) {
         ))}
       </tbody>
     </table>
-  );
-}
-
-/** 방화셔터 공통 — 특허 안전장치·모터 시스템 (스크린·철재 상세에 함께 노출) */
-function SafetyBand() {
-  const f = FIRE_SAFETY;
-  return (
-    <section className={s.safety} data-theme="dark" aria-labelledby="safety-title">
-      <div className="container">
-        <BlockHead en="SAFETY SYSTEM" title={f.headline} id="safety-title" />
-
-        <ol className={s.patents}>
-          {f.patents.map((pt, i) => (
-            <li key={pt.title}>
-              <span className={s.patentNo}>PATENT {pad(i + 1)}</span>
-              <h4>{pt.title}</h4>
-              <p>{pt.body}</p>
-            </li>
-          ))}
-        </ol>
-
-        <div className={s.safetyGrid}>
-          <article className={s.safetyCard}>
-            <h4>{f.obstacle.title} <Badge tone="fire">{f.obstacle.badge}</Badge></h4>
-            <p>{f.obstacle.body}</p>
-          </article>
-          <article className={s.safetyCard}>
-            <h4>{f.bracket.title}</h4>
-            <p>{f.bracket.body}</p>
-          </article>
-          <article className={cx(s.safetyCard, s.voice)}>
-            <h4>연동제어기 음성안내 <Badge tone="fire">특허 출원</Badge></h4>
-            <ul>
-              {f.voiceMessages.map((m) => <li key={m}>“{m}”</li>)}
-            </ul>
-          </article>
-        </div>
-
-        <ul className={s.details}>
-          {f.details.map((d) => (
-            <li key={d.title}>
-              <strong>{d.title}</strong>
-              <span>{d.body}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className={s.motor}>
-          <p className={s.motorLabel}>DH 모터 용량</p>
-          <ul>{f.motor.capacities.map((c) => <li key={c}>{c}</li>)}</ul>
-          <p className={s.patentLine}>특허 {f.patent.no} · {f.patent.title}</p>
-        </div>
-      </div>
-    </section>
   );
 }
 
