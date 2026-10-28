@@ -15,7 +15,6 @@ import overheadBannerImg from '../../assets/banner-overhead-door.jpg';
 import caseScreenNamdongImg from '../../assets/case-screen-incheon-namdong.png';
 import caseScreenAnsanImg from '../../assets/case-screen-ansan-seonggok.png';
 import caseScreenGongjuImg from '../../assets/case-screen-gongju-univ.png';
-import caseScreenGwangjuImg from '../../assets/case-screen-gwangju-tech-hs.png';
 import caseSteelFactoryImg from '../../assets/case-steel-factory.png';
 import caseSteelWarehouseImg from '../../assets/case-steel-food-warehouse.png';
 import caseSteelParkingImg from '../../assets/case-steel-apt-parking.png';
@@ -23,7 +22,6 @@ import caseWindGarageImg from '../../assets/case-wind-garage.png';
 import caseWindIntakeImg from '../../assets/case-wind-water-intake.png';
 import caseWindGeumgokImg from '../../assets/case-wind-geumgok-foodzone.png';
 import caseSecurityPipeImg from '../../assets/case-security-pipe.png';
-import caseSecurityPerforatedImg from '../../assets/case-security-perforated.png';
 import caseSecurityWaveImg from '../../assets/case-security-wave.png';
 
 export interface GalleryImage {
@@ -32,12 +30,12 @@ export interface GalleryImage {
 }
 
 export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
+  // product-screen-shutter.png = case-screen-gwangju-tech-hs.png(광주공고)와 같은 사진 → 한 장만
   screen: [
-    { src: screenShutterImg, alt: '스크린방화셔터 설치 모습' },
+    { src: screenShutterImg, alt: '[시공사례] 광주공고 스크린방화셔터' },
     { src: caseScreenNamdongImg, alt: '[시공사례] 인천남동물류센터 하역장' },
     { src: caseScreenAnsanImg, alt: '[시공사례] 안산성곡물류센터 하역장' },
     { src: caseScreenGongjuImg, alt: '[시공사례] 공주대학교 사범대학' },
-    { src: caseScreenGwangjuImg, alt: '[시공사례] 광주공고' },
   ],
   steel: [
     { src: steelShutterImg, alt: '물류센터 철재방화셔터 설치 모습' },
@@ -57,10 +55,8 @@ export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
     { src: pipeSingleDetailImg, alt: '스테인리스 파이프·연결 링크 구조' },
     { src: caseSecurityPipeImg, alt: '[시공사례] 파이프셔터' },
   ],
-  'steel-security': [
-    { src: securityShutterImg, alt: '방범셔터 설치 모습' },
-    { src: caseSecurityPerforatedImg, alt: '[시공사례] 타공셔터' },
-  ],
+  // product-security-shutter.png = case-security-perforated.png(타공셔터)와 같은 사진 → 한 장만
+  'steel-security': [{ src: securityShutterImg, alt: '[시공사례] 타공셔터' }],
   wave: [{ src: caseSecurityWaveImg, alt: '웨이브셔터' }],
   'speed-door': [
     { src: speedDoorRedImg, alt: '스피드도어 정면' },
