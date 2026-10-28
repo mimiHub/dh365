@@ -41,7 +41,7 @@ export function Header() {
   // 모바일 메뉴가 열려 있으면 배경 스크롤 잠금 + ESC로 닫기
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    // 다른 플로팅 요소(채팅상담 버튼)가 메뉴 위에 뜨지 않도록 body에 상태 표시
+    // 다른 플로팅 요소(우측 퀵메뉴)가 메뉴 위에 뜨지 않도록 body에 상태 표시
     document.body.toggleAttribute('data-menu-open', mobileOpen);
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMobileOpen(false);
     window.addEventListener('keydown', onKey);

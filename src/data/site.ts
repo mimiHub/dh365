@@ -202,15 +202,3 @@ export const FAMILY_SITES = [
   { label: 'shutter.or.kr', href: 'http://shutter.or.kr/' },
   { label: '대한전문건설협회', href: 'https://www.kosca.or.kr/' },
 ];
-
-// 채팅상담 — 네이버 톡톡
-// 톡톡 파트너센터 > 계정관리 > 설정 > '톡톡 배너/QR 코드' 에서 계정 ID(예: w4abcd)를 확인해 넣으세요.
-// 비어 있으면 위젯의 톡톡 버튼이 '준비 중'으로 표시됩니다.
-export const CHAT = {
-  naverTalkId: '', // TODO: 대한방화 톡톡 계정 ID
-  hours: '평일 09:00 – 18:00', // [가안] 실제 상담 시간 확인 필요
-  greeting: ['안녕하세요, (주)대한방화입니다.', '방화셔터 견적·설계 상담이 필요하신가요?'],
-  hint: '설치 지역과 연락처를 남겨주시면 빠르게 연락드립니다.',
-};
-
-export const naverTalkUrl = (id: string) => `https://talk.naver.com/ct/${encodeURIComponent(id)}`;

@@ -1,6 +1,4 @@
-/* 도크: 오른쪽 아래. 안에서 퀵메뉴 → 채팅상담 순서로 쌓임 */
-/* transform으로 가운데 정렬하지 않음: transform이 걸린 요소 안에서는 position:fixed가 화면이 아니라
-   그 요소 기준이 되어 채팅 패널 위치가 틀어짐 → 위아래 0 + flex로 아래 정렬 */
+/* 도크: 오른쪽 아래. 위아래 0 + flex로 아래 정렬 (푸터에 닿으면 --dock-lift만큼 들어 올림) */
 .dock { position: fixed; top: 0; bottom: 0; right: calc(var(--space-5) + env(safe-area-inset-right, 0px)); z-index: var(--z-modal); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: var(--space-4); padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px) + var(--dock-lift, 0px)); pointer-events: none; transition: opacity .2s ease, visibility .2s; }
 .dock > * { pointer-events: auto; } /* 도크 빈 영역(세로 전체)은 아래 페이지 클릭을 막지 않게 */
 /* 모바일 전체 메뉴가 열리면 도크 전체 숨김 (Header가 body[data-menu-open]을 붙임) */
