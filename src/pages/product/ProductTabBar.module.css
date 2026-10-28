@@ -30,8 +30,15 @@
   .panel { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(100% - var(--space-4) + 6px); z-index: 20; max-height: 60vh; overflow-y: auto; padding: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-float); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s ease, transform .18s ease, visibility 0s .18s; }
   .panelOpen { opacity: 1; visibility: visible; transform: none; transition: opacity .18s ease, transform .18s ease; }
   .group + .group { margin-top: var(--space-1); padding-top: var(--space-1); border-top: 1px solid var(--line); }
-  .groupLabel { padding: var(--space-2) var(--space-3) 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--ink-subtle); }
-  .option { display: flex; align-items: center; min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-sm); font-size: 15px; color: var(--ink); }
+  /* 1단계 — 링크든 머리글이든 같은 크기·굵기 */
+  .lv1 { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; padding: 0 var(--space-3); font-size: 16px; font-weight: 700; color: var(--ink); }
+  .groupLabel { cursor: default; }
+  .groupOn { color: var(--accent-text); }
+  .count { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--surface-alt); color: var(--ink-subtle); font-size: 11px; font-weight: 700; }
+  /* 2단계 — 들여쓰기 + 왼쪽 세로선, 한 단계 작고 가벼운 글씨 */
+  .children { margin: 0 0 var(--space-2) var(--space-5); padding-left: var(--space-2); border-left: 2px solid var(--line); }
+  .lv2 { min-height: 42px; padding: 0 var(--space-3); font-size: 15px; font-weight: 500; color: var(--ink-muted); }
+  .option { display: flex; align-items: center; border-radius: var(--radius-sm); }
   .option:active { background: var(--surface-alt); }
   .option[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; }
   .option[aria-current="page"]::after { content: ""; width: 10px; height: 5px; margin-left: auto; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg) translateY(-2px); }

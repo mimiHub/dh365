@@ -62,27 +62,40 @@ export function ProductTabBar({ category, current }: { category: CategoryInfo; c
           <span className={cx(s.chevron, open && s.chevronOpen)} aria-hidden="true" />
         </button>
         <div id={panelId} className={cx(s.panel, open && s.panelOpen)} inert={!open}>
-          {(category.groups ?? [{ key: 'all', label: '', slugs: category.slugs }]).map((g) => (
-            <div key={g.key} className={s.group}>
-              {/* 제품이 하나뿐인 구분은 머리글 생략 (단열셔터 > 단열셔터 중복 방지) */}
-              {g.label && g.slugs.length > 1 && <p className={s.groupLabel}>{g.label}</p>}
-              <ul>
-                {g.slugs.map((slug) => (
-                  <li key={slug}>
-                    <Link
-                      to={productPath(category, slug)}
-                      {...swap}
-                      className={s.option}
-                      aria-current={slug === current ? 'page' : undefined}
-                      onClick={() => setOpen(false)}
-                    >
-                      {getProduct(slug)!.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* 위계: 1단계(구분, 또는 구분=제품 하나) 모두 같은 모양 / 2단계(구분 안 여러 제품)는 들여쓰기 + 세로선 */}
+          <ul>
+            {(category.groups ?? category.slugs.map((slug) => ({ key: slug, label: '', slugs: [slug] }))).map((g) => {
+              const lone = g.slugs.length === 1;
+              const name = (slug: string) => (lone && g.label ? g.label : getProduct(slug)!.name);
+              const item = (slug: string, level: 1 | 2) => (
+                <Link
+                  to={productPath(category, slug)}
+                  {...swap}
+                  className={cx(s.option, level === 1 ? s.lv1 : s.lv2)}
+                  aria-current={slug === current ? 'page' : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  {name(slug)}
+                </Link>
+              );
+              return (
+                <li key={g.key} className={s.group}>
+                  {lone ? (
+                    item(g.slugs[0], 1)
+                  ) : (
+                    <>
+                      <p className={cx(s.lv1, s.groupLabel, g.slugs.includes(current) && s.groupOn)}>
+                        {g.label} <span className={s.count}>{g.slugs.length}</span>
+                      </p>
+                      <ul className={s.children}>
+                        {g.slugs.map((slug) => <li key={slug}>{item(slug, 2)}</li>)}
+                      </ul>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </nav>
