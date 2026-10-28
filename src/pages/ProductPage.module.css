@@ -109,20 +109,21 @@
 .featureSplit { display: grid; grid-template-columns: 5fr 6fr; gap: var(--space-10); align-items: stretch; }
 /* 사진 + 설명을 하나의 카드로 */
 .detailFig { display: flex; flex-direction: column; margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
-.detailImg { position: relative; }
-.detailImg img { width: 100%; height: auto; } /* 원본 비율 그대로 — 잘리지 않아야 핀(%) 위치가 사진과 정확히 맞음 */
+.detailImg { display: flex; align-items: center; justify-content: center; padding: var(--space-8) var(--space-10); background: #ffffff; } /* 사진 둘레 여백 — 카드에 꽉 차지 않게 (흰 배경 사진과 이어지도록 흰 바탕) */
+.detailPhoto { position: relative; width: 100%; max-width: 400px; }
+.detailPhoto img { width: 100%; height: auto; } /* 원본 비율 그대로 — 잘리지 않아야 핀(%) 위치가 사진과 정확히 맞음 */
 /* 번호 핀 — 흰 테두리 원 + 퍼지는 링으로 '여기를 보라'는 신호 */
 .pin { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; margin: -14px 0 0 -14px; border: 2px solid #ffffff; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 800; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
 .pin::after { content: ""; position: absolute; inset: -2px; border: 2px solid #ffffff; border-radius: 50%; animation: pinPulse 2s ease-out infinite; }
 @keyframes pinPulse { from { transform: scale(1); opacity: .9; } to { transform: scale(1.9); opacity: 0; } }
-/* 카드 하단 설명 — 남는 높이는 여기서 채워 카드 바닥이 목록 바닥과 맞음 */
-.detailCap { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-3); padding: var(--space-4) var(--space-5); border-top: 1px solid var(--line); background: var(--surface-alt); }
-.detailTitle { display: flex; align-items: center; gap: var(--space-3); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
-.detailTitle span { flex: none; padding: 2px 8px; border-radius: var(--radius-sm); background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
-/* 범례 — 3칸 균등 분할 + 세로 구분선: 항목 길이가 달라도 칸이 맞아 정돈돼 보임 */
-.pinLegend { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); }
-.pinLegend li { display: flex; align-items: center; gap: var(--space-2); min-width: 0; white-space: nowrap; padding: 0 var(--space-3); border-left: 1px solid var(--line); font-size: 14px; line-height: 20px; color: var(--ink); }
-.pinLegend li:first-child { padding-left: 0; border-left: 0; }
+/* 카드 하단 설명 — [제목·설명] / 구분선 / [범례]. 화면 폭과 상관없이 두 단으로 나눠 무엇이 설명이고 무엇이 범례인지 분명하게.
+   남는 높이는 여기서 채워 카드 바닥이 목록 바닥과 맞음 */
+.detailCap { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: var(--space-5) var(--space-6); border-top: 1px solid var(--line); background: var(--surface-alt); }
+.detailTitle { display: flex; flex-direction: column; gap: 2px; }
+.detailTitle strong { font-size: 15px; line-height: 22px; font-weight: 700; color: var(--ink); }
+.detailTitle span { font-size: 13px; line-height: 20px; color: var(--ink-subtle); }
+.pinLegend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px dashed var(--line-strong); }
+.pinLegend li { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
 .pinNo { flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 800; }
 .featureList { display: flex; flex-direction: column; }
 .featureList li { flex: 1; display: grid; grid-template-columns: 40px 1fr; align-content: center; column-gap: var(--space-3); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); } /* flex:1 — 항목들이 높이를 나눠 가져 마지막 선이 왼쪽 카드 바닥과 맞음 */
@@ -202,6 +203,7 @@
   .specDrawing .spec { height: auto; } /* 위아래로 쌓이면 맞출 짝이 없으니 원래 높이 */
 }
 @media (max-width: 767px) {
+  .detailImg { padding: var(--space-6); }
   .hero { height: 400px; }
   .heroText { margin-bottom: 160px; padding: 0 var(--gutter); }
 

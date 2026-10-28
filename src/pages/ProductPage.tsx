@@ -349,22 +349,25 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
             // 구조 사진이 있으면: 왼쪽 사진(번호 핀) | 오른쪽 특징을 세로 목록으로
             <div className={s.featureSplit}>
               <figure className={s.detailFig}>
+                {/* 바깥(detailImg)은 여백만, 안쪽(detailPhoto)은 사진과 같은 크기 — 핀 %가 사진 기준이라 여백을 바꿔도 위치가 안 어긋남 */}
                 <div className={s.detailImg}>
-                  <img src={detail.src} alt={`${p.name} 구조 상세 — ${detail.caption}`} loading="lazy" />
-                  {detail.pins?.map((pin, i) => (
-                    <span key={pin.label} className={s.pin} style={{ left: `${pin.x}%`, top: `${pin.y}%` }} aria-hidden="true">
-                      {i + 1}
-                    </span>
-                  ))}
+                  <div className={s.detailPhoto}>
+                    <img src={detail.src} alt={`${p.name} 구조 상세 — ${detail.caption}`} loading="lazy" />
+                    {detail.pins?.map((pin, i) => (
+                      <span key={pin.label} className={s.pin} style={{ left: `${pin.x}%`, top: `${pin.y}%` }} aria-hidden="true">
+                        {i + 1}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                {/* 사진 아래 설명을 카드 하단에 붙여 한 덩어리로: [DETAIL 제목] / [범례 3칸 균등] */}
+                {/* 카드 하단: [구조 상세 / 설명] — 구분선 — [① ② ③ 범례] (범례는 글자 길이대로 붙여 나열) */}
                 <figcaption className={s.detailCap}>
-                  <p className={s.detailTitle}>
-                    <span>DETAIL</span>
-                    {detail.caption}
-                  </p>
+                  <div className={s.detailTitle}>
+                    <strong>구조 상세</strong>
+                    <span>{detail.caption}</span>
+                  </div>
                   {detail.pins && (
-                    <ol className={s.pinLegend} style={{ ['--n' as string]: detail.pins.length }}>
+                    <ol className={s.pinLegend}>
                       {detail.pins.map((pin, i) => (
                         <li key={pin.label}>
                           <span className={s.pinNo}>{i + 1}</span>
