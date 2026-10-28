@@ -302,13 +302,6 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
   return (
     <div className={s.body}>
-      {import.meta.env.DEV && p.todo && (
-        // 개발 서버에서만 보이는 확인 목록 — 배포 빌드에는 포함되지 않음
-        <aside className={cx('container', s.todo)} aria-label="확인 필요(개발용)">
-          <strong>확인 필요</strong>
-          <ul>{p.todo.map((t) => <li key={t}>{t}</li>)}</ul>
-        </aside>
-      )}
 
       {/* 개요 */}
       <section className={cx('container', s.overview)} aria-labelledby="product-name">

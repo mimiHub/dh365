@@ -67,11 +67,6 @@
 .body { margin-top: var(--space-16); animation: bodyIn .5s cubic-bezier(.22,1,.36,1) both; }
 @keyframes bodyIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
-.todo { margin-bottom: var(--space-8); }
-.todo > * { display: block; }
-.todo { padding: var(--space-4) var(--space-5); border: 1px dashed var(--fire); background: var(--fire-soft); font-size: 14px; line-height: 22px; color: var(--ink); }
-.todo strong { color: var(--fire-text); margin-bottom: var(--space-2); }
-.todo li { list-style: disc; margin-left: var(--space-5); }
 
 /* 사진 칸 고정 폭(--gallery-w) — 모든 제품의 사진 크기가 같음.
    비율(fr)로 잡으면 남는 폭에 따라 사진 크기가 페이지마다 달라졌음. 글 칸은 남는 폭(최대 640px) */

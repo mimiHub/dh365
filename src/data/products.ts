@@ -5,7 +5,7 @@
 // - specs / maxSize / certs : 카탈로그 수치를 그대로 옮김 (임의 수정 금지)
 // - summary / intro / features 문구 : 카탈로그 내용을 사이트용으로 새로 쓴 것 → [가안], 클라이언트 확인 필요
 //   (카탈로그 문구 일부가 타사 브로슈어 문장 그대로라 원문 사용을 피함)
-// - todo : 카탈로그에 내용이 없거나 서로 맞지 않는 부분
+// - todo : 카탈로그에 내용이 없거나 서로 맞지 않는 부분 (화면에는 표시하지 않음 — 클라이언트 확인 요청서로 정리)
 
 export type ProductCategory = 'screen' | 'steel' | 'aluminum' | 'speed-door' | 'overhead-door';
 
