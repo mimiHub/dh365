@@ -78,8 +78,17 @@
 .todo strong { color: var(--fire-text); margin-bottom: var(--space-2); }
 .todo li { list-style: disc; margin-left: var(--space-5); }
 
-.overview { display: grid; grid-template-columns: 6fr 5fr; gap: var(--space-12); align-items: center; }
-.overviewMedia { aspect-ratio: 4 / 3; border-radius: var(--radius-md); }
+/* 사진 칸 고정 폭(--gallery-w) — 사이드 메뉴가 있든 없든 모든 제품의 사진 크기가 같음.
+   비율(fr)로 잡으면 남는 폭에 따라 사진 크기가 페이지마다 달라졌음. 글 칸은 남는 폭(최대 640px) */
+.overview { --gallery-w: 520px; display: grid; grid-template-columns: var(--gallery-w) minmax(0, 640px); gap: var(--space-12); align-items: center; }
+/* 중간 폭(1025~1360px): 사이드 메뉴 페이지에서도 글 칸이 너무 좁아지지 않게 사진 칸을 한 단계 줄임 — 모든 페이지 같은 값 */
+@media (max-width: 1360px) {
+  .overview { --gallery-w: 400px; gap: var(--space-8); }
+  .withSide { gap: var(--space-8); }
+  /* 카드 화살표가 화면 밖으로 16px 삐져나가 가로 스크롤이 생기던 문제 — 여백 안쪽으로 */
+  .prev { left: 0; }
+  .next { right: 0; }
+}
 .name { font-size: 44px; line-height: 56px; font-weight: 800; letter-spacing: -0.03em; }
 .model { margin-top: var(--space-2); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; color: var(--ink-subtle); }
 .intro { margin-top: var(--space-5); font-size: 17px; line-height: 30px; color: var(--ink-muted); }
@@ -194,6 +203,7 @@
   .cards { --visible: 3; }
   .prev { left: 0; }
   .next { right: 0; }
+  .overview { --gallery-w: 100%; }
   .overview, .specWrap, .specDrawing, .reportHead, .reportBody, .featureSplit { grid-template-columns: 1fr; gap: var(--space-8); }
   .withSide { grid-template-columns: 1fr; gap: var(--space-8); margin-top: var(--space-10); }
   .reportHead { padding: var(--space-6); }

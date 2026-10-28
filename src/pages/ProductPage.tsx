@@ -15,14 +15,11 @@ import { Badge, Button, Media, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
 import { SafetyBand } from './product/SafetyBand';
 import { ProductSideNav } from './product/ProductSideNav';
+import { ProductGallery } from './product/ProductGallery';
+import { PRODUCT_GALLERY } from './product/galleryImages';
 import steelShutterImg from '../assets/product-steel-shutter.png';
 import screenShutterImg from '../assets/product-screen-shutter.png';
-import windShutterImg from '../assets/product-wind-shutter.png';
-import securityShutterImg from '../assets/product-security-shutter.png';
-import geumgokImg from '../assets/case-wind-geumgok-foodzone.png';
-import pipeSingleImg from '../assets/product-pipe-single.jpg';
 import pipeSingleDetailImg from '../assets/detail-pipe-single.jpg';
-import waveImg from '../assets/case-security-wave.png';
 import speedDoorImg from '../assets/product-speed-door.jpg';
 import speedDoorRedImg from '../assets/product-speed-door-red.jpg';
 import steelBannerImg from '../assets/banner-steel-shutter.jpg';
@@ -35,18 +32,7 @@ import steelDrawingImg from '../assets/drawing-steel-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
 import s from './ProductPage.module.css';
 
-// 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
-const PRODUCT_IMAGES: Partial<Record<string, string>> = {
-  screen: screenShutterImg,
-  steel: steelShutterImg,
-  'al-wind': windShutterImg,
-  'al-wind-insulated': geumgokImg, // 인천 금곡동 푸드존 단열내풍압셔터 현장
-  'pipe-single': pipeSingleImg, // 지하주차장 출입구 스텐파이프셔터
-  'steel-security': securityShutterImg,
-  wave: waveImg,
-  'speed-door': speedDoorRedImg, // 레드 스피드도어 정면
-  'overhead-door': overheadDoorImg, // 실내 오버헤드도어 정면
-};
+// 상세 상단 갤러리 사진은 product/galleryImages.ts (제품별 여러 장)
 const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
   screen: screenShutterImg,
   steel: steelShutterImg,
@@ -316,7 +302,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
       {/* 개요 */}
       <section className={cx('container', s.overview)} aria-labelledby="product-name">
-        <Media className={s.overviewMedia} src={PRODUCT_IMAGES[p.slug]} position={IMAGE_POSITION[p.slug]} alt={PRODUCT_IMAGES[p.slug] ? `${p.name} 시공 사진` : undefined} label={`IMAGE — ${p.nameEn}`} />
+        <ProductGallery images={PRODUCT_GALLERY[p.slug] ?? []} name={p.name} placeholder={`IMAGE — ${p.nameEn}`} />
         <div className={s.overviewText}>
           <p className="dh-eyebrow">{p.nameEn}</p>
           <h2 id="product-name" className={s.name}>{p.name}</h2>
