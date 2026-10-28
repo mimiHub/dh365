@@ -43,10 +43,15 @@
 .card:not(.cardOn):hover .cardEn,
 .card:not(.cardOn):hover .cardMedia { opacity: .85; }
 
-.arrow { position: absolute; top: 55%; z-index: 1; width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--ink-subtle); cursor: pointer; transition: color .2s ease, opacity .2s ease; }
-.arrow:hover:not(:disabled) { color: var(--ink); }
-.arrow:disabled { opacity: .25; cursor: default; }
-.arrow:focus-visible { outline: 2px solid var(--focus); }
+/* 화살표 — PC·모바일 공통 디자인: 네이비 원 + 흰 아이콘.
+   밝은 사진·흰 카드 어느 쪽 위에서도 대비가 확실함 (배경 없는 회색 아이콘은 묻혔음) */
+.arrow { position: absolute; top: 55%; z-index: 1; width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--brand); color: #ffffff; box-shadow: 0 6px 16px rgba(10, 42, 102, 0.35); cursor: pointer; transition: background-color .2s ease, opacity .2s ease, transform .2s ease; }
+.arrow:hover:not(:disabled) { background: var(--accent); transform: scale(1.06); }
+.arrow svg { width: 24px; height: 24px; }
+.arrow svg path { stroke-width: 2; }
+/* 끝에서는 아예 숨김 — 흐린 버튼을 남기지 않고, 옆 카드 자리를 비움 */
+.arrow:disabled { opacity: 0; pointer-events: none; }
+.arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .prev { left: calc(var(--gutter) - 56px); }
 .next { right: calc(var(--gutter) - 56px); }
 
@@ -162,13 +167,9 @@
   .cardsWrap { margin-top: -200px; padding: 0; }
   /* 모바일: 카드 한 장씩. 좌우 44px 여백에 화살표를 둬서 카드(사진)를 가리지 않음 */
   .cards { --visible: 1; --side: 44px; padding-left: var(--side); padding-right: var(--side); scroll-padding-inline: var(--side); }
-  /* 옆 카드가 살짝 보이는 자리 위에 뜨므로, 사진 위에서도 보이게 흰 원형 배경 */
-  /* 네이비 원 + 흰 아이콘: 밝은 사진·흰 카드 어느 쪽 위에서도 대비가 확실함 (흰 원은 밝은 사진에 묻혔음) */
-  .arrow { width: 40px; height: 40px; border-radius: 50%; background: var(--brand); color: #ffffff; box-shadow: 0 6px 16px rgba(10, 42, 102, 0.35); }
-  .arrow:hover:not(:disabled) { color: #ffffff; background: var(--accent); }
+  /* 디자인은 공통, 크기만 한 단계 작게 */
+  .arrow { width: 40px; height: 40px; }
   .arrow svg { width: 22px; height: 22px; }
-  .arrow svg path { stroke-width: 2; }
-  .arrow:disabled { opacity: 0; pointer-events: none; } /* 끝에서는 아예 숨겨 옆 카드 자리를 비움 */
   .prev { left: 2px; }
   .next { right: 2px; }
   .cardName { font-size: 22px; line-height: 32px; }
