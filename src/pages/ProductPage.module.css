@@ -104,7 +104,7 @@
 .featureBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 
 /* 구조 사진 + 특징 목록 */
-.featureSplit { display: grid; grid-template-columns: 6fr 5fr; gap: var(--space-10); align-items: center; }
+.featureSplit { display: grid; grid-template-columns: 5fr 6fr; gap: var(--space-10); align-items: start; }
 .detailFig { margin: 0; }
 .detailImg { position: relative; overflow: hidden; border-radius: var(--radius-lg); }
 .detailImg img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
