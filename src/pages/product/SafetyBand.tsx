@@ -9,7 +9,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 /**
  * 방화셔터 공통 안전 시스템 — 스크린·철재 상세에 함께 노출 (네이비 밴드)
  *
- * 구성: [헤드라인 | 숫자 요약] → [특허 3종 카드] → [장애물 감지 데모 | 안전 브라켓트]
+ * 구성: [헤드라인 | 숫자 요약] → [특허 출원 안전장치 3종 카드] → [장애물 감지 데모 | 안전 브라켓트]
  *      → [연동제어기 음성안내] → [세부 안전 디테일 6] → [모터 용량 스케일 + 특허 등록]
  * 장식(아이콘·애니메이션)은 모두 aria-hidden — 내용은 텍스트로 그대로 읽힘
  */
@@ -27,18 +27,19 @@ export function SafetyBand() {
           <div>
             <p className="dh-eyebrow">SAFETY SYSTEM</p>
             <h3 id="safety-title" className={s.title}>
-              3가지 <em>특허 안전장치</em>를<br />기본으로 적용합니다
+              3가지 <em>특허 출원 안전장치</em>를<br />기본으로 적용합니다
             </h3>
             <p className={s.lead}>대한방화가 설치하는 방화셔터에는 추락·끼임·고립을 막는 장치가 옵션이 아닌 기본으로 들어갑니다.</p>
           </div>
           <dl className={s.stats}>
+            {/* 등록 여부가 확인되지 않은 항목은 '출원'으로만 셈 (카탈로그 p.3) */}
             <div>
-              <dt>특허 기술</dt>
+              <dt>특허 출원</dt>
               <dd><strong>{f.patents.length}</strong>종</dd>
             </div>
             <div>
-              <dt>특허 출원</dt>
-              <dd><strong>2</strong>종</dd>
+              <dt>안전 디테일</dt>
+              <dd><strong>{f.details.length}</strong>종</dd>
             </div>
             <div>
               <dt>모터 라인업</dt>
@@ -47,13 +48,13 @@ export function SafetyBand() {
           </dl>
         </header>
 
-        {/* ── 특허 3종 ── */}
+        {/* ── 특허 출원 안전장치 3종 ── */}
         <ol className={s.patents}>
           {f.patents.map((pt, i) => (
             <li key={pt.title} className={cx(s.patent, 'reveal')} style={{ ['--reveal-delay' as string]: `${i * 100}ms` }}>
               <span className={s.ghost} aria-hidden="true">{pad(i + 1)}</span>
               <span className={s.iconRing} aria-hidden="true">{PATENT_ICONS[i]}</span>
-              <p className={s.patentNo}>PATENT {pad(i + 1)}</p>
+              <p className={s.patentNo}>SAFETY {pad(i + 1)} · 특허 출원</p>
               <h4 className={s.patentTitle}>{pt.title}</h4>
               <p className={s.patentBody}>{pt.body}</p>
             </li>
