@@ -21,6 +21,7 @@ import securityShutterImg from '../assets/product-security-shutter.png';
 import geumgokImg from '../assets/case-wind-geumgok-foodzone.png';
 import pipeImg from '../assets/case-security-pipe.png';
 import waveImg from '../assets/case-security-wave.png';
+import speedDoorImg from '../assets/product-speed-door.jpg';
 import s from './ProductPage.module.css';
 
 // 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
@@ -32,11 +33,18 @@ const PRODUCT_IMAGES: Partial<Record<string, string>> = {
   'pipe-single': pipeImg,
   'steel-security': securityShutterImg,
   wave: waveImg,
+  'speed-door': speedDoorImg, // 물류센터 외벽 스피드도어
 };
 const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
   screen: screenShutterImg,
   steel: steelShutterImg,
   aluminum: windShutterImg,
+  'speed-door': speedDoorImg,
+};
+
+// 가로로 긴 사진을 정사각형·4:3 칸에 넣을 때 남길 위치 (기본은 가운데)
+const IMAGE_POSITION: Partial<Record<string, string>> = {
+  'speed-door': '14% 50%', // 왼쪽 큰 도어가 보이게
 };
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -162,7 +170,7 @@ export function ProductPage() {
                   <strong className={s.cardName}>{c.label}</strong>
                   {/* 닫힌 카드의 요약은 화면에서만 숨김 — 스크린리더는 모든 카드 요약을 읽을 수 있게 */}
                   <span className={cx(s.cardDesc, !on && 'sr-only')}>{c.summary}</span>
-                  <Media className={s.cardMedia} src={HERO_IMAGES[c.key]} label={`IMAGE — ${pad(i + 1)}`} />
+                  <Media className={s.cardMedia} src={HERO_IMAGES[c.key]} position={IMAGE_POSITION[c.key]} label={`IMAGE — ${pad(i + 1)}`} />
                 </Link>
               </li>
             );
@@ -226,7 +234,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
       {/* 개요 */}
       <section className={cx('container', s.overview)} aria-labelledby="product-name">
-        <Media className={s.overviewMedia} src={PRODUCT_IMAGES[p.slug]} alt={PRODUCT_IMAGES[p.slug] ? `${p.name} 시공 사진` : undefined} label={`IMAGE — ${p.nameEn}`} />
+        <Media className={s.overviewMedia} src={PRODUCT_IMAGES[p.slug]} position={IMAGE_POSITION[p.slug]} alt={PRODUCT_IMAGES[p.slug] ? `${p.name} 시공 사진` : undefined} label={`IMAGE — ${p.nameEn}`} />
         <div className={s.overviewText}>
           <p className="dh-eyebrow">{p.nameEn}</p>
           <h2 id="product-name" className={s.name}>{p.name}</h2>
