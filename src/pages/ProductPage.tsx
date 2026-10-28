@@ -6,7 +6,6 @@ import {
   getProduct,
   groupOf,
   productPath,
-  productsOf,
   type ProductCategory,
   type ProductDetail,
   type TestReport,
@@ -15,6 +14,7 @@ import { COMPANY } from '../data/site';
 import { Badge, Button, Media, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
 import { SafetyBand } from './product/SafetyBand';
+import { ProductSideNav } from './product/ProductSideNav';
 import steelShutterImg from '../assets/product-steel-shutter.png';
 import screenShutterImg from '../assets/product-screen-shutter.png';
 import windShutterImg from '../assets/product-wind-shutter.png';
@@ -210,8 +210,8 @@ export function ProductPage() {
   // 카드·하위 탭 전환은 탭처럼 동작 → 기록을 쌓지 않고(replace) 스크롤도 유지
   const swap = { replace: true, state: { keepScroll: true } } as const;
 
-  // 하위 탭: 구분이 있으면 구분 → (구분 안 제품이 여럿이면) 제품, 구분이 없으면 카테고리 안 제품
-  const productTabs = productsOf(group?.slugs ?? category.slugs);
+  // 고를 제품이 둘 이상인 카테고리만 사이드 메뉴
+  const hasSide = category.slugs.length > 1;
   const banner = BANNER_IMAGES[category.key] ?? HERO_IMAGES[category.key];
 
   return (
@@ -263,37 +263,17 @@ export function ProductPage() {
         <Highlight text={group?.highlight ?? category.highlight} />
       </p>
 
-      {/* 하위 탭 — 2개 이상 고를 게 있을 때만. 알루미늄셔터 방범셔터처럼 구분 안에 제품이 여럿이면 두 줄 */}
-      {(category.groups || productTabs.length > 1) && (
-        <nav className={cx('container', s.subNav)} aria-label={`${category.label} 제품`}>
-          {category.groups && group && (
-            <ul className={s.subTabs}>
-              {category.groups.map((g) => (
-                <li key={g.key}>
-                  <Link to={productPath(category, g.slugs[0])} {...swap} className={s.subTab} aria-current={g.key === group.key ? 'true' : undefined}>
-                    {g.label}
-                    {g.slugs.length > 1 && <span className={s.subCount}>{g.slugs.length}</span>}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-          {productTabs.length > 1 && (
-            <ul className={cx(s.subTabs, category.groups && s.subTabsMinor)}>
-              {productTabs.map((pt) => (
-                <li key={pt.slug}>
-                  <Link to={productPath(category, pt.slug)} {...swap} className={s.subTab} aria-current={pt.slug === product.slug ? 'true' : undefined}>
-                    {pt.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </nav>
-      )}
+      {/* 제품이 여럿인 카테고리(철재·알루미늄)는 왼쪽 사이드 메뉴 + 오른쪽 상세 */}
+      <div className={cx(hasSide && 'container', hasSide && s.withSide)}>
+        {hasSide && <ProductSideNav category={category} product={product} />}
+        <div className={hasSide ? s.sideMain : undefined}>
+          {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
+          <ProductBody key={product.slug} product={product} />
+        </div>
+      </div>
 
-      {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
-      <ProductBody key={product.slug} product={product} />
+      {/* 방화셔터 공통 안전장치 — 제품별 내용 다음, 화면 전체 폭 (좁은 칸에 넣으면 답답해서 사이드 메뉴 밖에 둠) */}
+      {product.sharedSafety && <SafetyBand />}
 
       <Contact />
     </>
@@ -364,7 +344,6 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
         </section>
       )}
 
-      {p.sharedSafety && <SafetyBand />}
 
       {drawing ? (
         <>
