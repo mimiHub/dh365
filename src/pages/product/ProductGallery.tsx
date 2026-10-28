@@ -38,7 +38,7 @@ export function ProductGallery({ images, name, placeholder }: { images: GalleryI
       <div className={s.stage} id={stageId}>
         {cur ? (
           // key: 사진이 바뀔 때마다 새로 그려 페이드인
-          <img key={cur.src} src={cur.src} alt={cur.alt} className={s.photo} />
+          <img key={cur.src} src={cur.src} alt={cur.alt} className={cx(s.photo, cur.fit === 'contain' && s.contain)} />
         ) : (
           <Media className={s.photo} label={placeholder} />
         )}
@@ -56,7 +56,7 @@ export function ProductGallery({ images, name, placeholder }: { images: GalleryI
                 aria-label={`${i + 1}번째 사진 보기${img ? `: ${img.alt}` : ' (사진 준비 중)'}`}
                 aria-current={i === index ? 'true' : undefined}
               >
-                {img ? <img src={img.src} alt="" loading="lazy" /> : <span className={cx('dh-media', s.thumbEmpty)} />}
+                {img ? <img src={img.src} alt="" loading="lazy" className={img.fit === 'contain' ? s.contain : undefined} /> : <span className={cx('dh-media', s.thumbEmpty)} />}
               </button>
             </li>
           ))}

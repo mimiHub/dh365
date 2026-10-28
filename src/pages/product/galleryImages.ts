@@ -1,5 +1,6 @@
 // 제품 상세 상단 갤러리 사진 — 제품(slug)별 여러 장. 첫 장이 대표 사진.
 // 사진은 모두 같은 4:3 칸에 object-fit: cover로 들어가므로 원본 비율이 달라도 크기가 같게 보임.
+// 구조 상세 사진(ProductPage의 DETAIL_IMAGES)은 여기 적지 않음 — 있으면 갤러리 2번째 장에 자동으로 들어감
 // [시공사례] 표시 사진은 메인 시공사례(site.ts CASES)에서 해당 제품으로 분류된 현장 사진 → 클라이언트 확인 필요
 import screenShutterImg from '../../assets/product-screen-shutter.png';
 import steelShutterImg from '../../assets/product-steel-shutter.png';
@@ -7,7 +8,6 @@ import steelBannerImg from '../../assets/banner-steel-shutter.jpg';
 import windShutterImg from '../../assets/product-wind-shutter.png';
 import securityShutterImg from '../../assets/product-security-shutter.png';
 import pipeSingleImg from '../../assets/product-pipe-single.jpg';
-import pipeSingleDetailImg from '../../assets/detail-pipe-single.jpg';
 import pipeDoubleImg from '../../assets/product-pipe-double.jpg';
 import speedDoorImg from '../../assets/product-speed-door.jpg';
 import speedDoorRedImg from '../../assets/product-speed-door-red.jpg';
@@ -29,6 +29,8 @@ import wave2Img from '../../assets/product-wave-2.jpg';
 export interface GalleryImage {
   src: string;
   alt: string; // 사진 설명 — 스크린리더·썸네일 이름으로 사용
+  /** 'contain': 칸에 맞춰 자르지 않고 전체를 보여 줌(흰 배경 제품·구조 사진용). 기본은 칸을 꽉 채움(cover) */
+  fit?: 'contain';
 }
 
 export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
@@ -54,7 +56,6 @@ export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
   'al-wind-insulated': [{ src: caseWindGeumgokImg, alt: '[시공사례] 인천 금곡동 푸드존 단열내풍압셔터' }],
   'pipe-single': [
     { src: pipeSingleImg, alt: '지하주차장 출입구 스텐파이프셔터' },
-    { src: pipeSingleDetailImg, alt: '스테인리스 파이프·연결 링크 구조' },
     { src: caseSecurityPipeImg, alt: '[시공사례] 파이프셔터' },
   ],
   // product-security-shutter.png = case-security-perforated.png(타공셔터)와 같은 사진 → 한 장만

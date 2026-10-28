@@ -296,6 +296,9 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
   const ready = p.intro !== '';
   const drawing = DRAWINGS[p.slug];
   const detail = DETAIL_IMAGES[p.slug];
+  // 갤러리 = 제품 사진 + 구조 상세 사진(있으면 2번째 장). 제품마다 따로 적지 않아 싱글·이중처럼 같은 종류는 항상 같은 구성
+  const base = PRODUCT_GALLERY[p.slug] ?? [];
+  const gallery = detail ? [...base.slice(0, 1), { src: detail.src, alt: `${p.name} 구조 상세 — ${detail.caption}`, fit: 'contain' as const }, ...base.slice(1)] : base;
 
   return (
     <div className={s.body}>
@@ -309,7 +312,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
       {/* 개요 */}
       <section className={cx('container', s.overview)} aria-labelledby="product-name">
-        <ProductGallery images={PRODUCT_GALLERY[p.slug] ?? []} name={p.name} placeholder={`IMAGE — ${p.nameEn}`} />
+        <ProductGallery images={gallery} name={p.name} placeholder={`IMAGE — ${p.nameEn}`} />
         <div className={s.overviewText}>
           <p className="dh-eyebrow">{p.nameEn}</p>
           <h2 id="product-name" className={s.name}>{p.name}</h2>
