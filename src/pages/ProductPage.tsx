@@ -452,7 +452,7 @@ function ReportBlock({ report: r }: { report: TestReport }) {
         )}
         <div>
           <p className={s.reportTitle}>
-            {r.title} <Badge tone="accent">60분 전 항목 적합</Badge>
+            {r.title} <Badge tone="solid">60분 전 항목 적합</Badge>
           </p>
           <dl className={s.reportMeta}>
             {meta.map(([k, v]) => (
