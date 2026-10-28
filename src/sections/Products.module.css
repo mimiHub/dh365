@@ -1,13 +1,5 @@
 .products { background: var(--surface-alt); overflow: hidden; }
 .top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-8); }
-.nav { flex: none; display: flex; align-items: center; gap: var(--space-2); }
-.count { margin-right: var(--space-3); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
-.count strong { color: var(--ink); }
-.arrow { width: 56px; height: 56px; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
-.arrow:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #ffffff; }
-/* 끝에 닿으면 비활성 — 눌러도 안 움직이는 버튼을 남겨두지 않음 */
-.arrow:disabled { opacity: .35; cursor: default; }
-.arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
 /* 왼쪽은 컨테이너에 맞추고 오른쪽은 화면 끝까지 흘러가게 (코아드식 블리드 슬라이더) */
 /* 슬라이더 치수는 전부 '섹션 폭(cqw)'에서 계산 — 화면 폭이 달라도 항상
@@ -77,8 +69,7 @@
   .top { flex-direction: column; align-items: stretch; gap: var(--space-6); }
   /* 모바일: 제목 아래 오른쪽 정렬, 카운터는 왼쪽 끝으로 */
   .nav { justify-content: flex-end; }
-  .count { margin-right: auto; }
-  .arrow { width: 44px; height: 44px; } /* 터치 타깃 최소 44px */
+  .nav > p { margin-right: auto; } /* 카운터는 왼쪽 끝으로 (SliderNav 안의 장수) */
   .track { --space-above: var(--space-6); --full: 1; --peek: .18; --gap: var(--space-4); }
   /* 모바일은 좌우 여백이 좁아 페이드가 카드를 갉아먹어 보임 → 마스크 제거 (.scrolled 등 모든 상태) */
   .track, .track.scrolled, .track.scrolled.atEnd { -webkit-mask-image: none; mask-image: none; }

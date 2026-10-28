@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PRODUCTS } from '../data/site';
-import { Badge, Media, cx } from '../components/ui';
+import { Badge, Media, SliderNav, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
 import steelShutterImg from '../assets/product-steel-shutter.png';
 import screenShutterImg from '../assets/product-screen-shutter.png';
@@ -78,18 +78,17 @@ export function Products() {
             </h2>
             <p className="dh-heading-desc">철재방화셔터부터 방화스크린셔터, 제연스크린, 방범셔터까지 대한방화가 함께합니다.</p>
           </div>
-          <div className={s.nav}>
-            {/* 스크린리더에는 숫자 변화를 굳이 읽히지 않음 — 카드 자체가 목록으로 탐색됨 */}
-            <p className={s.count} aria-hidden="true">
-              <strong>{pad(current + 1)}</strong> / {pad(PRODUCTS.length)}
-            </p>
-            <button type="button" className={s.arrow} onClick={() => move(-1)} disabled={edge.start} aria-label="이전 제품" aria-controls="products-track">
-              <Chevron dir="left" />
-            </button>
-            <button type="button" className={s.arrow} onClick={() => move(1)} disabled={edge.end} aria-label="다음 제품" aria-controls="products-track">
-              <Chevron dir="right" />
-            </button>
-          </div>
+          <SliderNav
+            className={s.nav}
+            current={current}
+            total={PRODUCTS.length}
+            onPrev={() => move(-1)}
+            onNext={() => move(1)}
+            prevDisabled={edge.start}
+            nextDisabled={edge.end}
+            controls="products-track"
+            itemLabel="제품"
+          />
         </div>
       </div>
 
@@ -113,13 +112,5 @@ export function Products() {
         ))}
       </ul>
     </section>
-  );
-}
-
-function Chevron({ dir }: { dir: 'left' | 'right' }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d={dir === 'left' ? 'M12.5 4.5 7 10l5.5 5.5' : 'M7.5 4.5 13 10l-5.5 5.5'} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
