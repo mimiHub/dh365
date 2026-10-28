@@ -22,7 +22,7 @@ import caseWindGarageImg from '../../assets/case-wind-garage.png';
 import caseWindIntakeImg from '../../assets/case-wind-water-intake.png';
 import caseWindGeumgokImg from '../../assets/case-wind-geumgok-foodzone.png';
 import caseSecurityPipeImg from '../../assets/case-security-pipe.png';
-import caseSecurityWaveImg from '../../assets/case-security-wave.png';
+import waveImg from '../../assets/product-wave.jpg';
 
 export interface GalleryImage {
   src: string;
@@ -57,7 +57,7 @@ export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
   ],
   // product-security-shutter.png = case-security-perforated.png(타공셔터)와 같은 사진 → 한 장만
   'steel-security': [{ src: securityShutterImg, alt: '[시공사례] 타공셔터' }],
-  wave: [{ src: caseSecurityWaveImg, alt: '웨이브셔터' }],
+  wave: [{ src: waveImg, alt: '상가 전면 웨이브셔터' }],
   'speed-door': [
     { src: speedDoorRedImg, alt: '스피드도어 정면' },
     { src: speedDoorImg, alt: '물류센터 외벽 스피드도어' },
