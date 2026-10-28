@@ -160,9 +160,13 @@
   .heroTitle { font-size: 36px; line-height: 46px; }
   .heroEn { font-size: 18px; line-height: 26px; }
   .cardsWrap { margin-top: -200px; padding: 0; }
-  /* 모바일: 한 장 + 다음 카드 일부(1.3장)를 보여 스와이프할 수 있음을 알림. 화살표 대신 스와이프 */
-  .cards { --visible: 1.3; padding-left: var(--gutter); padding-right: var(--gutter); scroll-padding-inline: var(--gutter); }
-  .arrow { display: none; }
+  /* 모바일: 카드 한 장씩. 좌우 44px 여백에 화살표를 둬서 카드(사진)를 가리지 않음 */
+  .cards { --visible: 1; --side: 44px; padding-left: var(--side); padding-right: var(--side); scroll-padding-inline: var(--side); }
+  /* 옆 카드가 살짝 보이는 자리 위에 뜨므로, 사진 위에서도 보이게 흰 원형 배경 */
+  .arrow { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-card); }
+  .arrow:disabled { opacity: 0; pointer-events: none; } /* 끝에서는 아예 숨겨 옆 카드 자리를 비움 */
+  .prev { left: 4px; }
+  .next { right: 4px; }
   .cardName { font-size: 22px; line-height: 32px; }
   .highlight { font-size: 17px; line-height: 28px; }
   .body { margin-top: var(--space-12); }
