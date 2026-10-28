@@ -28,6 +28,7 @@ import aluminumBannerImg from '../assets/banner-aluminum-shutter.jpg';
 import screenBannerImg from '../assets/banner-screen-shutter.jpg';
 import overheadBannerImg from '../assets/banner-overhead-door.jpg';
 import overheadDoorImg from '../assets/product-overhead-door.jpg';
+import aluminumCardImg from '../assets/card-aluminum-shutter.jpg';
 import s from './ProductPage.module.css';
 
 // 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
@@ -45,7 +46,7 @@ const PRODUCT_IMAGES: Partial<Record<string, string>> = {
 const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
   screen: screenShutterImg,
   steel: steelShutterImg,
-  aluminum: windShutterImg,
+  aluminum: aluminumCardImg, // 알루미늄셔터 정면 (하단 통풍 슬랫)
   'speed-door': speedDoorRedImg,
   'overhead-door': overheadDoorImg,
 };
