@@ -23,6 +23,7 @@ import pipeImg from '../assets/case-security-pipe.png';
 import waveImg from '../assets/case-security-wave.png';
 import speedDoorImg from '../assets/product-speed-door.jpg';
 import steelBannerImg from '../assets/banner-steel-shutter.jpg';
+import aluminumBannerImg from '../assets/banner-aluminum-shutter.jpg';
 import s from './ProductPage.module.css';
 
 // 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
@@ -45,6 +46,7 @@ const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
 // 히어로 배너 전용 사진 — 가로로 긴 와이드 컷. 없으면 카드 사진(HERO_IMAGES)을 배너로도 씀
 const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
   steel: steelBannerImg, // 물류센터 철재방화셔터 (와이드)
+  aluminum: aluminumBannerImg, // 알루미늄셔터 2연 (와이드)
 };
 
 // 가로로 긴 사진을 정사각형·4:3 칸에 넣을 때 남길 위치 (기본은 가운데)
