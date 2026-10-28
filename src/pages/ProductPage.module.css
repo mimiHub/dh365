@@ -9,9 +9,12 @@
 .catList > li { flex: 1 0 auto; }
 .catLink { position: relative; display: flex; align-items: center; justify-content: center; height: 56px; padding: 0 var(--space-5); font-size: 16px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; transition: color .2s ease; }
 .catLink:hover { color: var(--ink); }
-/* 선택 탭: 위쪽 굵은 선 (코아드 방식) */
+/* 선택 탭: 아래쪽 선. 위쪽에 두면 바로 위 GNB(대메뉴)에 불이 들어온 것처럼 보여서, 이 탭 바 소속임이 드러나게 하단 구분선 위에 얹음.
+   선은 항상 그려 두고 scaleX로 펼침 — 탭을 바꿀 때 가운데에서 퍼지는 모션.
+   bottom:0 — 목록(catList)이 overflow-x:auto라 바깥(-1px)으로 내보내면 잘림 */
+.catLink::after { content: ""; position: absolute; left: var(--space-5); right: var(--space-5); bottom: 0; height: 2px; background: var(--brand); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
 .catLink[aria-current="page"] { color: var(--ink); font-weight: 700; }
-.catLink[aria-current="page"]::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 3px; background: var(--brand); }
+.catLink[aria-current="page"]::after { transform: scaleX(1); }
 .catLink:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
 /* ── 히어로 ── */
@@ -156,6 +159,7 @@
 }
 @media (max-width: 767px) {
   .catLink { height: 48px; padding: 0 var(--space-4); font-size: 15px; }
+  .catLink::after { left: var(--space-4); right: var(--space-4); }
   .hero { height: 400px; }
   .heroText { margin-bottom: 160px; padding: 0 var(--gutter); }
   .groups { margin-top: var(--space-4); gap: 6px; }
