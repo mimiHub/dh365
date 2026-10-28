@@ -1,5 +1,6 @@
 import logo from '../../assets/logo.png';
 import { COMPANY, FAMILY_SITES, NAV } from '../../data/site';
+import { SmartLink } from '../ui';
 import s from './Footer.module.css';
 
 export function Footer() {
@@ -11,9 +12,9 @@ export function Footer() {
           <nav className={s.sitemap} aria-label="사이트맵">
             {NAV.map((n) => (
               <div key={n.label}>
-                <a href={n.href} className={s.d1}>{n.label}</a>
+                <SmartLink href={n.href} className={s.d1}>{n.label}</SmartLink>
                 <ul>
-                  {n.children?.map((c) => <li key={c.label}><a href={c.href}>{c.label}</a></li>)}
+                  {n.children?.map((c) => <li key={c.label}><SmartLink href={c.href}>{c.label}</SmartLink></li>)}
                 </ul>
               </div>
             ))}

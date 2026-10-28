@@ -6,3 +6,4 @@ export { Media } from './Media';
 export { Badge } from './Badge';
 export { StatItem } from './StatItem';
 export { cx } from './cx';
+export { SmartLink } from './SmartLink';

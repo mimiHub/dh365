@@ -1,7 +1,8 @@
 import logo from '../../assets/logo.png';
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { NAV, COMPANY } from '../../data/site';
-import { Button, cx } from '../ui';
+import { Button, SmartLink, cx } from '../ui';
 import { useScrolled } from '../../hooks/useScrolled';
 import s from './Header.module.css';
 
@@ -12,11 +13,13 @@ import s from './Header.module.css';
  */
 export function Header() {
   const scrolled = useScrolled(40);
+  // 투명 헤더는 메인 히어로 위에서만. 하위 페이지는 상단에 흰 카테고리 탭이 붙으므로 처음부터 흰 배경
+  const isHome = useLocation().pathname === '/';
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   // 모바일 메뉴가 열리면 헤더는 투명 + 흰 글자(네이비 오버레이 위에 떠 있음)
-  const solid = (scrolled || megaOpen) && !mobileOpen;
+  const solid = (scrolled || megaOpen || !isHome) && !mobileOpen;
 
   // 모바일 메뉴가 열려 있으면 배경 스크롤 잠금 + ESC로 닫기
   useEffect(() => {
@@ -34,22 +37,22 @@ export function Header() {
       onMouseLeave={() => setMegaOpen(false)}
     >
       <div className={cx('container', s.bar)}>
-        <a href="#top" className={s.logo} aria-label={`${COMPANY.name} 홈`}>
+        <SmartLink href="/" className={s.logo} aria-label={`${COMPANY.name} 홈`}>
           <img src={logo} alt={COMPANY.name} />
-        </a>
+        </SmartLink>
 
         <nav className={s.gnb} aria-label="주 메뉴" onMouseEnter={() => setMegaOpen(true)} onFocus={() => setMegaOpen(true)}>
           <ul className={s.depth1}>
             {NAV.map((item) => (
               <li key={item.label}>
-                <a href={item.href} className={s.d1link}>
+                <SmartLink href={item.href} className={s.d1link}>
                   {item.label}
-                </a>
+                </SmartLink>
                 {item.children && (
                   <ul className={cx(s.depth2, megaOpen && s.depth2Open)}>
                     {item.children.map((c) => (
                       <li key={c.label}>
-                        <a href={c.href} onClick={() => setMegaOpen(false)}>{c.label}</a>
+                        <SmartLink href={c.href} onClick={() => setMegaOpen(false)}>{c.label}</SmartLink>
                       </li>
                     ))}
                   </ul>
@@ -101,7 +104,7 @@ export function Header() {
                 <ul className={s.mSub}>
                   {item.children.map((c) => (
                     <li key={c.label}>
-                      <a href={c.href} onClick={() => setMobileOpen(false)}>{c.label}</a>
+                      <SmartLink href={c.href} onClick={() => setMobileOpen(false)}>{c.label}</SmartLink>
                     </li>
                   ))}
                 </ul>

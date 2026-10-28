@@ -5,10 +5,11 @@ import 'pretendard/dist/web/variable/pretendardvariable.css';
 import './design-system/tokens.css';
 import './design-system/components.css';
 import './styles/global.css';
-import App from './App';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </StrictMode>,
 );

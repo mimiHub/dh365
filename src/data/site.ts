@@ -1,4 +1,4 @@
-// 사이트 콘텐츠 — 마크업과 분리해 두면 백엔드 연동 시 이 파일만 API 응답으로 바꾸면 됩니다.
+// 사이트 콘텐츠 — (href: '/…'는 라우터 이동, '/#id'는 메인 섹션으로 이동) 마크업과 분리해 두면 백엔드 연동 시 이 파일만 API 응답으로 바꾸면 됩니다.
 // 출처: 현재 dh365.co.kr (2026.10 기준). [가안] 표시는 시안용으로 새로 쓴 문구 → 클라이언트 확인 필요.
 
 export interface NavItem {
@@ -10,54 +10,54 @@ export interface NavItem {
 export const NAV: NavItem[] = [
   {
     label: '회사소개',
-    href: '#about',
+    href: '/#about',
     children: [
-      { label: '인사말', href: '#about' },
+      { label: '인사말', href: '/#about' },
       { label: '조직도', href: '#' },
       { label: '오시는길', href: '#' },
     ],
   },
   {
+    // 「제품소개에 들어가는 내용」 기준 5개 카테고리 (구 메뉴의 제연스크린·망입유리는 빠짐 — 클라이언트 확인)
     label: '제품소개',
-    href: '#products',
+    href: '/products/fire',
     children: [
-      { label: '철재방화셔터', href: '#products' },
-      { label: '방화스크린셔터', href: '#products' },
-      { label: '제연스크린', href: '#products' },
-      { label: '망입유리', href: '#products' },
-      { label: '내풍압셔터', href: '#products' },
-      { label: '방범셔터', href: '#products' },
+      { label: '방화셔터', href: '/products/fire' },
+      { label: '알루미늄셔터', href: '/products/aluminum' },
+      { label: '방범셔터', href: '/products/security' },
+      { label: '스피드도어', href: '/products/speed-door' },
+      { label: '오버헤드도어', href: '/products/overhead-door' },
     ],
   },
   {
     label: '시공사례',
-    href: '#cases',
+    href: '/#cases',
     children: [
-      { label: '철재방화셔터', href: '#cases' },
-      { label: '방화스크린셔터', href: '#cases' },
-      { label: '제연스크린', href: '#cases' },
-      { label: '망입유리', href: '#cases' },
-      { label: '내풍압셔터', href: '#cases' },
-      { label: '방범셔터', href: '#cases' },
+      { label: '철재방화셔터', href: '/#cases' },
+      { label: '방화스크린셔터', href: '/#cases' },
+      { label: '제연스크린', href: '/#cases' },
+      { label: '망입유리', href: '/#cases' },
+      { label: '내풍압셔터', href: '/#cases' },
+      { label: '방범셔터', href: '/#cases' },
     ],
   },
   {
     label: '자료실',
-    href: '#news',
+    href: '/#news',
     children: [
-      { label: '시방서·일람표 및 설계도면', href: '#news' },
-      { label: '보도자료', href: '#news' },
-      { label: '관련법규', href: '#news' },
-      { label: '동영상자료', href: '#news' },
+      { label: '시방서·일람표 및 설계도면', href: '/#news' },
+      { label: '보도자료', href: '/#news' },
+      { label: '관련법규', href: '/#news' },
+      { label: '동영상자료', href: '/#news' },
     ],
   },
-  { label: '견적문의', href: '#contact', children: [{ label: '견적문의', href: '#contact' }] },
+  { label: '견적문의', href: '/#contact', children: [{ label: '견적문의', href: '/#contact' }] },
   {
     label: '고객센터',
-    href: '#contact',
+    href: '/#contact',
     children: [
-      { label: '설계문의', href: '#contact' },
-      { label: '공지사항', href: '#news' },
+      { label: '설계문의', href: '/#contact' },
+      { label: '공지사항', href: '/#news' },
     ],
   },
 ];

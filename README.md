@@ -51,4 +51,14 @@ src/
 - `data/site.ts`의 `[가안]`: 제품 설명, 강점 문구, 시공사례 제목, 공지 날짜는 시안용 문구입니다.
 - 이미지: 모두 슬랫 패턴 플레이스홀더(`<Media label="…">`). `src`만 넣으면 사진으로 바뀝니다.
 - 화이트 로고 원본 없음 → 헤더 투명 상태·푸터는 CSS 필터로 임시 처리.
-- 하위 페이지·라우팅은 아직 없음(메인 시안만). 링크는 앵커(#)로 연결.
+- 제품 데이터 `data/products.ts`의 `todo`: 카탈로그끼리 수치가 안 맞거나 내용이 없는 항목. `npm run dev`에서만 상세 상단에 빨간 점선 박스로 보입니다.
+
+## 라우팅
+
+| 주소 | 화면 |
+|---|---|
+| `/` | 메인 (`pages/Home.tsx`) |
+| `/products/:category/:slug?` | 제품소개 (`pages/ProductPage.tsx`) — 코아드 제품 페이지 구성. slug 생략 시 카테고리 첫 제품 |
+
+- react-router-dom. 배포는 BrowserRouter + `vercel.json` rewrite(새로고침 404 방지), `build:preview` 한 파일 시안은 MemoryRouter.
+- 메뉴 href 규칙(`data/site.ts`): `/…` 페이지 이동, `/#id` 메인 섹션, `#id` 현재 페이지 앵커 → `SmartLink`가 알맞은 태그로 렌더.

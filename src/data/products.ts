@@ -1,0 +1,427 @@
+// 제품 상세페이지 콘텐츠 — 마크업과 분리 (site.ts와 같은 원칙: 백엔드 연동 시 이 파일만 API로 교체)
+// 출처: 「카탈로그_대한방화.pdf」(공사지명원 ver.2026), 메뉴 구성은 「제품소개에 들어가는 내용.pdf」
+//
+// 표기 규칙
+// - specs / maxSize / certs : 카탈로그 수치를 그대로 옮김 (임의 수정 금지)
+// - summary / intro / features 문구 : 카탈로그 내용을 사이트용으로 새로 쓴 것 → [가안], 클라이언트 확인 필요
+//   (카탈로그 문구 일부가 타사 브로슈어 문장 그대로라 원문 사용을 피함)
+// - todo : 카탈로그에 내용이 없거나 서로 맞지 않는 부분
+
+export type ProductCategory = 'fire' | 'aluminum' | 'security' | 'speed-door' | 'overhead-door';
+
+export interface SpecRow {
+  label: string;
+  value: string;
+}
+
+export interface Feature {
+  title: string;
+  body: string;
+}
+
+export interface ProductDetail {
+  slug: string; // URL 조각 (/products/:slug)
+  category: ProductCategory;
+  name: string;
+  nameEn: string;
+  model?: string; // 카탈로그 모델명
+  summary: string; // 카드·목록용 한 줄 [가안]
+  intro: string; // 상세 상단 소개 [가안]
+  maxSize?: { width: number; height: number }; // mm
+  features: Feature[];
+  uses: string[];
+  specs: SpecRow[];
+  certs?: string[]; // 시험성적서·특허 등
+  sharedSafety?: boolean; // true면 FIRE_SAFETY 공통 블록을 함께 노출
+  todo?: string[];
+}
+
+export interface CategoryInfo {
+  key: ProductCategory;
+  label: string;
+  labelEn: string;
+  /** 카드 아래 강조 문장 [가안]. *별표* 로 감싼 부분이 블루 강조 */
+  highlight: string;
+  slugs: string[];
+}
+
+/** 제품소개 카테고리 = 상단 탭. 순서는 「제품소개에 들어가는 내용」 그대로 */
+export const PRODUCT_CATEGORIES: CategoryInfo[] = [
+  {
+    key: 'fire',
+    label: '방화셔터',
+    labelEn: 'Fire Shutter',
+    highlight: '*화재 확산을 차단*하는 비차열 60분 인정제품에, 대한방화만의 *3가지 특허 안전장치*를 더했습니다.',
+    slugs: ['screen', 'steel', 'steel-insulated'],
+  },
+  {
+    key: 'aluminum',
+    label: '알루미늄셔터',
+    labelEn: 'Aluminum Shutter',
+    highlight: '가벼운 알루미늄 이중압출 슬랫에 *단열*과 *내풍압* 성능을 더해, 강풍이 잦은 지역과 에너지 절약 건물에 맞춥니다.',
+    slugs: ['al-insulated', 'al-wind', 'al-wind-insulated'],
+  },
+  {
+    key: 'security',
+    label: '방범셔터',
+    labelEn: 'Security Shutter',
+    highlight: '스테인리스 파이프와 물결형 그물망으로 *침입은 막고*, 매장 안은 *보여주는* 방범셔터입니다.',
+    slugs: ['pipe-single', 'pipe-double', 'steel-security', 'wave'],
+  },
+  {
+    key: 'speed-door',
+    label: '스피드도어',
+    labelEn: 'Speed Door',
+    highlight: '차량이 잦은 출입구에서 *빠르게 여닫고*, 부딪혀도 *스스로 복구*되는 고속 도어입니다.',
+    slugs: ['speed-door'],
+  },
+  {
+    key: 'overhead-door',
+    label: '오버헤드도어',
+    labelEn: 'Overhead Door',
+    highlight: '*단열·방음·내풍압*을 패널 하나로 해결하는 물류창고·격납고용 도어입니다.',
+    slugs: ['overhead-door'],
+  },
+];
+
+/**
+ * 방화셔터 공통 안전장치 — 스크린·철재 상세에 같이 노출 (sharedSafety: true)
+ * 출처: 인사말(특허 3종), 3) 대한방화 설치 방화셔터 특징 p.6~7
+ */
+export const FIRE_SAFETY = {
+  headline: '3가지 특허 안전장치를 기본 적용합니다', // [가안]
+  patents: [
+    { title: '음성안내', body: '상승·하강, 오동작, 장애물 감지 시 상황을 음성으로 안내합니다.' },
+    { title: '낙하 방지 장치', body: '하강 중 브라켓 체인이 끊어져도 셔터가 추락하지 않도록 막습니다.' },
+    { title: '비상 올림 버튼', body: '셔터가 내려온 상태에서도 비상 탈출을 위해 셔터를 올릴 수 있습니다.' },
+  ],
+  obstacle: {
+    title: '장애물 감지장치',
+    badge: '특허 출원',
+    body: '셔터 하부에 장애물이 닿으면 자동으로 5초간 올라가 멈추고 음성으로 알립니다. 장애물을 치우지 않으면 다시 올라가 멈춥니다.',
+  },
+  bracket: {
+    title: '안전 브라켓트',
+    body: '체인 이탈·연결부 풀림 시 셔터 추락을 막습니다. 500K 이상 모터에 기본 장착(옵션 아님)되며, 체인 처짐을 막는 방진 러버를 기본 적용했습니다.',
+  },
+  voiceMessages: [
+    '1차 전원이 차단되었으니 1차 전원을 확인하세요',
+    '화재발생 화재발생 신속히 대피하시기 바랍니다.',
+    '화재로 셔터가 막혔습니다. 비상구로 탈출하시기 바랍니다.',
+    '셔터가 내려오고 있습니다. 주의하세요.',
+    '버튼 조작음 : 정지 ~ 상승 ~ 하강 ~',
+    '셔터가 장애물에 걸렸습니다. 장애물을 옮겨주세요.',
+  ],
+  details: [
+    { title: '방화·방범 연동', body: '방화셔터가 하강하면 방범셔터가 상승하도록 동작을 연동합니다.' },
+    { title: '수동 체인', body: '정전 시에도 수동 체인으로 개폐할 수 있습니다.' },
+    { title: '결선 단자 안전 덮개', body: '컨트롤러 결선 단자에 덮개를 씌워 감전·단락을 예방합니다.' },
+    { title: '난연 소재 전선·컨트롤박스', body: '전선과 컨트롤박스에 난연 소재를 사용합니다.' },
+    { title: '알루미늄 바디 접지', body: '방열이 좋은 알루미늄 모터 바디에 접지 연결선을 둡니다.' },
+    { title: '모터 안전 포장', body: '에어캡과 골판지로 이중 포장해 운송 중 파손을 막습니다.' },
+  ],
+  // 2) DH 모터 시스템 개요
+  motor: {
+    capacities: ['300K', '400K', '500K', '600K', '800K', '1000K', '1500K'],
+    wiring: [
+      { label: '폐쇄기선', value: '1.5 SQ 2선' },
+      { label: '전원선', value: '2.5 SQ 2선' },
+    ],
+    controllers: [
+      { label: '방범 스위치', value: '70 × 120 × 22' },
+      { label: '연동제어기 노출형', value: '215 × 285 × 85' },
+      { label: '연동제어기 매립형', value: '276 × 350 × 10' },
+      { label: '뒷박스', value: '230 × 310 × 75' },
+    ],
+  },
+  patent: { no: '제 10-2121150 호', title: '방화스크린셔터 구동장치', registered: '2020.06.03' },
+};
+
+export const PRODUCT_DETAILS: ProductDetail[] = [
+  // ─────────────────────────── 방화셔터 ───────────────────────────
+  {
+    slug: 'screen',
+    category: 'fire',
+    name: '스크린방화셔터',
+    nameEn: 'Fire Screen Shutter',
+    summary: '천장 속에 감춰 설치하는 가볍고 조용한 방화셔터',
+    intro:
+      '내화 코팅한 유리섬유 직물(와이어·실리카)을 본체로 한 방화셔터입니다. 천장 안에 완전히 숨겨 설치할 수 있어 아트리움, 계단, 로비, 엘리베이터 앞처럼 공간의 미관이 중요한 곳에 적합합니다.',
+    maxSize: { width: 11700, height: 8500 },
+    features: [
+      { title: '낮은 낙하 사고 위험', body: '철재셔터보다 가벼워 낙하 사고 위험이 적습니다.' },
+      { title: '경제적인 비용', body: '철재방화셔터보다 설치 비용이 저렴합니다.' },
+      { title: '조용하고 부드러운 작동', body: '하강 시 소음이 적고 부드럽게 움직여 심리적 안정감을 줍니다.' },
+      { title: '인테리어와 조화', body: '천장 속에 감춰져 인테리어가 중요한 공간에도 잘 어울립니다.' },
+      { title: '직접 생산', body: '김포 공장 컨베이어 라인에서 하루 70틀까지 제작하며, 실리카 98% 정품 원단만 사용합니다(성적서 사양).' },
+    ],
+    uses: ['아트리움·개방형 공간', '계단', '로비', '상업시설 엘리베이터 앞', '물류센터 하역장'],
+    specs: [
+      { label: '케이스', value: 'EGI 1.55mm' },
+      { label: '마환봉', value: '6mm' },
+      { label: '감기샤프트', value: '60.5 × 2.9mm + 114.3 × 2mm' },
+      { label: '전동개폐기', value: 'DH-150K' },
+      { label: '베어링부', value: 'DH-380B' },
+      { label: '앵글', value: '40 × 40 × 3mm' },
+      { label: '스크린', value: '와이어 글라스 코팅직물 0.7mm' },
+      { label: '가이드레일', value: 'EGI 1.55mm + 마감재 SUS 1.2mm' },
+      { label: '하단마감재', value: 'SUS 1.55mm' },
+    ],
+    certs: ['방화스크린셔터 구동장치 특허 제10-2121150호'],
+    sharedSafety: true,
+    todo: [
+      '최대 사이즈: 카탈로그 11,700 × 8,500 / site.ts·기존 공지 12,000 × 8,500 — 어느 쪽이 맞는지 확인',
+      '원단 두께: 도면 0.7mm(와이어) / 설치제품 소개 0.8mm(실리카) — 와이어·실리카 두 종을 나눠 표기할지 확인',
+      '카탈로그 원문에 "국민방화 스크린셔터"라는 타사명이 들어 있음 → 사이트에는 쓰지 않음',
+    ],
+  },
+  {
+    slug: 'steel',
+    category: 'fire',
+    name: '철재방화셔터',
+    nameEn: 'Steel Fire Shutter',
+    summary: '밀폐성과 내구성이 뛰어난 강판 슬랫 방화셔터',
+    intro:
+      '전기아연도금 강판을 슬래팅·포밍한 슬랫으로 만든 방화셔터입니다. 화재 시 불길을 차단해 대피 시간을 벌고 확산을 막아, 공장·물류창고·차고·주차장처럼 위험도가 높거나 가연성 물질이 있는 곳에 주로 설치합니다.',
+    maxSize: { width: 8000, height: 4000 },
+    features: [
+      { title: '밀폐성능과 내구성', body: '견고한 강판 슬랫으로 방화 구획을 확실하게 나눕니다.' },
+      { title: '공간 활용', body: '건축물 내부 면적을 최대한 살릴 수 있습니다.' },
+      { title: '좁은 곳에도 설치', body: '좁은 통로, 비상계단, 백화점 에스컬레이터 주변에도 효과적으로 설치합니다.' },
+      { title: '비차열 60분 인정제품', body: '경동기업 비차열 60분 방화셔터 자재를 사용합니다.' },
+    ],
+    uses: ['공장', '물류창고', '차고·주차장', '비상계단·좁은 통로', '백화점 에스컬레이터 주변'],
+    specs: [
+      { label: '케이스', value: 'EGI 1.55mm' },
+      { label: '조인트바', value: 'EGI 1.55mm' },
+      { label: '전동개폐기', value: 'KD-모터' },
+      { label: '베어링부', value: 'KD-브라켓트' },
+      { label: '앵글', value: '50 × 50 × 4mm' },
+      { label: '가이드레일', value: 'EGI 1.55mm + 마감재 SUS 1.2 / EGI 1.15mm' },
+      { label: '슬랫', value: 'EGI 1.55mm' },
+      { label: '하단마감재', value: 'SUS / EGI 1.55mm' },
+    ],
+    sharedSafety: true,
+    todo: [
+      '강판 두께: 소개문 1.6T / 도면 슬랫 EGI 1.55mm — 표기 통일 필요',
+      '인사말의 "폭 8,000·높이 4,000 초과 대형사이즈 가능"과 최대 8,000 × 4,000 표기가 충돌 — 확인',
+    ],
+  },
+  {
+    slug: 'steel-insulated',
+    category: 'fire',
+    name: '철재단열방화셔터',
+    nameEn: 'Insulated Steel Fire Shutter',
+    summary: '방화 성능에 단열을 더한 철재셔터',
+    intro: '', // 카탈로그에 전용 페이지 없음
+    features: [],
+    uses: [],
+    specs: [],
+    sharedSafety: true,
+    todo: ['카탈로그에 전용 내용 없음(회사개요에 "단열, 내풍압 철제 셔터" 한 줄뿐) — 제품 소개·사양·사진 요청 필요'],
+  },
+
+  // ─────────────────────────── 알루미늄셔터 ───────────────────────────
+  {
+    slug: 'al-insulated',
+    category: 'aluminum',
+    name: '단열셔터',
+    nameEn: 'AL. Insulated Shutter',
+    summary: '우레탄을 충진한 알루미늄 슬랫 단열셔터',
+    intro:
+      'AL6063 이중압출 슬랫 속에 우레탄을 충진한 단열셔터입니다. KS F 2278(창호의 단열성 시험)에 따른 열관류율 기준을 충족해 에너지 절약형 건물에 적합합니다.',
+    features: [
+      { title: '열관류율 1.233W/㎡K', body: '열관류율 1.233W/㎡K, 기밀성 1등급 시험성적서를 보유하고 있습니다.' },
+      { title: '가볍고 조용한 개폐', body: '경량 알루미늄이라 개폐 소음이 적고 설치 후 관리가 쉽습니다.' },
+      { title: '다양한 색상', body: '현장 마감에 맞춰 여러 색상 중 선택할 수 있습니다.' },
+    ],
+    uses: ['에너지 절약 설계 대상 건축물', '공장·창고 출입구', '상가·주택·차고'],
+    specs: [
+      { label: '슬랫', value: 'Pitch 80mm, 1.0T × 28mm AL6063 이중압출물(우레탄 충진)' },
+      { label: '슬랫 (16mm형)', value: 'Pitch 72mm, AL 0.8T / 1.2T × 16mm AL6063 (우레탄 충진)' },
+      { label: '가이드레일', value: 'SUS 1.2T H/L' },
+      { label: '하단', value: 'I BAR (16mm형 I 또는 T BAR)' },
+    ],
+    certs: ['열관류율 1.233W/㎡K', '기밀성 1등급 시험성적서', '우레탄 시험성적서'],
+    todo: ['카탈로그의 "AL. 압출(단열)셔터"(우레탄 없는 이중압출 슬랫)를 이 페이지에 함께 넣을지, 별도 제품으로 둘지 확인'],
+  },
+  {
+    slug: 'al-wind',
+    category: 'aluminum',
+    name: '내풍압셔터',
+    nameEn: 'AL. Wind Resistant Shutter',
+    summary: '45m/s 강풍을 견디는 윈드락 알루미늄셔터',
+    intro:
+      '윈드락을 체결해 45m/s의 강풍에도 과도한 변형이나 손상이 없도록 설계한 알루미늄셔터입니다. 바람이 강한 남부지방과 해안가, 대형 물류센터·공장에 주로 설치합니다.',
+    features: [
+      { title: '풍속 45m/s 시험 통과', body: 'AL 1.2T × 16mm 슬랫 기준 45m/s 시험성적서를 보유하고 있습니다.' },
+      { title: '윈드락 체결', body: '슬랫 10단마다 베어링 타입 윈드락을 체결해 풍압을 가이드레일로 분산합니다.' },
+      { title: '방범 겸용', body: '견고한 구조로 상가·주택·차고 등 방범이 필요한 곳에도 씁니다.' },
+    ],
+    uses: ['남부지방·해안가', '발전소', '대형 물류센터', '공장·군부대', '백화점·상가·차고'],
+    specs: [
+      { label: '슬랫', value: 'Pitch 72mm, 1.2T × 16mm AL6063 이중압출물' },
+      { label: '가이드레일', value: '150 × 5T AL6063 이중압출물' },
+      { label: '윈드락', value: 'AL6063 BEARING TYPE (10단마다 체결)' },
+      { label: '하단', value: 'I BAR' },
+      { label: '셔터박스', value: '600 ~ VAR.' },
+    ],
+    certs: ['AL 1.2T × 16mm 45m/s 시험성적서'],
+  },
+  {
+    slug: 'al-wind-insulated',
+    category: 'aluminum',
+    name: '내풍압단열셔터',
+    nameEn: 'AL. Insulated Wind Resistant Shutter',
+    summary: '50m/s 내풍압에 우레탄 단열까지 더한 셔터',
+    intro:
+      '우레탄 충진 28mm 슬랫에 윈드락을 더해 단열 성능과 50m/s 내풍압 성능을 함께 갖춘 알루미늄셔터입니다.',
+    features: [
+      { title: '풍속 50m/s 시험 통과', body: 'AL 1.0T × 28mm 슬랫 기준 50m/s 시험성적서를 보유하고 있습니다.' },
+      { title: '단열 + 내풍압', body: '열관류율 기준을 만족하는 우레탄 충진 슬랫으로 단열과 내풍압을 한 번에 해결합니다.' },
+      { title: '윈드락 체결', body: '슬랫 10단마다 윈드락을 체결해 강풍에도 슬랫 이탈을 막습니다.' },
+    ],
+    uses: ['해수담수화·하수처리 시설', '물류센터·식품공장', '발전소', '해안가 시설'],
+    specs: [
+      { label: '슬랫', value: 'Pitch 80mm, 1.0T × 28mm AL6063 이중압출물(우레탄 충진)' },
+      { label: '가이드레일', value: '150 × 4T AL6063 이중압출물 (150 × 100)' },
+      { label: '윈드락', value: 'AL6063 BEARING TYPE (83 × 35, 10단마다 체결)' },
+      { label: '하단', value: 'I BAR' },
+    ],
+    certs: ['AL 1.0T × 28mm 50m/s 시험성적서', '열관류율 1.233W/㎡K'],
+    todo: ['용도 목록은 시공실적(다산 해수담수화, 인천 금곡동 푸드존, 영종도 하수처리장 = 단열내풍압)에서 뽑은 것 — 확인'],
+  },
+
+  // ─────────────────────────── 방범셔터 ───────────────────────────
+  {
+    slug: 'pipe-single',
+    category: 'security',
+    name: '싱글 스텐파이프셔터',
+    nameEn: 'Stainless Pipe Shutter',
+    summary: '부식에 강한 스테인리스 파이프 방범셔터',
+    intro:
+      '스테인리스 파이프를 엮은 방범셔터로, 열리면 수직으로 올라가 셔터박스 위에 나란히 겹쳐집니다. 오버헤드도어의 장점을 살리면서 작은 박스 공간에도 설치할 수 있습니다.',
+    features: [
+      { title: '내부식성', body: '스테인리스 소재라 습기·염분이 많은 환경에서도 오래 씁니다.' },
+      { title: '작은 박스 공간', body: '파이프가 셔터박스 상부에 병렬로 겹쳐져 설치 공간이 작습니다.' },
+      { title: '개방감', body: '파이프 사이로 안이 보여 닫혀 있어도 답답하지 않습니다.' },
+    ],
+    uses: ['하수종말처리장', '빗물펌프장', '해안가', '원자력발전소', '지하주차장 출입구'],
+    specs: [],
+    todo: ['파이프 규격(지름·두께)·최대 사이즈 자료 없음'],
+  },
+  {
+    slug: 'pipe-double',
+    category: 'security',
+    name: '이중 스텐파이프셔터',
+    nameEn: 'Double Stainless Pipe Shutter',
+    summary: '파이프를 이중으로 배열해 강도를 높인 방범셔터',
+    intro:
+      '스테인리스 파이프를 이중으로 구성한 방범셔터입니다. 싱글형과 같이 수직 상승해 셔터박스 위에 겹쳐지는 방식이며, 상가 전면처럼 넓은 개구부에 씁니다.',
+    features: [
+      { title: '내부식성', body: '습기·염분에 강한 스테인리스 소재입니다.' },
+      { title: '작은 박스 공간', body: '셔터박스 상부에 병렬로 겹쳐지는 구조입니다.' },
+    ],
+    uses: ['상가 전면', '하수종말처리장', '빗물펌프장', '해안가'],
+    specs: [],
+    todo: ['카탈로그 설명이 싱글과 동일 — 싱글 대비 차이점(강도·간격 등) 확인 필요'],
+  },
+  {
+    slug: 'steel-security',
+    category: 'security',
+    name: '철재방범셔터',
+    nameEn: 'Steel Security Shutter',
+    summary: '스텐판 슬랫으로 방범과 방화를 함께하는 셔터',
+    intro:
+      '방화문과 방화셔터의 이중 구조를 하나의 셔터 시스템으로 통합한 스테인리스 판 셔터입니다. 건축물 내부 면적을 최대한 활용할 수 있습니다.',
+    features: [
+      { title: '방범·방화 통합', body: '방화문 + 방화셔터 이중 구조를 셔터 하나로 해결합니다.' },
+      { title: '공간 활용', body: '좁은 통로, 비상계단, 백화점 에스컬레이터 주변에 효과적입니다.' },
+    ],
+    uses: ['상가·점포', '창고 출입구', '좁은 통로·비상계단'],
+    specs: [],
+    todo: ['카탈로그에는 "스텐판 방범 및 방화셔터"로만 소개 — 철재방범셔터와 같은 제품인지, 슬랫 소재(스텐/철재) 확인'],
+  },
+  {
+    slug: 'wave',
+    category: 'security',
+    name: '웨이브셔터',
+    nameEn: 'Wave Shutter',
+    summary: '물결무늬 파이프로 매장을 보여주는 방범셔터',
+    intro:
+      '물결형 파이프를 그물처럼 엮은 개폐식 방범셔터입니다. 기존 슬랫·직선형 그릴셔터와 다른 디자인으로, 영업이 끝난 뒤에도 매장 안 제품과 디스플레이를 보여줍니다.',
+    features: [
+      { title: '완벽한 방범', body: '물결형 파이프를 상하좌우로 견고하게 결속해 외부에서 훼손하기 어렵습니다.' },
+      { title: '광고 효과', body: '야간·휴일에도 매장 내부가 보여 디스플레이 효과가 이어집니다.' },
+      { title: '경제성', body: '연결고리 파손과 파이프 유동 문제를 개선해 고장 없이 오래 씁니다.' },
+    ],
+    uses: ['상가·점포', '고급주택', '빌딩 로비'],
+    specs: [{ label: '웨이브 파이프', value: 'Ø13.8' }],
+  },
+
+  // ─────────────────────────── 스피드도어 · 오버헤드도어 ───────────────────────────
+  {
+    slug: 'speed-door',
+    category: 'speed-door',
+    name: '스피드도어',
+    nameEn: 'Speed Door',
+    model: 'DOORS-1100 (AUTO REPAIR TYPE)',
+    summary: '부딪혀도 자동으로 복구되는 고속 개폐 도어',
+    intro:
+      '차량이 빈번하게 드나드는 물류센터·공장에 맞춘 고속 도어입니다. 작동 중 충돌하거나 외력이 가해져도 파손을 최소화하고, 다시 작동하면 시트가 레일로 자동 복구됩니다.',
+    features: [
+      { title: '자동 복구', body: '충돌로 시트가 레일에서 빠져도 재작동 시 스스로 제자리로 돌아옵니다.' },
+      { title: '뛰어난 밀폐력', body: '스프링 가이드와 PVC 가이드로 틈새를 막아 냉난방 손실을 줄입니다.' },
+      { title: '다양한 센서', body: '푸시버튼, 포토센서, 적외선센서, 루프센서, 리모컨 등 현장에 맞게 부착합니다.' },
+      { title: '컬러 선택', body: '그레이·오렌지·블루 시트와 비전 시트를 조합할 수 있습니다.' },
+    ],
+    uses: ['물류센터', '공장', '클린룸·식품 공장 내부 구획'],
+    specs: [
+      { label: '도어 시트', value: 'POLYESTER 합성 2중 접직조물 0.9, 2.0THK / 선택: POLYESTER 방염시트(국민안전처고시 제2016-138호 방염코팅)' },
+      { label: '도어 박스', value: 'SUS 또는 EGI · 600(W) × 360(H) / 640(W) × 440(H)' },
+      { label: '가이드레일', value: 'AL 피막처리 / PVC 고강도 압출성형재' },
+      { label: '모터', value: '1/2HP(0.43kW) · 1HP(0.75kW) · 2HP(1.5kW) — Made in Italy / Japan' },
+      { label: '컨트롤', value: '단상 AC220V, 인버터 타입' },
+      { label: '최소 확보 공간', value: '좌 200mm / 우(모터측) 450mm' },
+    ],
+    certs: ['특허 제10-0698757호'],
+    todo: ['특허 제10-0698757호의 권리자 확인(대한방화 특허인지 제조사 특허인지)'],
+  },
+  {
+    slug: 'overhead-door',
+    category: 'overhead-door',
+    name: '오버헤드도어',
+    nameEn: 'Overhead Door',
+    model: 'DOORS-2000',
+    summary: '단열·방음·내풍압을 갖춘 패널형 산업용 도어',
+    intro:
+      '우레탄을 충진한 패널을 천장 쪽 레일로 올려 여는 산업용 도어입니다. 단열성과 강도가 좋고 외관이 깔끔해 물류창고와 격납고, 저온 저장시설에 많이 씁니다.',
+    features: [
+      { title: '단열·기밀', body: '고밀도 폴리우레탄 또는 준불연 우레탄 패널로 외부 찬 공기와 먼지를 막습니다. 80T 열관류율 0.605W/㎡K.' },
+      { title: '45m/s 내풍압', body: '풍압바 일체형 패널로 45m/s 풍압을 견딥니다(내풍압 시험성적서 보유).' },
+      { title: '편리한 작동·정비', body: '카운터 밸런스 시스템으로 부드럽게 열리고, 수동 작동도 가능해 고장 시 수리가 간단합니다.' },
+      { title: '추락 방지·채광', body: '도어 추락 방지기를 갖췄고, 투시창으로 채광과 보안을 함께 챙깁니다.' },
+      { title: '유럽 OEM 생산 품질', body: '저소음 구조에 현장 셋팅이 편리합니다.' },
+    ],
+    uses: ['물류창고·격납고', '소방서·발전소', '식음료·유제품·빙과류 제조·보관시설', '농수축산물 저온 저장시설', '과일 후숙시설', '해안가 등 강풍 노출 장소'],
+    specs: [
+      { label: '패널', value: '내·외부 0.5mm 아연도 강판 또는 0.5mm AL 강판, 엠보스 가공 / 폴리우레탄 충진(50·80T), FIBER GLASS(50·60T), FULL VISION(50T)' },
+      { label: '단열재', value: '폴리우레탄(50·80T), 난연 2급(준불연 2급 우레탄 50·80T)' },
+      { label: '패널 피치', value: '우레탄 480 / 530mm · FIBER GLASS 550mm · FULL VISION 주문 가능' },
+      { label: '트랙', value: '고내구성 아연도 철판' },
+      { label: '웨더 실', value: '상부, 하부, 양측면' },
+      { label: '채광창', value: '이중 아크릴 630 × 330 × 3T' },
+      { label: '색상', value: 'WHITE, GRAY 외 다양한 색상' },
+      { label: '열관류율', value: '50T 0.785W/㎡K · 80T 0.605W/㎡K' },
+      { label: '개폐 방식', value: 'STANDARD(헤드룸 600mm) · HI-LIFT(헤드룸 600mm 이상) · FULL VERTICAL(헤드룸 = 개구 높이 + 500mm)' },
+    ],
+    certs: ['내풍압 시험성적서(45m/s)', '단열재 시험성적서'],
+  },
+];
+
+export const getCategory = (key: string | undefined) => PRODUCT_CATEGORIES.find((c) => c.key === key);
+export const getProduct = (slug: string | undefined) => PRODUCT_DETAILS.find((p) => p.slug === slug);
+export const productsOf = (category: CategoryInfo) => category.slugs.map((s) => getProduct(s)!);
+/** 상세 URL — 제품이 하나뿐인 카테고리는 slug를 생략 */
+export const productPath = (category: CategoryInfo, slug?: string) =>
+  slug && category.slugs.length > 1 ? `/products/${category.key}/${slug}` : `/products/${category.key}`;
