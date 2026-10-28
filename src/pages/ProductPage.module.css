@@ -163,10 +163,14 @@
   /* 모바일: 카드 한 장씩. 좌우 44px 여백에 화살표를 둬서 카드(사진)를 가리지 않음 */
   .cards { --visible: 1; --side: 44px; padding-left: var(--side); padding-right: var(--side); scroll-padding-inline: var(--side); }
   /* 옆 카드가 살짝 보이는 자리 위에 뜨므로, 사진 위에서도 보이게 흰 원형 배경 */
-  .arrow { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-card); }
+  /* 네이비 원 + 흰 아이콘: 밝은 사진·흰 카드 어느 쪽 위에서도 대비가 확실함 (흰 원은 밝은 사진에 묻혔음) */
+  .arrow { width: 40px; height: 40px; border-radius: 50%; background: var(--brand); color: #ffffff; box-shadow: 0 6px 16px rgba(10, 42, 102, 0.35); }
+  .arrow:hover:not(:disabled) { color: #ffffff; background: var(--accent); }
+  .arrow svg { width: 22px; height: 22px; }
+  .arrow svg path { stroke-width: 2; }
   .arrow:disabled { opacity: 0; pointer-events: none; } /* 끝에서는 아예 숨겨 옆 카드 자리를 비움 */
-  .prev { left: 4px; }
-  .next { right: 4px; }
+  .prev { left: 2px; }
+  .next { right: 2px; }
   .cardName { font-size: 22px; line-height: 32px; }
   .highlight { font-size: 17px; line-height: 28px; }
   .body { margin-top: var(--space-12); }
