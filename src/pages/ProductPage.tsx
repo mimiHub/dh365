@@ -22,6 +22,7 @@ import geumgokImg from '../assets/case-wind-geumgok-foodzone.png';
 import pipeImg from '../assets/case-security-pipe.png';
 import waveImg from '../assets/case-security-wave.png';
 import speedDoorImg from '../assets/product-speed-door.jpg';
+import speedDoorRedImg from '../assets/product-speed-door-red.jpg';
 import steelBannerImg from '../assets/banner-steel-shutter.jpg';
 import aluminumBannerImg from '../assets/banner-aluminum-shutter.jpg';
 import screenBannerImg from '../assets/banner-screen-shutter.jpg';
@@ -36,24 +37,25 @@ const PRODUCT_IMAGES: Partial<Record<string, string>> = {
   'pipe-single': pipeImg,
   'steel-security': securityShutterImg,
   wave: waveImg,
-  'speed-door': speedDoorImg, // 물류센터 외벽 스피드도어
+  'speed-door': speedDoorRedImg, // 레드 스피드도어 정면
 };
 const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
   screen: screenShutterImg,
   steel: steelShutterImg,
   aluminum: windShutterImg,
-  'speed-door': speedDoorImg,
+  'speed-door': speedDoorRedImg,
 };
 // 히어로 배너 전용 사진 — 가로로 긴 와이드 컷. 없으면 카드 사진(HERO_IMAGES)을 배너로도 씀
 const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
   screen: screenBannerImg, // 스크린방화셔터 (와이드)
   steel: steelBannerImg, // 물류센터 철재방화셔터 (와이드)
   aluminum: aluminumBannerImg, // 알루미늄셔터 2연 (와이드)
+  'speed-door': speedDoorImg, // 물류센터 외벽 스피드도어 (와이드)
 };
 
 // 가로로 긴 사진을 정사각형·4:3 칸에 넣을 때 남길 위치 (기본은 가운데)
 const IMAGE_POSITION: Partial<Record<string, string>> = {
-  'speed-door': '14% 50%', // 왼쪽 큰 도어가 보이게
+  // 'overhead-door': '30% 50%',  ← 예: 왼쪽이 보이게
 };
 
 const pad = (n: number) => String(n).padStart(2, '0');
