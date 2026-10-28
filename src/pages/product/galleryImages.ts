@@ -8,6 +8,7 @@ import windShutterImg from '../../assets/product-wind-shutter.png';
 import securityShutterImg from '../../assets/product-security-shutter.png';
 import pipeSingleImg from '../../assets/product-pipe-single.jpg';
 import pipeSingleDetailImg from '../../assets/detail-pipe-single.jpg';
+import pipeDoubleImg from '../../assets/product-pipe-double.jpg';
 import speedDoorImg from '../../assets/product-speed-door.jpg';
 import speedDoorRedImg from '../../assets/product-speed-door-red.jpg';
 import overheadDoorImg from '../../assets/product-overhead-door.jpg';
@@ -57,6 +58,7 @@ export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
     { src: caseSecurityPipeImg, alt: '[시공사례] 파이프셔터' },
   ],
   // product-security-shutter.png = case-security-perforated.png(타공셔터)와 같은 사진 → 한 장만
+  'pipe-double': [{ src: pipeDoubleImg, alt: '상가 전면 이중 스텐파이프셔터' }],
   'steel-security': [{ src: securityShutterImg, alt: '[시공사례] 타공셔터' }],
   wave: [
     { src: waveImg, alt: '상가 전면 웨이브셔터' },
