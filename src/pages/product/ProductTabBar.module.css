@@ -27,7 +27,7 @@
   .chevronOpen { transform: translateY(2px) rotate(225deg); }
 
   /* 패널 — 항상 상자 바로 아래. 내용 위에 떠서 레이아웃을 밀지 않음 */
-  .panel { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(100% - var(--space-4) + 6px); z-index: 20; max-height: 60vh; overflow-y: auto; padding: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-float); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s ease, transform .18s ease, visibility 0s .18s; }
+  .panel { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(100% - var(--space-4) + 6px); z-index: 20; max-height: 60vh; overflow-y: auto; padding: var(--space-2); border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--surface); box-shadow: 0 2px 6px rgba(10, 42, 102, 0.12), 0 18px 40px rgba(10, 42, 102, 0.28); /* 가까운 그림자 + 넓은 그림자 2겹 — 뒤 사진과 확실히 분리 */ opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s ease, transform .18s ease, visibility 0s .18s; }
   .panelOpen { opacity: 1; visibility: visible; transform: none; transition: opacity .18s ease, transform .18s ease; }
   .group + .group { margin-top: var(--space-1); padding-top: var(--space-1); border-top: 1px solid var(--line); }
   /* 1단계 — 링크든 머리글이든 같은 크기·굵기 */
