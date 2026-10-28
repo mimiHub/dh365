@@ -16,6 +16,9 @@
 /* ── 카테고리 카드 ──
    한 화면에 --visible장. 카드 폭을 트랙 폭에서 계산해 몇 장이 보일지 화면 폭과 무관하게 고정하고,
    넘치는 카드는 가로 스크롤(‹ › 버튼·스와이프)로 봄 */
+/* 소개 영역 — 연회색 띠. flow-root: 안쪽 카드의 음수 margin이 밖으로 새어 나가 띠 전체가 위로 끌려 올라가는 것(마진 상쇄)을 막음
+   → 카드만 배너 위로 걸치고, 회색 띠는 배너 바로 아래에서 시작 */
+.introBand { display: flow-root; padding-bottom: var(--space-16); background: var(--surface-alt); }
 .cardsWrap { position: relative; max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin: -240px auto 0; padding: 0 var(--gutter); }
 /* align-items:flex-end → 선택 카드만 설명이 있어 키가 커지고, 자연스럽게 위로 솟음
    위 여백(--space-5)은 hover로 떠오르는 카드가 스크롤 박스에 잘리지 않게 */
@@ -197,6 +200,7 @@
   .heroTitle { font-size: 36px; line-height: 46px; }
   .heroEn { font-size: 18px; line-height: 26px; }
   .cardsWrap { margin-top: -200px; padding: 0; }
+  .introBand { padding-bottom: var(--space-10); }
   /* 모바일: 카드 한 장씩. 좌우 44px 여백에 화살표를 둬서 카드(사진)를 가리지 않음 */
   .cards { --visible: 1; --side: 44px; padding-left: var(--side); padding-right: var(--side); scroll-padding-inline: var(--side); }
   /* 디자인은 공통, 크기만 한 단계 작게 */

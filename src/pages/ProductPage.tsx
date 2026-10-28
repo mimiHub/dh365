@@ -242,41 +242,45 @@ export function ProductPage() {
         </div>
       </section>
 
-      {/* 카테고리 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
-      <nav className={s.cardsWrap} aria-label="제품 분류">
-        {/* 다 보이면(양 끝 모두 닿음) 화살표를 감춤 — 눌러도 안 움직이는 버튼을 남기지 않음
-            모바일은 선택 기준(첫·마지막 카테고리)으로, PC는 스크롤 끝 기준으로 비활성 */}
-        {!(edge.start && edge.end) && (
-          <>
-            <button type="button" className={cx(s.arrow, s.prev)} onClick={() => slide(-1)} disabled={single ? catIndex === 0 : edge.start} aria-label={single ? '이전 분류' : '이전 분류 보기'} aria-controls="product-cards">
-              <Chevron dir="left" />
-            </button>
-            <button type="button" className={cx(s.arrow, s.next)} onClick={() => slide(1)} disabled={single ? catIndex === PRODUCT_CATEGORIES.length - 1 : edge.end} aria-label={single ? '다음 분류' : '다음 분류 보기'} aria-controls="product-cards">
-              <Chevron dir="right" />
-            </button>
-          </>
-        )}
-        <ul ref={track} id="product-cards" className={s.cards}>
-          {PRODUCT_CATEGORIES.map((c, i) => {
-            const on = i === catIndex;
-            return (
-              <li key={c.key} className={s.cardItem}>
-                <Link to={productPath(c)} {...swap} className={cx(s.card, on && s.cardOn)} aria-current={on ? 'page' : undefined}>
-                  <span className={s.cardEn}>{c.labelEn}</span>
-                  <strong className={s.cardName}>{c.label}</strong>
-                  {/* 닫힌 카드의 요약은 화면에서만 숨김 — 스크린리더는 모든 카드 요약을 읽을 수 있게 */}
-                  <span className={cx(s.cardDesc, !on && 'sr-only')}>{c.summary}</span>
-                  <Media className={s.cardMedia} src={HERO_IMAGES[c.key]} position={IMAGE_POSITION[c.key]} label={`IMAGE — ${pad(i + 1)}`} />
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      {/* 소개 영역(카테고리 카드 + 강조 문장)은 연회색 배경, 아래 상세는 흰 배경 — 배너 바로 밑에서 좌우로 갈라지는 어색함을
+          배경 전환으로 '영역이 바뀐다'는 신호를 줘서 자연스럽게 이어 줌 */}
+      <div className={s.introBand}>
+        {/* 카테고리 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
+        <nav className={s.cardsWrap} aria-label="제품 분류">
+          {/* 다 보이면(양 끝 모두 닿음) 화살표를 감춤 — 눌러도 안 움직이는 버튼을 남기지 않음
+              모바일은 선택 기준(첫·마지막 카테고리)으로, PC는 스크롤 끝 기준으로 비활성 */}
+          {!(edge.start && edge.end) && (
+            <>
+              <button type="button" className={cx(s.arrow, s.prev)} onClick={() => slide(-1)} disabled={single ? catIndex === 0 : edge.start} aria-label={single ? '이전 분류' : '이전 분류 보기'} aria-controls="product-cards">
+                <Chevron dir="left" />
+              </button>
+              <button type="button" className={cx(s.arrow, s.next)} onClick={() => slide(1)} disabled={single ? catIndex === PRODUCT_CATEGORIES.length - 1 : edge.end} aria-label={single ? '다음 분류' : '다음 분류 보기'} aria-controls="product-cards">
+                <Chevron dir="right" />
+              </button>
+            </>
+          )}
+          <ul ref={track} id="product-cards" className={s.cards}>
+            {PRODUCT_CATEGORIES.map((c, i) => {
+              const on = i === catIndex;
+              return (
+                <li key={c.key} className={s.cardItem}>
+                  <Link to={productPath(c)} {...swap} className={cx(s.card, on && s.cardOn)} aria-current={on ? 'page' : undefined}>
+                    <span className={s.cardEn}>{c.labelEn}</span>
+                    <strong className={s.cardName}>{c.label}</strong>
+                    {/* 닫힌 카드의 요약은 화면에서만 숨김 — 스크린리더는 모든 카드 요약을 읽을 수 있게 */}
+                    <span className={cx(s.cardDesc, !on && 'sr-only')}>{c.summary}</span>
+                    <Media className={s.cardMedia} src={HERO_IMAGES[c.key]} position={IMAGE_POSITION[c.key]} label={`IMAGE — ${pad(i + 1)}`} />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-      <p className={cx('container', s.highlight)}>
-        <Highlight text={group?.highlight ?? category.highlight} />
-      </p>
+        <p className={cx('container', s.highlight)}>
+          <Highlight text={group?.highlight ?? category.highlight} />
+        </p>
+      </div>
 
       {/* 제품이 여럿인 카테고리(철재·알루미늄)는 왼쪽 사이드 메뉴 + 오른쪽 상세 */}
       <div className={cx(hasSide && 'container', hasSide && s.withSide)}>

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { getProduct, productPath, type CategoryInfo, type ProductDetail } from '../../data/products';
-import { COMPANY } from '../../data/site';
 import { cx } from '../../components/ui';
 import s from './ProductSideNav.module.css';
 
@@ -9,7 +8,7 @@ const swap = { replace: true, state: { keepScroll: true } } as const;
 
 /**
  * 제품 사이드 메뉴 — 카테고리 안의 [구분 > 제품] 트리.
- * PC: 상세 왼쪽에 고정(sticky). 태블릿·모바일: 같은 목록을 <select>로 (좁은 화면에 트리를 두면 본문이 밀려남)
+ * PC: 상세 왼쪽에 고정(sticky). 상담 안내는 오른쪽 퀵메뉴가 맡으므로 여기엔 두지 않음. 태블릿·모바일: 같은 목록을 <select>로 (좁은 화면에 트리를 두면 본문이 밀려남)
  * 선택 상태는 URL의 제품에서 계산 — 별도 state 없음
  */
 export function ProductSideNav({ category, product }: { category: CategoryInfo; product: ProductDetail }) {
@@ -77,12 +76,6 @@ export function ProductSideNav({ category, product }: { category: CategoryInfo; 
               ))}
         </select>
       </label>
-
-      <div className={s.cta}>
-        <p className={s.ctaLabel}>제품 상담</p>
-        <a href={`tel:${COMPANY.tel}`} className={s.ctaTel}>{COMPANY.tel}</a>
-        <a href="#contact" className={s.ctaLink}>견적문의 →</a>
-      </div>
     </aside>
   );
 }

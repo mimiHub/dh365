@@ -1,5 +1,5 @@
 /* 제품 사이드 메뉴 — 축소된 헤더(72px) 아래에 붙어 스크롤을 따라옴 */
-.side { position: sticky; top: calc(72px + var(--space-6)); display: flex; flex-direction: column; gap: var(--space-5); }
+.side { position: sticky; top: calc(72px + var(--space-6)); }
 
 .tree { padding: var(--space-6) var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
 .title { padding: 0 var(--space-3) var(--space-4); margin-bottom: var(--space-3); border-bottom: 2px solid var(--brand); font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
@@ -23,19 +23,11 @@
 .children { margin: 0 0 var(--space-2) var(--space-3); padding-left: var(--space-2); border-left: 1px solid var(--line); }
 .child { padding: var(--space-2) var(--space-3); font-size: 15px; color: var(--ink-muted); }
 
-/* 상담 박스 — 메뉴 바로 아래, 보면서 바로 문의 */
-.cta { padding: var(--space-5); border-radius: var(--radius-lg); background: var(--brand); color: #ffffff; }
-.ctaLabel { font-size: 13px; opacity: .75; }
-.ctaTel { display: block; margin-top: 2px; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.ctaLink { display: inline-block; margin-top: var(--space-3); font-size: 14px; font-weight: 600; opacity: .9; }
-.ctaLink:hover, .ctaTel:hover { opacity: 1; text-decoration: underline; }
-.ctaTel:focus-visible, .ctaLink:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
-
 .mobile { display: none; }
 
 @media (max-width: 1024px) {
   .side { position: static; }
-  .tree, .cta { display: none; }
+  .tree { display: none; }
   .mobile { display: block; position: relative; }
   /* 기본 화살표를 지우고 직접 그림 (OS마다 모양이 달라서) */
   .mobile::after { content: ""; position: absolute; right: var(--space-5); top: 50%; width: 8px; height: 8px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
