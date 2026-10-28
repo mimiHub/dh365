@@ -21,6 +21,7 @@ import windShutterImg from '../assets/product-wind-shutter.png';
 import securityShutterImg from '../assets/product-security-shutter.png';
 import geumgokImg from '../assets/case-wind-geumgok-foodzone.png';
 import pipeSingleImg from '../assets/product-pipe-single.jpg';
+import pipeSingleDetailImg from '../assets/detail-pipe-single.jpg';
 import waveImg from '../assets/case-security-wave.png';
 import speedDoorImg from '../assets/product-speed-door.jpg';
 import speedDoorRedImg from '../assets/product-speed-door-red.jpg';
@@ -65,6 +66,20 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
 // 제품 구조도(도면) — 있으면 사양표 옆에 나란히. caption은 도면 기준 치수 안내
 const DRAWINGS: Partial<Record<string, { src: string; caption: string }>> = {
   steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
+};
+
+// 구조 상세 사진(부품·결속부 확대) — 있으면 '제품 특징'을 [사진 | 특징 목록]으로 배치
+// 라벨: 사진 위에 번호 핀으로 표시할 지점 (x·y는 사진 기준 %)
+const DETAIL_IMAGES: Partial<Record<string, { src: string; caption: string; pins?: { x: number; y: number; label: string }[] }>> = {
+  'pipe-single': {
+    src: pipeSingleDetailImg,
+    caption: '스테인리스 파이프 + 연결 링크 결속 구조',
+    pins: [
+      { x: 50, y: 4, label: '스테인리스 파이프' },
+      { x: 32.5, y: 23.5, label: '연결 링크(장공)' },
+      { x: 11.5, y: 88.5, label: '엔드캡' },
+    ],
+  },
 };
 
 // 시험성적서 스캔 이미지 — 키는 성적서 번호
@@ -283,6 +298,7 @@ export function ProductPage() {
 function ProductBody({ product: p }: { product: ProductDetail }) {
   const ready = p.intro !== '';
   const drawing = DRAWINGS[p.slug];
+  const detail = DETAIL_IMAGES[p.slug];
 
   return (
     <div className={s.body}>
@@ -332,15 +348,50 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       {p.features.length > 0 && (
         <section className={cx('container', s.block)} aria-labelledby="features-title">
           <BlockHead en="FEATURES" title="제품 특징" id="features-title" />
-          <ol className={s.features}>
-            {p.features.map((f, i) => (
-              <li key={f.title} className={s.feature}>
-                <span className={s.featureNo}>{pad(i + 1)}</span>
-                <h4 className={s.featureTitle}>{f.title}</h4>
-                <p className={s.featureBody}>{f.body}</p>
-              </li>
-            ))}
-          </ol>
+          {detail ? (
+            // 구조 사진이 있으면: 왼쪽 사진(번호 핀) | 오른쪽 특징을 세로 목록으로
+            <div className={s.featureSplit}>
+              <figure className={s.detailFig}>
+                <div className={s.detailImg}>
+                  <img src={detail.src} alt={`${p.name} 구조 상세 — ${detail.caption}`} loading="lazy" />
+                  {detail.pins?.map((pin, i) => (
+                    <span key={pin.label} className={s.pin} style={{ left: `${pin.x}%`, top: `${pin.y}%` }} aria-hidden="true">
+                      {i + 1}
+                    </span>
+                  ))}
+                </div>
+                <figcaption>
+                  <strong>DETAIL</strong> {detail.caption}
+                  {detail.pins && (
+                    <ol className={s.pinLegend}>
+                      {detail.pins.map((pin, i) => <li key={pin.label}><span>{i + 1}</span>{pin.label}</li>)}
+                    </ol>
+                  )}
+                </figcaption>
+              </figure>
+              <ol className={s.featureList}>
+                {p.features.map((f, i) => (
+                  <li key={f.title}>
+                    <span className={s.featureNo}>{pad(i + 1)}</span>
+                    <div>
+                      <h4 className={s.featureTitle}>{f.title}</h4>
+                      <p className={s.featureBody}>{f.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : (
+            <ol className={s.features}>
+              {p.features.map((f, i) => (
+                <li key={f.title} className={s.feature}>
+                  <span className={s.featureNo}>{pad(i + 1)}</span>
+                  <h4 className={s.featureTitle}>{f.title}</h4>
+                  <p className={s.featureBody}>{f.body}</p>
+                </li>
+              ))}
+            </ol>
+          )}
         </section>
       )}
 

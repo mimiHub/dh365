@@ -100,6 +100,26 @@
 .featureTitle { margin-top: var(--space-4); font-size: 20px; line-height: 30px; font-weight: 700; }
 .featureBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 
+/* 구조 사진 + 특징 목록 */
+.featureSplit { display: grid; grid-template-columns: 6fr 5fr; gap: var(--space-10); align-items: center; }
+.detailFig { margin: 0; }
+.detailImg { position: relative; overflow: hidden; border-radius: var(--radius-lg); }
+.detailImg img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+/* 번호 핀 — 흰 테두리 원 + 퍼지는 링으로 '여기를 보라'는 신호 */
+.pin { position: absolute; display: grid; place-items: center; width: 30px; height: 30px; margin: -15px 0 0 -15px; border: 2px solid #ffffff; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 13px; font-weight: 800; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+.pin::after { content: ""; position: absolute; inset: -2px; border: 2px solid #ffffff; border-radius: 50%; animation: pinPulse 2s ease-out infinite; }
+@keyframes pinPulse { from { transform: scale(1); opacity: .9; } to { transform: scale(1.9); opacity: 0; } }
+.detailFig figcaption { margin-top: var(--space-4); font-size: 14px; color: var(--ink-muted); }
+.detailFig figcaption strong { margin-right: var(--space-2); font-size: 12px; letter-spacing: 0.12em; color: var(--accent-text); }
+.pinLegend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin-top: var(--space-3); }
+.pinLegend li { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 14px; color: var(--ink); }
+.pinLegend span { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 800; }
+.featureList { display: flex; flex-direction: column; }
+.featureList li { display: flex; gap: var(--space-5); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); }
+.featureList li:first-child { border-top: 2px solid var(--ink); }
+.featureList .featureNo { flex: none; padding-top: 4px; }
+.featureList .featureTitle { margin-top: 0; }
+
 
 .specWrap { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-12); align-items: start; }
 .spec { width: 100%; border-collapse: collapse; border-top: 2px solid var(--ink); font-size: 15px; line-height: 24px; }
@@ -164,7 +184,7 @@
   .cards { --visible: 3; }
   .prev { left: 0; }
   .next { right: 0; }
-  .overview, .specWrap, .specDrawing, .reportHead, .reportBody { grid-template-columns: 1fr; gap: var(--space-8); }
+  .overview, .specWrap, .specDrawing, .reportHead, .reportBody, .featureSplit { grid-template-columns: 1fr; gap: var(--space-8); }
   .withSide { grid-template-columns: 1fr; gap: var(--space-8); margin-top: var(--space-10); }
   .reportHead { padding: var(--space-6); }
   .drawingZoom { opacity: 1; } /* 터치 기기는 hover가 없으므로 항상 표시 */
