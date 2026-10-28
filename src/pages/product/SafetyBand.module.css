@@ -129,6 +129,40 @@
 .certNo { font-size: 15px; font-weight: 700; }
 .certTitle { margin-top: 2px; font-size: 13px; color: var(--ink-muted); }
 
+/* ════ 임팩트 강화 — 전체 페이지에서 한눈에 들어오도록 (톤·모션은 유지) ════
+   흰 섹션들 사이에서 '여기가 핵심'임이 보이게: 배경 대비↑, 제목·숫자 크기↑, 카드에 빛 */
+
+/* 배경: 브랜드 네이비 → 딥 네이비 그라데이션 + 위쪽 중앙의 강한 블루 빛 + 상단 빛 라인 */
+.band { background: linear-gradient(180deg, #0a2a66 0%, #08214f 38%, #061634 100%); }
+.band::before { content: ""; position: absolute; left: 50%; top: -260px; z-index: -1; width: 1100px; height: 620px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(1, 99, 206, 0.55), rgba(1, 99, 206, 0.12) 60%, transparent); pointer-events: none; }
+.band::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, #6aa6f5 30%, #ffffff 50%, #6aa6f5 70%, transparent); opacity: .8; }
+
+/* 제목: 크게 + 강조어는 빛이 흐르는 그라데이션 글자 */
+.title { font-size: 56px; line-height: 70px; letter-spacing: -0.035em; color: #ffffff; }
+.title em { background: linear-gradient(100deg, #6aa6f5 0%, #ffffff 40%, #9cc8ff 60%, #6aa6f5 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 5s ease-in-out infinite; }
+@keyframes shine { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+.lead { font-size: 18px; line-height: 30px; color: rgba(255, 255, 255, 0.72); }
+
+/* 숫자 요약: 더 크게, 블루 그라데이션 */
+.stats strong { font-size: 72px; line-height: 76px; background: linear-gradient(180deg, #ffffff 20%, #6aa6f5); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.stats dt { color: rgba(255, 255, 255, 0.6); }
+.stats div { border-left-color: rgba(255, 255, 255, 0.14); }
+
+/* 특허 출원 3종 카드: 블루 유리 카드 + 빛나는 아이콘 + 흐르는 상단 빛 */
+.patents { gap: var(--space-6); margin-top: var(--space-16); }
+.patent { padding: var(--space-10) var(--space-8); border-color: rgba(106, 166, 245, 0.3); background: linear-gradient(165deg, rgba(1, 99, 206, 0.26) 0%, rgba(10, 42, 102, 0.18) 55%, rgba(6, 22, 52, 0.4) 100%); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+.patent::before { height: 2px; background: linear-gradient(90deg, transparent, #ffffff, transparent); background-size: 40% 100%; background-repeat: no-repeat; animation: sweep 3.6s ease-in-out infinite; }
+.patent:nth-child(2)::before { animation-delay: .5s; }
+.patent:nth-child(3)::before { animation-delay: 1s; }
+@keyframes sweep { 0% { background-position: -60% 0; } 60%, 100% { background-position: 160% 0; } }
+.ghost { font-size: 150px; -webkit-text-stroke: 1.5px rgba(106, 166, 245, 0.22); }
+.iconRing { width: 76px; height: 76px; color: #ffffff; background: linear-gradient(145deg, #1a74dc, #0a2a66); box-shadow: 0 0 0 8px rgba(1, 99, 206, 0.16), 0 12px 32px rgba(1, 99, 206, 0.55); }
+.iconRing svg { width: 34px; height: 34px; }
+.patentNo { margin-top: var(--space-8); color: #9cc8ff; }
+.patentTitle { font-size: 30px; line-height: 40px; color: #ffffff; }
+.patentBody { font-size: 16px; line-height: 27px; color: rgba(255, 255, 255, 0.72); }
+@media (prefers-reduced-motion: reduce) { .title em, .patent::before { animation: none; } }
+
 /* ── 반응형 ── */
 @media (max-width: 1024px) {
   .band { padding: var(--space-16) 0; }
