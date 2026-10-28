@@ -22,6 +22,7 @@ import geumgokImg from '../assets/case-wind-geumgok-foodzone.png';
 import pipeImg from '../assets/case-security-pipe.png';
 import waveImg from '../assets/case-security-wave.png';
 import speedDoorImg from '../assets/product-speed-door.jpg';
+import steelBannerImg from '../assets/banner-steel-shutter.jpg';
 import s from './ProductPage.module.css';
 
 // 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
@@ -40,6 +41,10 @@ const HERO_IMAGES: Partial<Record<ProductCategory, string>> = {
   steel: steelShutterImg,
   aluminum: windShutterImg,
   'speed-door': speedDoorImg,
+};
+// 히어로 배너 전용 사진 — 가로로 긴 와이드 컷. 없으면 카드 사진(HERO_IMAGES)을 배너로도 씀
+const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
+  steel: steelBannerImg, // 물류센터 철재방화셔터 (와이드)
 };
 
 // 가로로 긴 사진을 정사각형·4:3 칸에 넣을 때 남길 위치 (기본은 가운데)
@@ -133,13 +138,14 @@ export function ProductPage() {
 
   // 하위 탭: 구분이 있으면 구분 → (구분 안 제품이 여럿이면) 제품, 구분이 없으면 카테고리 안 제품
   const productTabs = productsOf(group?.slugs ?? category.slugs);
+  const banner = BANNER_IMAGES[category.key] ?? HERO_IMAGES[category.key];
 
   return (
     <>
       <section className={s.hero} id="top" aria-labelledby="product-hero-title">
-        <div className={cx(s.heroBg, HERO_IMAGES[category.key] && s.hasPhoto)} aria-hidden="true">
+        <div className={cx(s.heroBg, banner && s.hasPhoto)} aria-hidden="true">
           {/* key: 카테고리가 바뀌면 사진을 새로 그려 줌 효과가 다시 재생되게 */}
-          {HERO_IMAGES[category.key] && <img key={category.key} src={HERO_IMAGES[category.key]} alt="" />}
+          {banner && <img key={category.key} src={banner} alt="" />}
         </div>
         <div className={s.heroText}>
           <h1 id="product-hero-title" className={s.heroTitle}>제품소개</h1>
