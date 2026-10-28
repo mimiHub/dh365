@@ -104,24 +104,31 @@
 .featureBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 
 /* 구조 사진 + 특징 목록 */
-.featureSplit { display: grid; grid-template-columns: 5fr 6fr; gap: var(--space-10); align-items: start; }
-.detailFig { margin: 0; }
-.detailImg { position: relative; overflow: hidden; border-radius: var(--radius-lg); }
+/* stretch: 왼쪽 카드와 오른쪽 목록의 위·아래 끝선을 맞춤 */
+.featureSplit { display: grid; grid-template-columns: 5fr 6fr; gap: var(--space-10); align-items: stretch; }
+/* 사진 + 설명을 하나의 카드로 */
+.detailFig { display: flex; flex-direction: column; margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+.detailImg { position: relative; }
 .detailImg img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
 /* 번호 핀 — 흰 테두리 원 + 퍼지는 링으로 '여기를 보라'는 신호 */
-.pin { position: absolute; display: grid; place-items: center; width: 30px; height: 30px; margin: -15px 0 0 -15px; border: 2px solid #ffffff; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 13px; font-weight: 800; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+.pin { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; margin: -14px 0 0 -14px; border: 2px solid #ffffff; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 800; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
 .pin::after { content: ""; position: absolute; inset: -2px; border: 2px solid #ffffff; border-radius: 50%; animation: pinPulse 2s ease-out infinite; }
 @keyframes pinPulse { from { transform: scale(1); opacity: .9; } to { transform: scale(1.9); opacity: 0; } }
-.detailFig figcaption { margin-top: var(--space-4); font-size: 14px; color: var(--ink-muted); }
-.detailFig figcaption strong { margin-right: var(--space-2); font-size: 12px; letter-spacing: 0.12em; color: var(--accent-text); }
-.pinLegend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin-top: var(--space-3); }
-.pinLegend li { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 14px; color: var(--ink); }
-.pinLegend span { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 800; }
+/* 카드 하단 설명 — 남는 높이는 여기서 채워 카드 바닥이 목록 바닥과 맞음 */
+.detailCap { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-3); padding: var(--space-4) var(--space-5); border-top: 1px solid var(--line); background: var(--surface-alt); }
+.detailTitle { display: flex; align-items: center; gap: var(--space-3); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.detailTitle span { flex: none; padding: 2px 8px; border-radius: var(--radius-sm); background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
+/* 범례 — 3칸 균등 분할 + 세로 구분선: 항목 길이가 달라도 칸이 맞아 정돈돼 보임 */
+.pinLegend { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); }
+.pinLegend li { display: flex; align-items: center; gap: var(--space-2); min-width: 0; white-space: nowrap; padding: 0 var(--space-3); border-left: 1px solid var(--line); font-size: 14px; line-height: 20px; color: var(--ink); }
+.pinLegend li:first-child { padding-left: 0; border-left: 0; }
+.pinNo { flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 800; }
 .featureList { display: flex; flex-direction: column; }
-.featureList li { display: flex; gap: var(--space-5); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); }
+.featureList li { flex: 1; display: grid; grid-template-columns: 40px 1fr; align-content: center; column-gap: var(--space-3); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); } /* flex:1 — 항목들이 높이를 나눠 가져 마지막 선이 왼쪽 카드 바닥과 맞음 */
 .featureList li:first-child { border-top: 2px solid var(--ink); }
-.featureList .featureNo { flex: none; padding-top: 4px; }
+.featureList .featureNo { line-height: 30px; } /* 제목 줄 높이와 같게 */
 .featureList .featureTitle { margin-top: 0; }
+.featureList .featureBody { grid-column: 2; }
 
 
 .specWrap { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-12); align-items: start; }

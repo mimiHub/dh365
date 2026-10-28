@@ -75,8 +75,8 @@ const DETAIL_IMAGES: Partial<Record<string, { src: string; caption: string; pins
     src: pipeSingleDetailImg,
     caption: '스테인리스 파이프 + 연결 링크 결속 구조',
     pins: [
-      { x: 50, y: 4, label: '스테인리스 파이프' },
-      { x: 32.5, y: 23.5, label: '연결 링크(장공)' },
+      { x: 50, y: 4, label: '스텐 파이프' },
+      { x: 32.5, y: 23.5, label: '연결 링크' },
       { x: 11.5, y: 88.5, label: '엔드캡' },
     ],
   },
@@ -364,11 +364,20 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
                     </span>
                   ))}
                 </div>
-                <figcaption>
-                  <strong>DETAIL</strong> {detail.caption}
+                {/* 사진 아래 설명을 카드 하단에 붙여 한 덩어리로: [DETAIL 제목] / [범례 3칸 균등] */}
+                <figcaption className={s.detailCap}>
+                  <p className={s.detailTitle}>
+                    <span>DETAIL</span>
+                    {detail.caption}
+                  </p>
                   {detail.pins && (
-                    <ol className={s.pinLegend}>
-                      {detail.pins.map((pin, i) => <li key={pin.label}><span>{i + 1}</span>{pin.label}</li>)}
+                    <ol className={s.pinLegend} style={{ ['--n' as string]: detail.pins.length }}>
+                      {detail.pins.map((pin, i) => (
+                        <li key={pin.label}>
+                          <span className={s.pinNo}>{i + 1}</span>
+                          {pin.label}
+                        </li>
+                      ))}
                     </ol>
                   )}
                 </figcaption>
@@ -376,11 +385,10 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
               <ol className={s.featureList}>
                 {p.features.map((f, i) => (
                   <li key={f.title}>
+                    {/* 2열 그리드: [번호 | 제목] 같은 행 → 번호와 제목이 항상 한 줄에 맞음, 설명은 제목 아래 열 */}
                     <span className={s.featureNo}>{pad(i + 1)}</span>
-                    <div>
-                      <h4 className={s.featureTitle}>{f.title}</h4>
-                      <p className={s.featureBody}>{f.body}</p>
-                    </div>
+                    <h4 className={s.featureTitle}>{f.title}</h4>
+                    <p className={s.featureBody}>{f.body}</p>
                   </li>
                 ))}
               </ol>
