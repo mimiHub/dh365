@@ -14,7 +14,7 @@ import { COMPANY } from '../data/site';
 import { Badge, Button, Media, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
 import { SafetyBand } from './product/SafetyBand';
-import { ProductSideNav } from './product/ProductSideNav';
+import { ProductTabBar } from './product/ProductTabBar';
 import { ProductGallery } from './product/ProductGallery';
 import { PRODUCT_GALLERY } from './product/galleryImages';
 import steelShutterImg from '../assets/product-steel-shutter.png';
@@ -211,8 +211,8 @@ export function ProductPage() {
   // 카드·하위 탭 전환은 탭처럼 동작 → 기록을 쌓지 않고(replace) 스크롤도 유지
   const swap = { replace: true, state: { keepScroll: true } } as const;
 
-  // 고를 제품이 둘 이상인 카테고리만 사이드 메뉴
-  const hasSide = category.slugs.length > 1;
+  // 고를 제품이 둘 이상인 카테고리만 제품 탭 바
+  const hasTabs = category.slugs.length > 1;
   const banner = BANNER_IMAGES[category.key] ?? HERO_IMAGES[category.key];
 
   return (
@@ -268,16 +268,13 @@ export function ProductPage() {
         </p>
       </div>
 
-      {/* 제품이 여럿인 카테고리(철재·알루미늄)는 왼쪽 사이드 메뉴 + 오른쪽 상세 */}
-      <div className={cx(hasSide && 'container', hasSide && s.withSide)}>
-        {hasSide && <ProductSideNav category={category} product={product} />}
-        <div className={hasSide ? s.sideMain : undefined}>
-          {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
-          <ProductBody key={product.slug} product={product} />
-        </div>
-      </div>
+      {/* 제품이 여럿인 카테고리(철재·알루미늄)는 회색 띠와 상세 경계에 전체 폭 제품 탭 */}
+      {hasTabs && <ProductTabBar category={category} current={product.slug} />}
 
-      {/* 방화셔터 공통 안전장치 — 제품별 내용 다음, 화면 전체 폭 (좁은 칸에 넣으면 답답해서 사이드 메뉴 밖에 둠) */}
+      {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
+      <ProductBody key={product.slug} product={product} />
+
+      {/* 방화셔터 공통 안전장치 — 제품별 내용 다음, 화면 전체 폭 */}
       {product.sharedSafety && <SafetyBand />}
 
       <Contact />

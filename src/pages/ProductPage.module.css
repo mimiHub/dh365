@@ -62,11 +62,6 @@
 .highlight { max-width: 860px; margin: var(--space-6) auto 0; text-align: center; font-size: 20px; line-height: 34px; letter-spacing: -0.01em; color: var(--ink-muted); }
 .highlight em { font-style: normal; font-weight: 700; color: var(--accent-text); }
 
-/* ── 사이드 메뉴 + 상세 ── */
-.withSide { display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: var(--space-12); align-items: start; margin-top: var(--space-16); }
-/* 상세 안의 섹션들은 각자 .container를 쓰므로, 칸 안에서는 폭 제한·좌우 여백을 풀어 칸에 맞춤 */
-.sideMain :global(.container) { max-width: none; padding-left: 0; padding-right: 0; }
-.withSide .body { margin-top: 0; }
 
 /* ── 상세 ── */
 .body { margin-top: var(--space-16); animation: bodyIn .5s cubic-bezier(.22,1,.36,1) both; }
@@ -78,14 +73,11 @@
 .todo strong { color: var(--fire-text); margin-bottom: var(--space-2); }
 .todo li { list-style: disc; margin-left: var(--space-5); }
 
-/* 사진 칸 고정 폭(--gallery-w) — 사이드 메뉴가 있든 없든 모든 제품의 사진 크기가 같음.
+/* 사진 칸 고정 폭(--gallery-w) — 모든 제품의 사진 크기가 같음.
    비율(fr)로 잡으면 남는 폭에 따라 사진 크기가 페이지마다 달라졌음. 글 칸은 남는 폭(최대 640px) */
 .overview { --gallery-w: 520px; display: grid; grid-template-columns: var(--gallery-w) minmax(0, 640px); gap: var(--space-12); align-items: center; }
-/* 중간 폭(1025~1360px): 사이드 메뉴 페이지에서도 글 칸이 너무 좁아지지 않게 사진 칸을 한 단계 줄임 — 모든 페이지 같은 값 */
+/* 1360px 이하: 카드 화살표가 화면 밖으로 16px 삐져나가 가로 스크롤이 생기던 문제 — 여백 안쪽으로 */
 @media (max-width: 1360px) {
-  .overview { --gallery-w: 400px; gap: var(--space-8); }
-  .withSide { gap: var(--space-8); }
-  /* 카드 화살표가 화면 밖으로 16px 삐져나가 가로 스크롤이 생기던 문제 — 여백 안쪽으로 */
   .prev { left: 0; }
   .next { right: 0; }
 }
@@ -205,7 +197,6 @@
   .next { right: 0; }
   .overview { --gallery-w: 100%; }
   .overview, .specWrap, .specDrawing, .reportHead, .reportBody, .featureSplit { grid-template-columns: 1fr; gap: var(--space-8); }
-  .withSide { grid-template-columns: 1fr; gap: var(--space-8); margin-top: var(--space-10); }
   .reportHead { padding: var(--space-6); }
   .drawingZoom { opacity: 1; } /* 터치 기기는 hover가 없으므로 항상 표시 */
   .specDrawing .spec { height: auto; } /* 위아래로 쌓이면 맞출 짝이 없으니 원래 높이 */
