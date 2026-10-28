@@ -4,7 +4,7 @@ import type { GalleryImage } from './galleryImages';
 import s from './ProductGallery.module.css';
 
 /**
- * 제품 갤러리 — [대표 사진(4:3)] / [장수 ‹ ›] / [썸네일 줄]
+ * 제품 갤러리 — [대표 사진(4:3)] / [썸네일 줄 | 장수 ‹ ›]
  * 컨트롤은 랜딩 제품 슬라이더와 같은 SliderNav 컴포넌트
  * 규격: 모든 사진이 같은 4:3 칸에 cover로 들어감 → 원본 비율과 무관하게 크기 동일.
  * 사진이 1장이면 화살표·썸네일 없이 대표 사진만, 0장이면 슬랫 플레이스홀더.
@@ -42,36 +42,35 @@ export function ProductGallery({ images, name, placeholder }: { images: GalleryI
         <img key={cur.src} src={cur.src} alt={cur.alt} className={s.photo} />
       </div>
 
+      {/* 한 줄: [썸네일 (넘치면 가로 스크롤)] [01 / 05 ‹ ›] — 썸네일 높이 = 화살표 높이라 가로선이 맞음 */}
       {many && (
-        <SliderNav
-          className={s.nav}
-          current={index}
-          total={images.length}
-          onPrev={() => go(-1)}
-          onNext={() => go(1)}
-          prevDisabled={index === 0}
-          nextDisabled={index === images.length - 1}
-          controls={stageId}
-          itemLabel="사진"
-        />
-      )}
-
-      {many && (
-        <ul ref={thumbs} className={s.thumbs}>
-          {images.map((img, i) => (
-            <li key={img.src}>
-              <button
-                type="button"
-                className={s.thumb}
-                onClick={() => setIndex(i)}
-                aria-label={`${i + 1}번째 사진 보기: ${img.alt}`}
-                aria-current={i === index ? 'true' : undefined}
-              >
-                <img src={img.src} alt="" loading="lazy" />
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className={s.bar}>
+          <ul ref={thumbs} className={s.thumbs}>
+            {images.map((img, i) => (
+              <li key={img.src}>
+                <button
+                  type="button"
+                  className={s.thumb}
+                  onClick={() => setIndex(i)}
+                  aria-label={`${i + 1}번째 사진 보기: ${img.alt}`}
+                  aria-current={i === index ? 'true' : undefined}
+                >
+                  <img src={img.src} alt="" loading="lazy" />
+                </button>
+              </li>
+            ))}
+          </ul>
+          <SliderNav
+            current={index}
+            total={images.length}
+            onPrev={() => go(-1)}
+            onNext={() => go(1)}
+            prevDisabled={index === 0}
+            nextDisabled={index === images.length - 1}
+            controls={stageId}
+            itemLabel="사진"
+          />
+        </div>
       )}
     </div>
   );

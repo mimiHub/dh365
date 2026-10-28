@@ -5,16 +5,23 @@
 .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: photoIn .35s ease both; }
 @keyframes photoIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 컨트롤(SliderNav) — 장수는 왼쪽, 화살표는 오른쪽 */
-.nav { justify-content: flex-end; }
-.nav > p { margin-right: auto; }
+/* 썸네일 줄 + 컨트롤 한 줄 */
+.bar { --thumb-h: 56px; display: flex; align-items: center; gap: var(--space-4); }
 
-/* 썸네일 — 장수와 상관없이 항상 '5칸 기준' 같은 크기(규격 통일). 적으면 왼쪽부터 채우고, 많으면 가로 스크롤 */
-.thumbs { --n: 5; --gap: var(--space-2); display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - (var(--n) - 1) * var(--gap)) / var(--n)); gap: var(--gap); overflow-x: auto; scrollbar-width: none; padding: 2px; margin: -2px; }
+/* 썸네일 — 크기 고정(높이 = 화살표 버튼 56px, 4:3). 갤러리 폭·사진 장수와 상관없이 항상 같은 크기,
+   남는 칸보다 많으면 가로 스크롤 */
+.thumbs { flex: 1; min-width: 0; display: grid; grid-auto-flow: column; grid-auto-columns: calc(var(--thumb-h) * 4 / 3); gap: var(--space-2); overflow-x: auto; scrollbar-width: none; padding: 2px; margin: -2px; }
 .thumbs::-webkit-scrollbar { display: none; }
-.thumb { display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-alt); cursor: pointer; box-shadow: inset 0 0 0 0 var(--accent); transition: box-shadow .2s ease; }
+/* 오른쪽 끝 32px을 흐리게 — 잘린 썸네일이 '더 있음'으로 읽히게. 썸네일이 적어 끝까지 안 닿으면 빈 공간이라 영향 없음 */
+.thumbs { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); }
+.thumb { display: block; width: 100%; height: var(--thumb-h); padding: 0; border: 0; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-alt); cursor: pointer; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; opacity: .55; transition: opacity .2s ease; }
 .thumb:hover img { opacity: .85; }
 .thumb[aria-current="true"] { outline: 2px solid var(--accent); outline-offset: -2px; }
 .thumb[aria-current="true"] img { opacity: 1; }
 .thumb:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* 모바일: 화살표가 44px이 되므로 썸네일도 같이 */
+@media (max-width: 767px) {
+  .bar { --thumb-h: 44px; gap: var(--space-3); }
+}
