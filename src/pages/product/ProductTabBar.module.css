@@ -17,13 +17,23 @@
 
 @media (max-width: 767px) {
   .list { display: none; }
-  .mobile { display: block; padding-top: var(--space-4); padding-bottom: var(--space-4); }
-  /* 드롭다운 — 왼쪽에 작은 라벨, 오른쪽에 선택값 + 직접 그린 화살표(OS마다 기본 모양이 달라서) */
-  .select { position: relative; display: flex; align-items: center; height: 56px; padding: 0 var(--space-5); border: 1px solid var(--ink); border-radius: var(--radius-md); background: var(--surface); }
-  .select::after { content: ""; position: absolute; right: var(--space-5); top: 50%; width: 8px; height: 8px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
-  .select:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .mobile { position: relative; display: block; padding-top: var(--space-4); padding-bottom: var(--space-4); }
+
+  .select { display: flex; align-items: center; width: 100%; height: 56px; padding: 0 var(--space-5); border: 1px solid var(--ink); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+  .select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   .selectLabel { flex: none; margin-right: var(--space-3); padding-right: var(--space-3); border-right: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--ink-subtle); }
-  /* select를 라벨 영역 전체로 늘려 어디를 눌러도 열리게 */
-  .select select { flex: 1; min-width: 0; height: 100%; padding: 0 var(--space-6) 0 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; appearance: none; cursor: pointer; }
-  .select select:focus { outline: none; }
+  .selectValue { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 700; }
+  .chevron { flex: none; width: 8px; height: 8px; margin-left: var(--space-3); border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: translateY(-2px) rotate(45deg); transition: transform .2s ease; }
+  .chevronOpen { transform: translateY(2px) rotate(225deg); }
+
+  /* 패널 — 항상 상자 바로 아래. 내용 위에 떠서 레이아웃을 밀지 않음 */
+  .panel { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(100% - var(--space-4) + 6px); z-index: 20; max-height: 60vh; overflow-y: auto; padding: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-float); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s ease, transform .18s ease, visibility 0s .18s; }
+  .panelOpen { opacity: 1; visibility: visible; transform: none; transition: opacity .18s ease, transform .18s ease; }
+  .group + .group { margin-top: var(--space-1); padding-top: var(--space-1); border-top: 1px solid var(--line); }
+  .groupLabel { padding: var(--space-2) var(--space-3) 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--ink-subtle); }
+  .option { display: flex; align-items: center; min-height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-sm); font-size: 15px; color: var(--ink); }
+  .option:active { background: var(--surface-alt); }
+  .option[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; }
+  .option[aria-current="page"]::after { content: ""; width: 10px; height: 5px; margin-left: auto; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg) translateY(-2px); }
+  .option:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 }

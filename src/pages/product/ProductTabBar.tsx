@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useId, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getProduct, productPath, type CategoryInfo } from '../../data/products';
 import { cx } from '../../components/ui';
 import s from './ProductTabBar.module.css';
@@ -10,12 +10,27 @@ const swap = { replace: true, state: { keepScroll: true } } as const;
 /**
  * 제품 탭 바 — 소개(회색 띠)와 상세(흰 영역) 경계에 놓이는 전체 폭 밑줄형 탭 (코아드 상단 탭 방식).
  * 카테고리 안 제품을 한 줄로 나열(구분 순서 유지). 칸 너비는 균등, 넘치면 가로 스크롤.
- * 모바일(≤767px): 탭이 잘려 보여서 같은 자리에 전체 폭 드롭다운(네이티브 select, 구분별 optgroup)으로 바꿈
+ * 모바일(≤767px): 탭이 잘려 보여서 같은 자리에 전체 폭 드롭다운(아래로 펼쳐지는 링크 목록, 구분별 묶음)으로 바꿈
  * 제품이 하나뿐인 카테고리에는 쓰지 않음 (부모에서 판단)
  */
 export function ProductTabBar({ category, current }: { category: CategoryInfo; current: string }) {
   const list = useRef<HTMLUListElement>(null);
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const panelId = useId();
+
+  // 바깥을 누르거나 ESC를 누르면 닫힘
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => !box.current?.contains(e.target as Node) && setOpen(false);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
   const index = category.slugs.indexOf(current);
 
   // 모바일처럼 넘칠 때 선택 탭을 가운데로 (scrollIntoView는 페이지 세로 스크롤까지 움직여서 목록만 직접 스크롤)
@@ -38,24 +53,37 @@ export function ProductTabBar({ category, current }: { category: CategoryInfo; c
         ))}
       </ul>
 
-      {/* 모바일 전용 — 네이티브 select: 휴대폰 기본 선택 화면이 떠서 터치·접근성이 기본으로 해결됨 */}
-      <div className={cx('container', s.mobile)}>
-        <label className={s.select}>
+      {/* 모바일 전용 드롭다운 — 네이티브 select는 브라우저에 따라 목록이 위로 뜨거나 작게 떠서 직접 만듦.
+          링크 목록을 펼치는 '공개(disclosure)' 패턴: 버튼 aria-expanded + 아래 패널 */}
+      <div className={cx('container', s.mobile)} ref={box}>
+        <button type="button" className={s.select} aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((v) => !v)}>
           <span className={s.selectLabel}>제품 선택</span>
-          <select value={current} onChange={(e) => navigate(productPath(category, e.target.value), swap)}>
-            {category.groups
-              ? category.groups.map((g) => (
-                  <optgroup key={g.key} label={g.label}>
-                    {g.slugs.map((slug) => (
-                      <option key={slug} value={slug}>{getProduct(slug)!.name}</option>
-                    ))}
-                  </optgroup>
-                ))
-              : category.slugs.map((slug) => (
-                  <option key={slug} value={slug}>{getProduct(slug)!.name}</option>
+          <span className={s.selectValue}>{getProduct(current)!.name}</span>
+          <span className={cx(s.chevron, open && s.chevronOpen)} aria-hidden="true" />
+        </button>
+        <div id={panelId} className={cx(s.panel, open && s.panelOpen)} inert={!open}>
+          {(category.groups ?? [{ key: 'all', label: '', slugs: category.slugs }]).map((g) => (
+            <div key={g.key} className={s.group}>
+              {/* 제품이 하나뿐인 구분은 머리글 생략 (단열셔터 > 단열셔터 중복 방지) */}
+              {g.label && g.slugs.length > 1 && <p className={s.groupLabel}>{g.label}</p>}
+              <ul>
+                {g.slugs.map((slug) => (
+                  <li key={slug}>
+                    <Link
+                      to={productPath(category, slug)}
+                      {...swap}
+                      className={s.option}
+                      aria-current={slug === current ? 'page' : undefined}
+                      onClick={() => setOpen(false)}
+                    >
+                      {getProduct(slug)!.name}
+                    </Link>
+                  </li>
                 ))}
-          </select>
-        </label>
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </nav>
   );
