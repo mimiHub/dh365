@@ -440,8 +440,17 @@ function ReportBlock({ report: r }: { report: TestReport }) {
   return (
     <section className={cx('container', s.block)} aria-labelledby={`report-${r.reportNo}`}>
       <BlockHead en="TEST REPORT" title="공인 시험성적서" id={`report-${r.reportNo}`} />
-      <div className={s.report}>
-        <div className={s.reportMain}>
+      {/* 두 줄 모두 좌우를 채워 균형: [스캔 | 성적서 정보] / [결과표 | 차열 온도] */}
+      <div className={s.reportHead}>
+        {img && (
+          <figure className={s.reportScan}>
+            <a href={img} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
+              <img src={img} alt={`시험성적서 ${r.reportNo} 원본 스캔 (3쪽)`} loading="lazy" />
+              <span className={s.drawingZoom}>원본 보기<span className="sr-only">(새 창)</span></span>
+            </a>
+          </figure>
+        )}
+        <div>
           <p className={s.reportTitle}>
             {r.title} <Badge tone="accent">60분 전 항목 적합</Badge>
           </p>
@@ -453,57 +462,51 @@ function ReportBlock({ report: r }: { report: TestReport }) {
               </div>
             ))}
           </dl>
+          <p className={s.reportNote}>{r.note}</p>
+        </div>
+      </div>
 
-          <table className={cx(s.spec, s.resultTable)}>
-            <caption className="sr-only">{r.title} 시험결과</caption>
-            <colgroup>
-              <col className={s.colItem} />
-              <col />
-              <col className={s.colShort} />
-              <col className={s.colShort} />
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col">시험항목</th>
-                <th scope="col">기준</th>
-                <th scope="col">시간</th>
-                <th scope="col">결과</th>
-              </tr>
-            </thead>
-            <tbody>
-              {r.results.map((x, i) => {
-                // 원본 성적서처럼 같은 시험항목(차염성·차열성)은 칸을 합침: 그룹의 첫 줄만 th를 그리고 rowSpan으로 늘림
-                const first = i === 0 || r.results[i - 1].item !== x.item;
-                const span = first ? r.results.slice(i).findIndex((y) => y.item !== x.item) : 0;
-                const rows = span === -1 ? r.results.length - i : span;
-                return (
+      <div className={cx(s.reportBody, !r.heat && s.reportBodySingle)}>
+        <table className={cx(s.spec, s.resultTable)}>
+          <caption className="sr-only">{r.title} 시험결과</caption>
+          <colgroup>
+            <col className={s.colItem} />
+            <col />
+            <col className={s.colShort} />
+            <col className={s.colShort} />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">시험항목</th>
+              <th scope="col">기준</th>
+              <th scope="col">시간</th>
+              <th scope="col">결과</th>
+            </tr>
+          </thead>
+          <tbody>
+            {r.results.map((x, i) => {
+              // 원본 성적서처럼 같은 시험항목(차염성·차열성)은 칸을 합침: 그룹의 첫 줄만 th를 그리고 rowSpan으로 늘림
+              const first = i === 0 || r.results[i - 1].item !== x.item;
+              const span = first ? r.results.slice(i).findIndex((y) => y.item !== x.item) : 0;
+              const rows = span === -1 ? r.results.length - i : span;
+              return (
                 <tr key={i}>
                   {first && <th scope="rowgroup" rowSpan={rows}>{x.item}</th>}
                   <td>{x.criterion}</td>
                   <td className={s.nowrap}>{x.time}</td>
                   <td><span className={s.pass}>{x.result}</span></td>
                 </tr>
-                );
-              })}
-            </tbody>
-          </table>
+              );
+            })}
+          </tbody>
+        </table>
 
-          {r.heat && (
-            <div className={s.heat} aria-label="차열성 60분 시점 비가열면 온도">
-              <HeatBar label="60분 평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
-              <HeatBar label="60분 최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
-            </div>
-          )}
-        </div>
-
-        {img && (
-          <figure className={s.reportScan}>
-            <a href={img} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
-              <img src={img} alt={`시험성적서 ${r.reportNo} 원본 스캔 (3쪽)`} loading="lazy" />
-              <span className={s.drawingZoom}>원본 보기<span className="sr-only">(새 창)</span></span>
-            </a>
-            <figcaption>{r.note}</figcaption>
-          </figure>
+        {r.heat && (
+          <div className={s.heat}>
+            <p className={s.heatTitle}>차열성 · 60분 시점 비가열면 온도</p>
+            <HeatBar label="평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
+            <HeatBar label="최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
+          </div>
         )}
       </div>
     </section>

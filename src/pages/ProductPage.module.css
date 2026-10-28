@@ -154,29 +154,36 @@
 .drawingZoom { position: absolute; right: var(--space-3); top: var(--space-3); padding: 4px 10px; border-radius: var(--radius-pill); background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 600; opacity: 0; transition: opacity .2s ease; }
 .drawingLink:hover .drawingZoom, .drawingLink:focus-visible .drawingZoom { opacity: 1; }
 .drawingNote { margin-top: var(--space-3); font-size: 14px; color: var(--ink-subtle); }
-/* 시험성적서 — 왼쪽 핵심 결과(텍스트), 오른쪽 원본 스캔 */
-.report { display: grid; grid-template-columns: 6fr 5fr; gap: var(--space-10); align-items: start; }
-.reportTitle { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: 20px; line-height: 30px; font-weight: 700; }
-.reportMeta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-6); margin: var(--space-5) 0 var(--space-6); font-size: 14px; line-height: 22px; }
+/* 시험성적서 — 윗줄 [스캔 | 정보], 아랫줄 [결과표 | 차열 온도]. 두 줄 모두 좌우를 채워 한쪽으로 쏠리지 않게 */
+.reportHead { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-10); align-items: center; padding: var(--space-8); background: var(--surface-alt); border-radius: var(--radius-lg); }
+.reportScan { margin: 0; }
+.reportScan .drawingLink { padding: var(--space-4); }
+.reportTitle { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: 22px; line-height: 32px; font-weight: 700; }
+.reportMeta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-6); margin: var(--space-5) 0 0; font-size: 14px; line-height: 22px; }
 .reportMeta div { display: flex; flex-direction: column; }
 .reportMeta dt { color: var(--ink-subtle); }
 .reportMeta dd { margin: 0; color: var(--ink); }
-.report .spec thead th { padding: var(--space-3); font-size: 14px; font-weight: 600; color: var(--ink-subtle); text-align: left; border-bottom: 1px solid var(--line-strong); background: none; }
+.reportNote { margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--line); font-size: 13px; line-height: 20px; color: var(--ink-subtle); }
+
+/* stretch: 결과표와 온도 박스의 위아래 끝선을 맞춤 */
+.reportBody { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-8); align-items: stretch; margin-top: var(--space-8); }
+.reportBodySingle { grid-template-columns: 1fr; }
 .resultTable { table-layout: fixed; }
+.resultTable thead th { padding: var(--space-3); font-size: 14px; font-weight: 600; color: var(--ink-subtle); text-align: left; border-bottom: 1px solid var(--line-strong); background: none; }
+.resultTable tbody th { vertical-align: middle; border-right: 1px solid var(--line); }
 .colItem { width: 88px; }
 .colShort { width: 72px; }
-.resultTable tbody th { vertical-align: middle; border-right: 1px solid var(--line); }
 .nowrap { white-space: nowrap; }
 .pass { display: inline-block; padding: 0 8px; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent-text); font-size: 13px; font-weight: 700; white-space: nowrap; }
-.heat { display: grid; gap: var(--space-4); margin-top: var(--space-6); padding: var(--space-5); background: var(--surface-alt); border-radius: var(--radius-md); }
+/* 온도 박스: 내용(막대 2개)을 세로 가운데로 — 표가 더 길어도 위에 몰려 보이지 않게 */
+.heat { display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); }
+.heatTitle { font-size: 15px; font-weight: 700; }
 .heatLabel { font-size: 14px; color: var(--ink-muted); }
-.heatLabel strong { margin-left: 4px; font-size: 18px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.heatLabel strong { margin-left: 4px; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .heatLabel span { color: var(--ink-subtle); }
 .heatTrack { height: 8px; margin-top: var(--space-2); border-radius: var(--radius-pill); background: var(--line); overflow: hidden; }
 .heatFill { height: 100%; border-radius: inherit; background: var(--brand); }
 [data-theme="dark"] .heatFill { background: var(--accent); }
-.reportScan { margin: 0; }
-.reportScan figcaption { margin-top: var(--space-3); font-size: 13px; line-height: 20px; color: var(--ink-subtle); }
 .uses { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .uses li { padding: var(--space-2) var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); font-size: 15px; }
 
@@ -190,7 +197,8 @@
   .cards { --visible: 3; }
   .prev { left: 0; }
   .next { right: 0; }
-  .overview, .specWrap, .specDrawing, .report { grid-template-columns: 1fr; gap: var(--space-8); }
+  .overview, .specWrap, .specDrawing, .reportHead, .reportBody { grid-template-columns: 1fr; gap: var(--space-8); }
+  .reportHead { padding: var(--space-6); }
   .drawingZoom { opacity: 1; } /* 터치 기기는 hover가 없으므로 항상 표시 */
   .specDrawing .spec { height: auto; } /* 위아래로 쌓이면 맞출 짝이 없으니 원래 높이 */
   .patents { grid-template-columns: 1fr; }
