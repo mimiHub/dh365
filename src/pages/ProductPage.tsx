@@ -62,8 +62,8 @@ const DETAIL_IMAGES: Partial<Record<string, { src: string; caption: string; pins
     src: pipeSingleDetailImg,
     caption: '스테인리스 파이프 + 연결 링크 결속 구조',
     pins: [
-      { x: 50, y: 4, label: '스텐 파이프' },
-      { x: 32.5, y: 23.5, label: '연결 링크' },
+      { x: 50, y: 48.8, label: '스텐 파이프' },
+      { x: 32.5, y: 58, label: '연결 링크' },
       { x: 11.5, y: 88.5, label: '엔드캡' },
     ],
   },
@@ -71,8 +71,8 @@ const DETAIL_IMAGES: Partial<Record<string, { src: string; caption: string; pins
     src: pipeDoubleDetailImg,
     caption: '스테인리스 파이프 + 연결 로드 결속 구조',
     pins: [
-      { x: 50, y: 4, label: '스텐 파이프' },
-      { x: 33.3, y: 14.5, label: '연결 로드' },
+      { x: 50, y: 51.5, label: '스텐 파이프' },
+      { x: 32, y: 59, label: '연결 로드' },
       { x: 13.7, y: 94.7, label: '엔드캡' },
     ],
   },
