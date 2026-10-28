@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getProduct, productPath, type CategoryInfo } from '../../data/products';
 import { cx } from '../../components/ui';
 import s from './ProductTabBar.module.css';
@@ -10,10 +10,12 @@ const swap = { replace: true, state: { keepScroll: true } } as const;
 /**
  * 제품 탭 바 — 소개(회색 띠)와 상세(흰 영역) 경계에 놓이는 전체 폭 밑줄형 탭 (코아드 상단 탭 방식).
  * 카테고리 안 제품을 한 줄로 나열(구분 순서 유지). 칸 너비는 균등, 넘치면 가로 스크롤.
+ * 모바일(≤767px): 탭이 잘려 보여서 같은 자리에 전체 폭 드롭다운(네이티브 select, 구분별 optgroup)으로 바꿈
  * 제품이 하나뿐인 카테고리에는 쓰지 않음 (부모에서 판단)
  */
 export function ProductTabBar({ category, current }: { category: CategoryInfo; current: string }) {
   const list = useRef<HTMLUListElement>(null);
+  const navigate = useNavigate();
   const index = category.slugs.indexOf(current);
 
   // 모바일처럼 넘칠 때 선택 탭을 가운데로 (scrollIntoView는 페이지 세로 스크롤까지 움직여서 목록만 직접 스크롤)
@@ -35,6 +37,26 @@ export function ProductTabBar({ category, current }: { category: CategoryInfo; c
           </li>
         ))}
       </ul>
+
+      {/* 모바일 전용 — 네이티브 select: 휴대폰 기본 선택 화면이 떠서 터치·접근성이 기본으로 해결됨 */}
+      <div className={cx('container', s.mobile)}>
+        <label className={s.select}>
+          <span className={s.selectLabel}>제품 선택</span>
+          <select value={current} onChange={(e) => navigate(productPath(category, e.target.value), swap)}>
+            {category.groups
+              ? category.groups.map((g) => (
+                  <optgroup key={g.key} label={g.label}>
+                    {g.slugs.map((slug) => (
+                      <option key={slug} value={slug}>{getProduct(slug)!.name}</option>
+                    ))}
+                  </optgroup>
+                ))
+              : category.slugs.map((slug) => (
+                  <option key={slug} value={slug}>{getProduct(slug)!.name}</option>
+                ))}
+          </select>
+        </label>
+      </div>
     </nav>
   );
 }

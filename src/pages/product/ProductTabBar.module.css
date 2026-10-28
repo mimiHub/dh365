@@ -13,7 +13,17 @@
 .tab[aria-current="page"]::before { transform: scaleX(1); }
 .tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
+.mobile { display: none; }
+
 @media (max-width: 767px) {
-  .list { padding-left: 0; padding-right: 0; }
-  .tab { height: 52px; padding: 0 var(--space-4); font-size: 15px; }
+  .list { display: none; }
+  .mobile { display: block; padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  /* 드롭다운 — 왼쪽에 작은 라벨, 오른쪽에 선택값 + 직접 그린 화살표(OS마다 기본 모양이 달라서) */
+  .select { position: relative; display: flex; align-items: center; height: 56px; padding: 0 var(--space-5); border: 1px solid var(--ink); border-radius: var(--radius-md); background: var(--surface); }
+  .select::after { content: ""; position: absolute; right: var(--space-5); top: 50%; width: 8px; height: 8px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+  .select:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .selectLabel { flex: none; margin-right: var(--space-3); padding-right: var(--space-3); border-right: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--ink-subtle); }
+  /* select를 라벨 영역 전체로 늘려 어디를 눌러도 열리게 */
+  .select select { flex: 1; min-width: 0; height: 100%; padding: 0 var(--space-6) 0 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; appearance: none; cursor: pointer; }
+  .select select:focus { outline: none; }
 }
