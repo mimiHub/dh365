@@ -364,17 +364,21 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
           {/* 도면이 있는 제품: [구조도 | 사양표] → 아래에 설치 장소 */}
           <section className={cx('container', s.block)} aria-labelledby="spec-title">
             <BlockHead en="SPECIFICATION" title="구조도 · 제품 사양" id="spec-title" />
+            {/* 도면 박스와 사양표의 높이를 맞춤: 그리드 행 높이(둘 중 큰 쪽)에 양쪽이 늘어남.
+                그래서 도면 설명은 그리드 밖(아래)으로 뺌 — 안에 두면 설명 줄만큼 도면 쪽이 더 길어져 끝선이 어긋남 */}
             <div className={s.specDrawing}>
-              <figure className={s.drawing}>
+              <figure className={s.drawing} aria-describedby="drawing-note">
                 {/* 도면은 글자가 작아서 원본 크기로 열어 볼 수 있게 링크 */}
                 <a href={drawing.src} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
                   <img src={drawing.src} alt={`${p.name} 구조도 — 케이스, 감기샤프트, 슬랫, 가이드레일 등 부품 위치와 치수`} loading="lazy" />
                   <span className={s.drawingZoom}>크게 보기<span className="sr-only">(새 창)</span></span>
                 </a>
-                <figcaption>{drawing.caption}{p.maxSize && ` · 최대 ${mm(p.maxSize.width)} × ${mm(p.maxSize.height)}mm`}</figcaption>
               </figure>
               {p.specs.length > 0 && <SpecTable product={p} />}
             </div>
+            <p id="drawing-note" className={s.drawingNote}>
+              {drawing.caption}{p.maxSize && ` · 최대 ${mm(p.maxSize.width)} × ${mm(p.maxSize.height)}mm`}
+            </p>
           </section>
           {p.uses.length > 0 && (
             <section className={cx('container', s.block)} aria-labelledby="uses-title">
