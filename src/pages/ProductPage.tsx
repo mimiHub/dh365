@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useRef } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import {
   FIRE_SAFETY,
   PRODUCT_CATEGORIES,
@@ -53,129 +53,155 @@ function Highlight({ text }: { text: string }) {
 
 /**
  * 제품소개 — 코아드 제품 페이지 구성
- * [카테고리 탭(1단계)] → [히어로: 카테고리명 + 구분 탭(2단계, 알루미늄셔터)] → [히어로에 걸친 제품 카드]
- * → [강조 문장] → [선택한 제품 상세] → [견적상담]
+ * [히어로: 제품소개] → [히어로에 걸친 카테고리 카드 ‹ ›] → [강조 문장] → [하위 탭: 구분·제품] → [선택한 제품 상세] → [견적상담]
+ *
+ * 카테고리 이동은 카드가 맡음(별도 탭 바 없음). 탭 바를 대메뉴 바로 밑에 두면
+ * 대메뉴 호버 시 열리는 메가메뉴가 탭을 덮어서, 메뉴 영역을 하나로 정리함.
  *
  * 선택 상태를 useState가 아니라 URL(/products/aluminum/wave)에 둠:
  * 새로고침·공유·뒤로가기에도 같은 제품이 보이고, 메뉴에서 바로 특정 제품으로 들어올 수 있음.
  */
 export function ProductPage() {
   const { category: catKey, slug } = useParams();
-  const navigate = useNavigate();
   const track = useRef<HTMLUListElement>(null);
-  const catList = useRef<HTMLUListElement>(null);
 
   const category = getCategory(catKey);
-  // 선택 제품 → 그 제품이 속한 구분 → 카드 목록 순으로 정해짐 (구분 탭의 선택 상태도 URL 하나로 결정)
+  // 선택 제품 → 그 제품이 속한 구분 순으로 정해짐 (하위 탭의 선택 상태도 URL 하나로 결정)
   const product = (slug && category?.slugs.includes(slug) ? getProduct(slug) : undefined) ?? (category && getProduct(category.slugs[0]));
   const group = category && product ? groupOf(category, product.slug) : undefined;
-  const items = productsOf(group?.slugs ?? category?.slugs ?? []);
-  const index = product ? items.indexOf(product) : 0;
-
-  // 가로로 넘치는 목록에서 선택 항목을 가운데로 (scrollIntoView는 페이지 세로 스크롤까지 움직여서 목록만 직접 스크롤)
-  const centerIn = (list: HTMLElement | null, i: number, behavior: ScrollBehavior) => {
-    const item = list?.children[i] as HTMLElement | undefined;
-    if (!list || !item || list.scrollWidth <= list.clientWidth) return;
-    list.scrollTo({ left: item.offsetLeft - (list.clientWidth - item.offsetWidth) / 2, behavior });
-  };
   const catIndex = PRODUCT_CATEGORIES.findIndex((c) => c.key === category?.key);
-  // 카테고리 탭: 모바일에서 선택 탭이 화면 밖에 있으면 보이게 (페이지 진입 시라 애니메이션 없이)
-  useEffect(() => centerIn(catList.current, catIndex, 'instant'), [catIndex]);
-  // 제품 카드: 구분이 바뀌면 카드 목록이 새로 그려지므로 group도 의존성에 포함
-  useEffect(() => centerIn(track.current, index, 'smooth'), [index, group?.key]);
+
+  /**
+   * 카드 트랙 — 한 화면에 4장(CSS --visible). 넘치면 ‹ ›로 한 칸씩 이동.
+   * 화살표는 '선택'이 아니라 '보기'를 옮김(코아드 방식): 선택은 카드를 눌러서.
+   * 끝에 닿았는지는 스크롤 위치에서 읽어 옴 — 스와이프와 버튼이 같은 스크롤을 공유하므로 따로 state로 들지 않음
+   */
+  const [edge, setEdge] = useState({ start: true, end: true });
+  const sync = useCallback(() => {
+    const el = track.current;
+    if (!el) return;
+    setEdge({ start: el.scrollLeft <= 2, end: el.scrollLeft >= el.scrollWidth - el.clientWidth - 2 });
+  }, []);
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    sync();
+    el.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    return () => {
+      el.removeEventListener('scroll', sync);
+      window.removeEventListener('resize', sync);
+    };
+  }, [sync]);
+
+  // 한 칸 = 카드 폭 + 간격 (간격은 CSS에서 읽어 반응형 값과 어긋나지 않게)
+  const step = (el: HTMLElement) => {
+    const card = el.querySelector('li');
+    return card ? card.getBoundingClientRect().width + (parseFloat(getComputedStyle(el).columnGap) || 0) : el.clientWidth;
+  };
+  const slide = (dir: 1 | -1) => {
+    const el = track.current;
+    if (el) el.scrollBy({ left: dir * step(el), behavior: 'smooth' });
+  };
+
+  // 선택 카드가 보이는 범위 밖이면 보이게만 당겨 옴 (이미 보이면 그대로 — 화면이 괜히 움직이지 않게)
+  // scrollIntoView는 페이지 세로 스크롤까지 움직여서 트랙만 직접 스크롤
+  useEffect(() => {
+    const el = track.current;
+    const item = el?.children[catIndex] as HTMLElement | undefined;
+    if (!el || !item) return;
+    const left = item.offsetLeft - el.offsetLeft;
+    const pad = parseFloat(getComputedStyle(el).paddingLeft) || 0;
+    if (left - pad < el.scrollLeft) el.scrollTo({ left: left - pad, behavior: 'smooth' });
+    else if (left + item.offsetWidth + pad > el.scrollLeft + el.clientWidth)
+      el.scrollTo({ left: left + item.offsetWidth + pad - el.clientWidth, behavior: 'smooth' });
+  }, [catIndex]);
 
   // 잘못된 카테고리 주소 → 첫 카테고리로 (Hook 호출이 모두 끝난 뒤에 분기해야 Hook 순서 규칙을 지킴)
   if (!category || !product) return <Navigate to={productPath(PRODUCT_CATEGORIES[0])} replace />;
 
-  // 같은 카테고리 안 제품 전환은 탭처럼 동작 → 기록을 쌓지 않고(replace) 스크롤도 유지
-  const go = (i: number) => navigate(productPath(category, items[i].slug), { replace: true, state: { keepScroll: true } });
+  // 카드·하위 탭 전환은 탭처럼 동작 → 기록을 쌓지 않고(replace) 스크롤도 유지
+  const swap = { replace: true, state: { keepScroll: true } } as const;
+
+  // 하위 탭: 구분이 있으면 구분 → (구분 안 제품이 여럿이면) 제품, 구분이 없으면 카테고리 안 제품
+  const productTabs = productsOf(group?.slugs ?? category.slugs);
 
   return (
     <>
-      {/* 카테고리 탭 — 코아드 상단 탭 바 */}
-      <nav className={s.catBar} aria-label="제품 분류">
-        <ul ref={catList} className={cx('container', s.catList)}>
-          {PRODUCT_CATEGORIES.map((c) => (
-            <li key={c.key}>
-              <Link to={productPath(c)} className={s.catLink} aria-current={c.key === category.key ? 'page' : undefined}>
-                {c.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <section className={s.hero} id="top" aria-labelledby="product-cat-title">
+      <section className={s.hero} id="top" aria-labelledby="product-hero-title">
         <div className={cx(s.heroBg, HERO_IMAGES[category.key] && s.hasPhoto)} aria-hidden="true">
-          {HERO_IMAGES[category.key] && <img src={HERO_IMAGES[category.key]} alt="" />}
+          {/* key: 카테고리가 바뀌면 사진을 새로 그려 줌 효과가 다시 재생되게 */}
+          {HERO_IMAGES[category.key] && <img key={category.key} src={HERO_IMAGES[category.key]} alt="" />}
         </div>
         <div className={s.heroText}>
-          <h1 id="product-cat-title" className={s.heroTitle}>{category.label}</h1>
-          <p className={s.heroEn}>{category.labelEn}</p>
-          {category.groups && group && (
-            // 2단계 구분 — 각 구분의 첫 제품으로 이동. 구분 전환은 탭처럼 기록을 쌓지 않고 스크롤 유지
-            <nav aria-label={`${category.label} 구분`}>
-              <ul className={s.groups}>
-                {category.groups.map((g) => (
-                  <li key={g.key}>
-                    <Link
-                      to={productPath(category, g.slugs[0])}
-                      replace
-                      state={{ keepScroll: true }}
-                      className={s.groupLink}
-                      aria-current={g.key === group.key ? 'true' : undefined}
-                    >
-                      {g.label}
-                      {g.slugs.length > 1 && <span className={s.groupCount}>{g.slugs.length}</span>}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
+          <h1 id="product-hero-title" className={s.heroTitle}>제품소개</h1>
+          <p className={s.heroEn}>Products</p>
         </div>
       </section>
 
-      {/* 제품 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
-      {/* key: 구분이 바뀌면 카드 목록을 새로 그려 트랙 스크롤 위치를 처음으로 */}
-      <div className={s.cardsWrap} key={group?.key ?? category.key}>
-        {items.length > 1 && (
+      {/* 카테고리 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
+      <nav className={s.cardsWrap} aria-label="제품 분류">
+        {/* 다 보이면(양 끝 모두 닿음) 화살표를 감춤 — 눌러도 안 움직이는 버튼을 남기지 않음 */}
+        {!(edge.start && edge.end) && (
           <>
-            <button type="button" className={cx(s.arrow, s.prev)} onClick={() => go(index - 1)} disabled={index === 0} aria-label="이전 제품">
+            <button type="button" className={cx(s.arrow, s.prev)} onClick={() => slide(-1)} disabled={edge.start} aria-label="이전 분류 보기" aria-controls="product-cards">
               <Chevron dir="left" />
             </button>
-            <button type="button" className={cx(s.arrow, s.next)} onClick={() => go(index + 1)} disabled={index === items.length - 1} aria-label="다음 제품">
+            <button type="button" className={cx(s.arrow, s.next)} onClick={() => slide(1)} disabled={edge.end} aria-label="다음 분류 보기" aria-controls="product-cards">
               <Chevron dir="right" />
             </button>
           </>
         )}
-        <ul ref={track} className={s.cards} aria-label={`${group?.label ?? category.label} 제품`}>
-          {items.map((p, i) => {
-            const on = i === index;
+        <ul ref={track} id="product-cards" className={s.cards}>
+          {PRODUCT_CATEGORIES.map((c, i) => {
+            const on = i === catIndex;
             return (
-              <li key={p.slug} className={s.cardItem}>
-                <Link
-                  to={productPath(category, p.slug)}
-                  replace
-                  state={{ keepScroll: true }}
-                  className={cx(s.card, on && s.cardOn)}
-                  aria-current={on ? 'true' : undefined}
-                >
-                  <span className={s.cardEn}>{p.nameEn}</span>
-                  <strong className={s.cardName}>{p.name}</strong>
+              <li key={c.key} className={s.cardItem}>
+                <Link to={productPath(c)} {...swap} className={cx(s.card, on && s.cardOn)} aria-current={on ? 'page' : undefined}>
+                  <span className={s.cardEn}>{c.labelEn}</span>
+                  <strong className={s.cardName}>{c.label}</strong>
                   {/* 닫힌 카드의 요약은 화면에서만 숨김 — 스크린리더는 모든 카드 요약을 읽을 수 있게 */}
-                  <span className={cx(s.cardDesc, !on && 'sr-only')}>{p.summary}</span>
-                  <Media className={s.cardMedia} src={PRODUCT_IMAGES[p.slug]} label={`IMAGE — ${pad(i + 1)}`} />
+                  <span className={cx(s.cardDesc, !on && 'sr-only')}>{c.summary}</span>
+                  <Media className={s.cardMedia} src={HERO_IMAGES[c.key]} label={`IMAGE — ${pad(i + 1)}`} />
                 </Link>
               </li>
             );
           })}
         </ul>
-      </div>
+      </nav>
 
       <p className={cx('container', s.highlight)}>
         <Highlight text={group?.highlight ?? category.highlight} />
       </p>
+
+      {/* 하위 탭 — 2개 이상 고를 게 있을 때만. 알루미늄셔터 방범셔터처럼 구분 안에 제품이 여럿이면 두 줄 */}
+      {(category.groups || productTabs.length > 1) && (
+        <nav className={cx('container', s.subNav)} aria-label={`${category.label} 제품`}>
+          {category.groups && group && (
+            <ul className={s.subTabs}>
+              {category.groups.map((g) => (
+                <li key={g.key}>
+                  <Link to={productPath(category, g.slugs[0])} {...swap} className={s.subTab} aria-current={g.key === group.key ? 'true' : undefined}>
+                    {g.label}
+                    {g.slugs.length > 1 && <span className={s.subCount}>{g.slugs.length}</span>}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          {productTabs.length > 1 && (
+            <ul className={cx(s.subTabs, category.groups && s.subTabsMinor)}>
+              {productTabs.map((pt) => (
+                <li key={pt.slug}>
+                  <Link to={productPath(category, pt.slug)} {...swap} className={s.subTab} aria-current={pt.slug === product.slug ? 'true' : undefined}>
+                    {pt.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </nav>
+      )}
 
       {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
       <ProductBody key={product.slug} product={product} />

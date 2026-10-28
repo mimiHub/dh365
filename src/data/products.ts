@@ -49,6 +49,8 @@ export interface CategoryInfo {
   key: ProductCategory;
   label: string;
   labelEn: string;
+  /** 카테고리 카드의 한 줄 설명 [가안] */
+  summary: string;
   /** 카드 아래 강조 문장 [가안]. *별표* 로 감싼 부분이 블루 강조 */
   highlight: string;
   /** groups가 있으면 카드는 선택한 구분의 제품만 보여줌 */
@@ -71,6 +73,7 @@ export const PRODUCT_CATEGORIES: CategoryInfo[] = [
     key: 'screen',
     label: '스크린방화셔터',
     labelEn: 'Fire Screen Shutter',
+    summary: '천장 속에 감춰 설치하는 가볍고 조용한 방화셔터',
     highlight: '천장 속에 *감춰 설치*하는 가벼운 내화 스크린에, 대한방화만의 *3가지 특허 안전장치*를 더했습니다.',
     slugs: ['screen'],
   },
@@ -78,6 +81,7 @@ export const PRODUCT_CATEGORIES: CategoryInfo[] = [
     key: 'steel',
     label: '철재방화셔터 / 철재단열방화셔터',
     labelEn: 'Steel Fire Shutter',
+    summary: '밀폐성과 내구성이 뛰어난 강판 슬랫 방화셔터',
     highlight: '*밀폐성과 내구성*이 뛰어난 비차열 60분 인정 철재셔터에, *3가지 특허 안전장치*를 기본 적용합니다.',
     slugs: ['steel', 'steel-insulated'],
   },
@@ -85,6 +89,7 @@ export const PRODUCT_CATEGORIES: CategoryInfo[] = [
     key: 'aluminum',
     label: '알루미늄셔터',
     labelEn: 'Aluminum Shutter',
+    summary: '방범·단열·내풍압, 현장에 맞춘 알루미늄셔터',
     highlight: '가벼운 알루미늄 이중압출 슬랫에 *방범·단열·내풍압* 성능을 현장에 맞게 더합니다.',
     groups: [
       {
@@ -117,6 +122,7 @@ export const PRODUCT_CATEGORIES: CategoryInfo[] = [
     key: 'speed-door',
     label: '스피드도어',
     labelEn: 'Speed Door',
+    summary: '부딪혀도 자동으로 복구되는 고속 개폐 도어',
     highlight: '차량이 잦은 출입구에서 *빠르게 여닫고*, 부딪혀도 *스스로 복구*되는 고속 도어입니다.',
     slugs: ['speed-door'],
   },
@@ -124,6 +130,7 @@ export const PRODUCT_CATEGORIES: CategoryInfo[] = [
     key: 'overhead-door',
     label: '오버헤드도어',
     labelEn: 'Overhead Door',
+    summary: '단열·방음·내풍압을 갖춘 패널형 산업용 도어',
     highlight: '*단열·방음·내풍압*을 패널 하나로 해결하는 물류창고·격납고용 도어입니다.',
     slugs: ['overhead-door'],
   },

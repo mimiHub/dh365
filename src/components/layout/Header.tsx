@@ -1,5 +1,5 @@
 import logo from '../../assets/logo.png';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NAV, COMPANY } from '../../data/site';
 import { Button, SmartLink, cx } from '../ui';
@@ -16,6 +16,23 @@ export function Header() {
   // 투명 헤더는 메인 히어로 위에서만. 하위 페이지는 상단에 흰 카테고리 탭이 붙으므로 처음부터 흰 배경
   const isHome = useLocation().pathname === '/';
   const [megaOpen, setMegaOpen] = useState(false);
+
+  /**
+   * 호버 인텐트(hover intent) — 마우스가 대메뉴 위에 '머물렀을 때만' 메가메뉴를 엶.
+   * 하위 페이지는 대메뉴 바로 아래에 카테고리 탭이 붙어 있어서, 탭으로 가는 길에 대메뉴를 스치기만 해도
+   * 메가메뉴(300px)가 펼쳐져 탭을 덮었음. 열 때만 짧게 기다리고, 닫을 때는 바로 닫음.
+   */
+  const openTimer = useRef<number | undefined>(undefined);
+  const cancelOpen = () => window.clearTimeout(openTimer.current);
+  const openMegaSoon = () => {
+    cancelOpen();
+    openTimer.current = window.setTimeout(() => setMegaOpen(true), 180);
+  };
+  const closeMega = () => {
+    cancelOpen();
+    setMegaOpen(false);
+  };
+  useEffect(() => cancelOpen, []); // 언마운트 시 남은 타이머 정리
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   // 모바일 메뉴가 열리면 헤더는 투명 + 흰 글자(네이비 오버레이 위에 떠 있음)
@@ -34,14 +51,18 @@ export function Header() {
   return (
     <header
       className={cx(s.header, solid && s.solid, scrolled && !mobileOpen && s.compact, mobileOpen && s.menuOpen)}
-      onMouseLeave={() => setMegaOpen(false)}
+      onMouseLeave={closeMega}
     >
       <div className={cx('container', s.bar)}>
         <SmartLink href="/" className={s.logo} aria-label={`${COMPANY.name} 홈`}>
           <img src={logo} alt={COMPANY.name} />
         </SmartLink>
 
-        <nav className={s.gnb} aria-label="주 메뉴" onMouseEnter={() => setMegaOpen(true)} onFocus={() => setMegaOpen(true)}>
+        <nav className={s.gnb} aria-label="주 메뉴" onMouseEnter={openMegaSoon}
+          // 키보드 탐색: 포커스가 들어오면 바로 열고(기다릴 이유 없음), 포커스가 대메뉴 밖으로 나가면 닫음
+          onFocus={() => setMegaOpen(true)}
+          onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && closeMega()}
+        >
           <ul className={s.depth1}>
             {NAV.map((item) => (
               <li key={item.label}>
@@ -52,7 +73,7 @@ export function Header() {
                   <ul className={cx(s.depth2, megaOpen && s.depth2Open)}>
                     {item.children.map((c) => (
                       <li key={c.label}>
-                        <SmartLink href={c.href} onClick={() => setMegaOpen(false)}>{c.label}</SmartLink>
+                        <SmartLink href={c.href} onClick={closeMega}>{c.label}</SmartLink>
                       </li>
                     ))}
                   </ul>

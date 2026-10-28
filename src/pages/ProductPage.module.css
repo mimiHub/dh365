@@ -1,24 +1,8 @@
 /* 제품소개 페이지 — 코아드 제품 페이지 구성. 색·간격은 토큰만 사용 (사진 위 흰 글자 제외) */
 
-/* ── 카테고리 탭 바 ──
-   헤더(fixed) 바로 아래에서 시작. sticky top을 축소된 헤더 높이(72px)에 맞춰,
-   스크롤하면 헤더가 줄어든 자리 밑에 붙어 따라옴 */
-.catBar { position: sticky; top: 72px; z-index: calc(var(--z-header) - 1); margin-top: var(--header-height); background: var(--surface); border-bottom: 1px solid var(--line); }
-.catList { display: flex; overflow-x: auto; scrollbar-width: none; }
-.catList::-webkit-scrollbar { display: none; }
-.catList > li { flex: 1 0 auto; }
-.catLink { position: relative; display: flex; align-items: center; justify-content: center; height: 56px; padding: 0 var(--space-5); font-size: 16px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; transition: color .2s ease; }
-.catLink:hover { color: var(--ink); }
-/* 선택 탭: 아래쪽 선. 위쪽에 두면 바로 위 GNB(대메뉴)에 불이 들어온 것처럼 보여서, 이 탭 바 소속임이 드러나게 하단 구분선 위에 얹음.
-   선은 항상 그려 두고 scaleX로 펼침 — 탭을 바꿀 때 가운데에서 퍼지는 모션.
-   bottom:0 — 목록(catList)이 overflow-x:auto라 바깥(-1px)으로 내보내면 잘림 */
-.catLink::after { content: ""; position: absolute; left: var(--space-5); right: var(--space-5); bottom: 0; height: 2px; background: var(--brand); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
-.catLink[aria-current="page"] { color: var(--ink); font-weight: 700; }
-.catLink[aria-current="page"]::after { transform: scaleX(1); }
-.catLink:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-
 /* ── 히어로 ── */
-.hero { position: relative; height: 600px; display: grid; place-items: center; color: #ffffff; background: #0b1424; overflow: hidden; }
+/* margin-top: 헤더가 fixed라 그만큼 내려서 시작 (하위 페이지는 흰 헤더) */
+.hero { position: relative; margin-top: var(--header-height); height: 560px; display: grid; place-items: center; color: #ffffff; background: #0b1424; overflow: hidden; }
 .heroBg { position: absolute; inset: 0; background: radial-gradient(900px 500px at 70% 20%, rgba(1, 99, 206, 0.35), transparent 60%), linear-gradient(160deg, #1c3f86 0%, #0b1424 75%); }
 .heroBg.hasPhoto { background: #0b1424; }
 .heroBg > img { width: 100%; height: 100%; object-fit: cover; animation: heroZoom 8s ease-out both; }
@@ -29,44 +13,39 @@
 .heroTitle { font-size: 56px; line-height: 68px; font-weight: 800; letter-spacing: -0.03em; text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3); }
 .heroEn { margin-top: var(--space-3); font-size: 28px; line-height: 36px; font-weight: 400; letter-spacing: 0.02em; opacity: .9; }
 
-/* 2단계 구분 — 사진 위 흰 알약 버튼 (선택: 흰 바탕 + 네이비 글자) */
-.groups { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-6); }
-.groupLink { display: inline-flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius-pill); font-size: 16px; font-weight: 600; color: #ffffff; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
-.groupLink:hover { border-color: #ffffff; background: rgba(255, 255, 255, 0.12); }
-.groupLink[aria-current="true"] { background: #ffffff; border-color: #ffffff; color: var(--brand); }
-.groupLink:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
-.groupCount { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.2); font-size: 12px; font-variant-numeric: tabular-nums; }
-.groupLink[aria-current="true"] .groupCount { background: var(--accent-soft); color: var(--accent-text); }
-
-/* ── 제품 카드 ── */
+/* ── 카테고리 카드 ──
+   한 화면에 --visible장. 카드 폭을 트랙 폭에서 계산해 몇 장이 보일지 화면 폭과 무관하게 고정하고,
+   넘치는 카드는 가로 스크롤(‹ › 버튼·스와이프)로 봄 */
 .cardsWrap { position: relative; max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin: -240px auto 0; padding: 0 var(--gutter); }
-/* align-items:flex-end → 선택 카드만 설명이 있어 키가 커지고, 자연스럽게 위로 솟음 */
-.cards { display: flex; align-items: flex-end; gap: var(--space-5); padding: var(--space-5) 4px var(--space-10); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+/* align-items:flex-end → 선택 카드만 설명이 있어 키가 커지고, 자연스럽게 위로 솟음
+   위 여백(--space-5)은 hover로 떠오르는 카드가 스크롤 박스에 잘리지 않게 */
+.cards { --visible: 4; --gap: var(--space-4); display: flex; align-items: flex-end; gap: var(--gap); padding: var(--space-5) 0 var(--space-10); overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
 .cards::-webkit-scrollbar { display: none; }
-/* 카드가 적을 땐 가운데, 넘치면 왼쪽부터 스크롤 — justify-content:center는 넘칠 때 왼쪽이 잘려 접근 불가라 auto 마진 사용 */
-/* 4장까지는 줄어들어 한 줄에 다 보이고(최소 240px), 그보다 좁아지면 스와이프 */
-.cardItem { flex: 0 1 300px; min-width: 240px; scroll-snap-align: center; }
-.cardItem:first-child { margin-left: auto; }
-.cardItem:last-child { margin-right: auto; }
+.cardItem { flex: 0 0 calc((100% - (var(--visible) - 1) * var(--gap)) / var(--visible)); scroll-snap-align: start; }
 
 /* position:relative — 닫힌 카드의 sr-only 요약(absolute)이 스크롤 트랙 밖으로 빠져 모바일 가로 스크롤을 만들던 문제 방지 */
 .card { position: relative; display: flex; flex-direction: column; padding: var(--space-6) var(--space-6) 0; background: var(--surface-raised); border: 1px solid transparent; box-shadow: var(--shadow-card); transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
-.card:hover { transform: translateY(-4px); }
 .card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .cardOn { border-color: var(--line-strong); box-shadow: var(--shadow-float); }
-.cardOn:hover { transform: none; }
 
 .cardEn { font-size: 15px; line-height: 22px; font-weight: 600; letter-spacing: 0.02em; color: var(--silver); }
-.cardName { margin-top: var(--space-1); font-size: 26px; line-height: 36px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink-subtle); transition: color .25s ease; }
-.cardOn .cardName { color: var(--ink); }
+.cardName { margin-top: var(--space-1); font-size: 24px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
 .cardDesc { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--ink); font-size: 15px; line-height: 24px; color: var(--ink-muted); }
 /* 사진은 카드 패딩을 무시하고 좌우 끝까지 */
 .cardMedia { aspect-ratio: 1 / 1; margin: var(--space-6) calc(var(--space-6) * -1) 0; }
-.card:not(.cardOn) .cardMedia > img { filter: saturate(.6); }
 
-.arrow { position: absolute; top: 45%; z-index: 1; width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--ink-subtle); cursor: pointer; transition: color .2s ease; }
+/* 선택 안 된 카드 — 코아드처럼 글자·사진을 흐리게. hover하면 또렷해지며 살짝 떠오름 */
+.card:not(.cardOn) .cardName,
+.card:not(.cardOn) .cardEn,
+.card:not(.cardOn) .cardMedia { opacity: .45; transition: opacity .25s ease; }
+.card:not(.cardOn):hover { transform: translateY(-4px); }
+.card:not(.cardOn):hover .cardName,
+.card:not(.cardOn):hover .cardEn,
+.card:not(.cardOn):hover .cardMedia { opacity: .85; }
+
+.arrow { position: absolute; top: 55%; z-index: 1; width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--ink-subtle); cursor: pointer; transition: color .2s ease, opacity .2s ease; }
 .arrow:hover:not(:disabled) { color: var(--ink); }
-.arrow:disabled { opacity: .3; cursor: default; }
+.arrow:disabled { opacity: .25; cursor: default; }
 .arrow:focus-visible { outline: 2px solid var(--focus); }
 .prev { left: calc(var(--gutter) - 56px); }
 .next { right: calc(var(--gutter) - 56px); }
@@ -74,6 +53,20 @@
 /* ── 강조 문장 ── */
 .highlight { max-width: 860px; margin: var(--space-6) auto 0; text-align: center; font-size: 20px; line-height: 34px; letter-spacing: -0.01em; color: var(--ink-muted); }
 .highlight em { font-style: normal; font-weight: 700; color: var(--accent-text); }
+
+/* ── 하위 탭 (구분·제품) ── */
+.subNav { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); margin-top: var(--space-10); }
+.subTabs { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); }
+.subTab { display: inline-flex; align-items: center; gap: var(--space-2); height: 48px; padding: 0 var(--space-6); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); font-size: 16px; font-weight: 600; color: var(--ink-muted); transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+.subTab:hover { border-color: var(--ink); color: var(--ink); }
+.subTab[aria-current="true"] { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+.subTab:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.subCount { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--surface-alt); color: var(--ink-subtle); font-size: 12px; font-variant-numeric: tabular-nums; }
+.subTab[aria-current="true"] .subCount { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+/* 둘째 줄(구분 안 제품) — 한 단계 아래임이 보이게 작고 가벼운 텍스트 탭 */
+.subTabsMinor .subTab { height: 36px; padding: 0 var(--space-4); border-color: transparent; font-size: 15px; font-weight: 500; }
+.subTabsMinor .subTab:hover { border-color: transparent; background: var(--surface-alt); }
+.subTabsMinor .subTab[aria-current="true"] { background: var(--accent-soft); border-color: transparent; color: var(--accent-text); font-weight: 700; }
 
 /* ── 상세 ── */
 .body { margin-top: var(--space-16); animation: bodyIn .5s cubic-bezier(.22,1,.36,1) both; }
@@ -148,27 +141,28 @@
 .body + section { margin-top: var(--space-16); }
 
 @media (max-width: 1024px) {
-  .hero { height: 480px; }
+  .hero { margin-top: 72px; height: 480px; }
   .heroTitle { font-size: 44px; line-height: 56px; }
   .heroEn { font-size: 22px; }
-  .arrow { display: none; } /* 태블릿 이하는 스와이프 */
+  .cards { --visible: 3; }
+  .prev { left: 0; }
+  .next { right: 0; }
   .overview, .specWrap { grid-template-columns: 1fr; gap: var(--space-8); }
   .patents { grid-template-columns: 1fr; }
   .details { grid-template-columns: 1fr 1fr; }
   .patentLine { margin-left: 0; }
 }
 @media (max-width: 767px) {
-  .catLink { height: 48px; padding: 0 var(--space-4); font-size: 15px; }
-  .catLink::after { left: var(--space-4); right: var(--space-4); }
   .hero { height: 400px; }
   .heroText { margin-bottom: 160px; padding: 0 var(--gutter); }
-  .groups { margin-top: var(--space-4); gap: 6px; }
-  .groupLink { height: 36px; padding: 0 var(--space-4); font-size: 14px; }
+  .subNav { margin-top: var(--space-8); }
+  .subTab { height: 40px; padding: 0 var(--space-4); font-size: 15px; }
   .heroTitle { font-size: 36px; line-height: 46px; }
   .heroEn { font-size: 18px; line-height: 26px; }
   .cardsWrap { margin-top: -200px; padding: 0; }
-  .cards { padding-left: var(--gutter); padding-right: var(--gutter); }
-  .cardItem { flex: 0 0 76%; }
+  /* 모바일: 한 장 + 다음 카드 일부(1.3장)를 보여 스와이프할 수 있음을 알림. 화살표 대신 스와이프 */
+  .cards { --visible: 1.3; padding-left: var(--gutter); padding-right: var(--gutter); scroll-padding-inline: var(--gutter); }
+  .arrow { display: none; }
   .cardName { font-size: 22px; line-height: 32px; }
   .highlight { font-size: 17px; line-height: 28px; }
   .body { margin-top: var(--space-12); }

@@ -23,7 +23,7 @@ export const NAV: NavItem[] = [
     href: '/products/screen',
     children: [
       { label: '스크린방화셔터', href: '/products/screen' },
-      { label: '철재방화셔터', href: '/products/steel' },
+      { label: '철재방화셔터 / 철재단열방화셔터', href: '/products/steel' },
       { label: '알루미늄셔터', href: '/products/aluminum' },
       { label: '스피드도어', href: '/products/speed-door' },
       { label: '오버헤드도어', href: '/products/overhead-door' },
