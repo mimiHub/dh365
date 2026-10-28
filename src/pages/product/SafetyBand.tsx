@@ -1,140 +1,186 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { FIRE_SAFETY } from '../../data/products';
 import { Badge, cx } from '../../components/ui';
 import { useReveal } from '../../hooks/useReveal';
+import shutterPhoto from '../../assets/product-screen-shutter.png';
+import bandPhoto from '../../assets/banner-steel-shutter.jpg';
 import s from './SafetyBand.module.css';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /**
- * 방화셔터 공통 안전 시스템 — 스크린·철재 상세에 함께 노출 (네이비 밴드)
+ * 방화셔터 공통 안전 시스템 — 스크린·철재 상세 하단
  *
- * 구성: [헤드라인 | 숫자 요약] → [특허 출원 안전장치 3종 카드] → [장애물 감지 데모 | 안전 브라켓트]
- *      → [연동제어기 음성안내] → [세부 안전 디테일 6] → [모터 용량 스케일 + 특허 등록]
- * 장식(아이콘·애니메이션)은 모두 aria-hidden — 내용은 텍스트로 그대로 읽힘
+ * 레이아웃: 체크무늬 2×2 + 사진 띠
+ *   [흰 글 패널: 제목 + 특허 출원 3종 아코디언] [어두운 비주얼: 빛나는 동심원 + 아이콘 3개]
+ *   [사진 비주얼: 장애물 감지 데모]            [흰 글 패널: 안전 브라켓트 · 음성안내]
+ *   [사진 배경 띠: 세부 디테일 6 알약 탭 | 선택 디테일·모터·특허 유리 카드]
+ * 글 패널과 비주얼 패널을 엇갈려 배치해 리듬을 만들고, 아코디언 선택이 오른쪽 그래픽과 연동돼 '살아 있는' 느낌.
+ * 장식(그래픽·애니메이션)은 모두 aria-hidden — 내용은 텍스트로 그대로 읽힘
  */
 export function SafetyBand() {
   const f = FIRE_SAFETY;
   const ref = useReveal<HTMLElement>();
+  const [patent, setPatent] = useState(0); // 아코디언에서 열린 특허 출원 항목
+  const [detail, setDetail] = useState(0); // 아래 띠에서 고른 세부 디테일
   const caps = f.motor.capacities;
 
   return (
-    <section ref={ref} className={s.band} data-theme="dark" aria-labelledby="safety-title">
-      <div className={s.decor} aria-hidden="true" />
-      <div className={cx('container', s.inner)}>
-        {/* ── 헤드라인 + 숫자 요약 ── */}
-        <header className={cx(s.head, 'reveal')}>
-          <div>
-            <p className="dh-eyebrow">SAFETY SYSTEM</p>
-            <h3 id="safety-title" className={s.title}>
-              3가지 <em>특허 출원 안전장치</em>를<br />기본으로 적용합니다
-            </h3>
-            <p className={s.lead}>대한방화가 설치하는 방화셔터에는 추락·끼임·고립을 막는 장치가 옵션이 아닌 기본으로 들어갑니다.</p>
-          </div>
-          <dl className={s.stats}>
-            {/* 등록 여부가 확인되지 않은 항목은 '출원'으로만 셈 (카탈로그 p.3) */}
-            <div>
-              <dt>특허 출원</dt>
-              <dd><strong>{f.patents.length}</strong>종</dd>
-            </div>
-            <div>
-              <dt>안전 디테일</dt>
-              <dd><strong>{f.details.length}</strong>종</dd>
-            </div>
-            <div>
-              <dt>모터 라인업</dt>
-              <dd><strong>{caps.length}</strong>종</dd>
-            </div>
-          </dl>
-        </header>
+    <section ref={ref} className={s.band} aria-labelledby="safety-title">
+      <div className={cx('container', s.grid)}>
+        {/* ① 흰 글 패널 — 제목 + 특허 출원 3종 아코디언 */}
+        <div className={cx(s.panel, s.light, 'reveal')}>
+          <p className={s.eyebrow}>SAFETY SYSTEM</p>
+          <h3 id="safety-title" className={s.title}>
+            3가지 <em>특허 출원</em>
+            <br />
+            안전장치 기본 적용
+          </h3>
+          <p className={s.lead}>대한방화가 설치하는 방화셔터에는 추락·끼임·고립을 막는 장치가 옵션이 아닌 기본으로 들어갑니다.</p>
 
-        {/* ── 특허 출원 안전장치 3종 ── */}
-        <ol className={s.patents}>
-          {f.patents.map((pt, i) => (
-            <li key={pt.title} className={cx(s.patent, 'reveal')} style={{ ['--reveal-delay' as string]: `${i * 100}ms` }}>
-              <span className={s.ghost} aria-hidden="true">{pad(i + 1)}</span>
-              <span className={s.iconRing} aria-hidden="true">{PATENT_ICONS[i]}</span>
-              <p className={s.patentNo}>SAFETY {pad(i + 1)} · 특허 출원</p>
-              <h4 className={s.patentTitle}>{pt.title}</h4>
-              <p className={s.patentBody}>{pt.body}</p>
-            </li>
-          ))}
-        </ol>
-
-        {/* ── 장애물 감지(데모) + 안전 브라켓트 ── */}
-        <div className={s.duo}>
-          <article className={cx(s.card, s.obstacle, 'reveal')}>
-            <div className={s.cardText}>
-              <h4 className={s.cardTitle}>{f.obstacle.title} <Badge tone="fire">{f.obstacle.badge}</Badge></h4>
-              <p className={s.cardBody}>{f.obstacle.body}</p>
-              <ol className={s.steps}>
-                <li><span>1</span>장애물 접촉</li>
-                <li><span>2</span>5초 상승 후 정지</li>
-                <li><span>3</span>음성 안내</li>
-              </ol>
-            </div>
-            <ObstacleDemo />
-          </article>
-
-          <article className={cx(s.card, s.bracket, 'reveal')} style={{ ['--reveal-delay' as string]: '100ms' }}>
-            <span className={s.iconRing} aria-hidden="true">{ICON.bracket}</span>
-            <h4 className={s.cardTitle}>{f.bracket.title}</h4>
-            <p className={s.cardBody}>{f.bracket.body}</p>
-            <ul className={s.chips}>
-              <li>500K 이상 모터 기본 장착</li>
-              <li>방진 러버 기본 적용</li>
-              <li>체인 이탈 추락 방지</li>
-            </ul>
-          </article>
+          <ul className={s.accordion}>
+            {f.patents.map((pt, i) => {
+              const open = i === patent;
+              return (
+                <li key={pt.title} className={cx(s.accItem, open && s.accOpen)}>
+                  <button type="button" className={s.accHead} aria-expanded={open} aria-controls={`patent-${i}`} onClick={() => setPatent(i)}>
+                    <span className={s.accNo}>{pad(i + 1)}</span>
+                    {pt.title}
+                    <span className={s.accChevron} aria-hidden="true" />
+                  </button>
+                  <div id={`patent-${i}`} className={s.accBody} role="region" aria-label={pt.title}>
+                    <div>
+                      <p>{pt.body}</p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
-        {/* ── 연동제어기 음성안내 ── */}
-        <article className={cx(s.card, s.voice, 'reveal')}>
-          <div className={s.voiceHead}>
-            <span className={s.speaker} aria-hidden="true">
-              {ICON.speaker}
-              <span className={s.wave}><i /><i /><i /><i /><i /></span>
-            </span>
-            <h4 className={s.cardTitle}>연동제어기 음성안내 <Badge tone="fire">특허 출원</Badge></h4>
-            <p className={s.cardBody}>정전·화재·하강·장애물 등 상황별로 {f.voiceMessages.length}가지 음성으로 알려 대피를 돕습니다.</p>
+        {/* ② 어두운 비주얼 — 빛나는 동심원, 아코디언에서 고른 항목의 아이콘이 함께 빛남 */}
+        <div className={cx(s.panel, s.visual, s.rings)} aria-hidden="true">
+          <div className={s.ringWrap}>
+            <span className={cx(s.ring, s.r1)} />
+            <span className={cx(s.ring, s.r2)} />
+            <span className={cx(s.ring, s.r3)} />
+            <span className={s.ringDash} />
+            <div className={s.core}>
+              <span className={s.coreLabel}>Fire Shutter</span>
+              <strong className={s.coreTitle}>SAFETY</strong>
+              <span className={s.coreSub}>특허 출원 {f.patents.length}종</span>
+            </div>
+            {PATENT_ICONS.map((icon, i) => (
+              <span key={i} className={cx(s.node, s[`n${i}`], i === patent && s.nodeOn)}>
+                {icon}
+              </span>
+            ))}
           </div>
-          <ul className={s.bubbles}>
+        </div>
+
+        {/* ③ 사진 비주얼 — 장애물 감지 데모 */}
+        <div className={cx(s.panel, s.visual, s.photoPanel)}>
+          <img className={s.panelPhoto} src={shutterPhoto} alt="" aria-hidden="true" loading="lazy" />
+          <div className={s.photoInner}>
+            <p className={s.eyebrowLight}>OBSTACLE SENSOR</p>
+            <h4 className={s.photoTitle}>
+              {f.obstacle.title} <Badge tone="fire">{f.obstacle.badge}</Badge>
+            </h4>
+            <ObstacleDemo />
+            <ol className={s.steps}>
+              <li><span>1</span>장애물 접촉</li>
+              <li><span>2</span>5초 상승 후 정지</li>
+              <li><span>3</span>음성 안내</li>
+            </ol>
+            <p className="sr-only">{f.obstacle.body}</p>
+          </div>
+        </div>
+
+        {/* ④ 흰 글 패널 — 안전 브라켓트 + 음성안내 */}
+        <div className={cx(s.panel, s.light, s.alignEnd, 'reveal')}>
+          <p className={s.eyebrow}>SMART CONTROL</p>
+          <h3 className={cx(s.title, s.titleAlt)}>
+            추락은 막고
+            <br />
+            <em>상황은 알립니다</em>
+          </h3>
+          <p className={s.lead}>{f.bracket.body}</p>
+
+          <p className={s.cellHead}>
+            <span className={s.cellIcon} aria-hidden="true">{ICON.bracket}</span>
+            {f.bracket.title}
+          </p>
+          <ul className={s.cells}>
+            <li>500K 이상 모터<br /><b>기본 장착</b></li>
+            <li>체인 처짐 방지<br /><b>방진 러버</b></li>
+            <li>체인 이탈 시<br /><b>추락 방지</b></li>
+          </ul>
+
+          <p className={s.cellHead}>
+            <span className={s.cellIcon} aria-hidden="true">{ICON.speaker}</span>
+            연동제어기 음성안내 <Badge tone="fire">특허 출원</Badge>
+            <span className={s.wave} aria-hidden="true"><i /><i /><i /><i /><i /></span>
+          </p>
+          <ul className={s.voice}>
             {f.voiceMessages.map((m) => (
               <li key={m}>“{m}”</li>
             ))}
           </ul>
-        </article>
+        </div>
+      </div>
 
-        {/* ── 세부 안전 디테일 ── */}
-        <ul className={s.details}>
-          {f.details.map((d, i) => (
-            <li key={d.title} className={cx(s.detail, 'reveal')} style={{ ['--reveal-delay' as string]: `${(i % 3) * 80}ms` }}>
-              <span className={s.detailIcon} aria-hidden="true">{DETAIL_ICONS[i]}</span>
-              <div>
-                <strong>{d.title}</strong>
-                <span>{d.body}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        {/* ── 모터 용량 스케일 + 특허 등록 ── */}
-        <div className={cx(s.motor, 'reveal')}>
-          <div className={s.motorHead}>
-            <p className={s.motorLabel}>DH 모터 시스템</p>
-            <p className={s.motorSub}>개구부 크기에 맞춰 {caps[0]} ~ {caps[caps.length - 1]} 중 선택</p>
+      {/* ⑤ 사진 배경 띠 — 세부 디테일 6 (왼쪽 알약 탭) + 유리 카드 */}
+      <div className={s.strip}>
+        <img className={s.stripPhoto} src={bandPhoto} alt="" aria-hidden="true" loading="lazy" />
+        <div className={cx('container', s.stripInner)}>
+          <div className={s.pillsCol}>
+            <p className={s.eyebrowLight}>SAFETY DETAILS</p>
+            <h4 className={s.stripTitle}>세부 안전 설계</h4>
+            <ul className={s.pills} role="tablist" aria-label="세부 안전 설계">
+              {f.details.map((d, i) => (
+                <li key={d.title}>
+                  <button
+                    type="button"
+                    role="tab"
+                    id={`detail-tab-${i}`}
+                    aria-selected={i === detail}
+                    aria-controls="detail-panel"
+                    className={s.pill}
+                    onClick={() => setDetail(i)}
+                  >
+                    {d.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ol className={s.scale} aria-label="모터 용량">
-            {caps.map((c) => (
-              <li key={c}><span className={s.tick} aria-hidden="true" />{c}</li>
-            ))}
-          </ol>
-          <div className={s.cert}>
-            <span className={s.certSeal} aria-hidden="true">{ICON.seal}</span>
-            <div>
-              <p className={s.certNo}>특허 {f.patent.no}</p>
-              <p className={s.certTitle}>{f.patent.title} · {f.patent.registered} 등록</p>
-            </div>
+
+          <div className={s.glassRow}>
+            <article id="detail-panel" role="tabpanel" aria-labelledby={`detail-tab-${detail}`} className={cx(s.glass, s.glassMain)} key={detail}>
+              <span className={s.glassIcon} aria-hidden="true">{DETAIL_ICONS[detail]}</span>
+              <p className={s.glassNo}>DETAIL {pad(detail + 1)} / {pad(f.details.length)}</p>
+              <h5 className={s.glassTitle}>{f.details[detail].title}</h5>
+              <p className={s.glassBody}>{f.details[detail].body}</p>
+            </article>
+
+            <article className={s.glass}>
+              <p className={s.glassNo}>DH MOTOR SYSTEM</p>
+              <h5 className={s.glassTitle}>모터 라인업 {caps.length}종</h5>
+              <ol className={s.scale} aria-label="모터 용량">
+                {caps.map((c) => (
+                  <li key={c}><span className={s.tick} aria-hidden="true" />{c}</li>
+                ))}
+              </ol>
+              <p className={s.glassBody}>개구부 크기에 맞춰 {caps[0]} ~ {caps[caps.length - 1]} 중 선택합니다.</p>
+            </article>
+
+            <article className={s.glass}>
+              <span className={cx(s.glassIcon, s.gold)} aria-hidden="true">{ICON.seal}</span>
+              <p className={s.glassNo}>PATENT</p>
+              <h5 className={s.glassTitle}>특허 {f.patent.no}</h5>
+              <p className={s.glassBody}>{f.patent.title}<br />{f.patent.registered} 등록</p>
+            </article>
           </div>
         </div>
       </div>
@@ -155,7 +201,6 @@ function ObstacleDemo() {
           <span className={s.demoAlert}>삐— 장애물 감지</span>
         </div>
       </div>
-      <p className={s.demoCaption}>장애물 감지 → 자동 상승</p>
     </div>
   );
 }
