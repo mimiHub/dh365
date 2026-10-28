@@ -20,7 +20,7 @@ import screenShutterImg from '../assets/product-screen-shutter.png';
 import windShutterImg from '../assets/product-wind-shutter.png';
 import securityShutterImg from '../assets/product-security-shutter.png';
 import geumgokImg from '../assets/case-wind-geumgok-foodzone.png';
-import pipeImg from '../assets/case-security-pipe.png';
+import pipeSingleImg from '../assets/product-pipe-single.jpg';
 import waveImg from '../assets/case-security-wave.png';
 import speedDoorImg from '../assets/product-speed-door.jpg';
 import speedDoorRedImg from '../assets/product-speed-door-red.jpg';
@@ -40,7 +40,7 @@ const PRODUCT_IMAGES: Partial<Record<string, string>> = {
   steel: steelShutterImg,
   'al-wind': windShutterImg,
   'al-wind-insulated': geumgokImg, // 인천 금곡동 푸드존 단열내풍압셔터 현장
-  'pipe-single': pipeImg,
+  'pipe-single': pipeSingleImg, // 지하주차장 출입구 스텐파이프셔터
   'steel-security': securityShutterImg,
   wave: waveImg,
   'speed-door': speedDoorRedImg, // 레드 스피드도어 정면
