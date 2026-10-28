@@ -10,6 +10,7 @@ import {
   productsOf,
   type ProductCategory,
   type ProductDetail,
+  type TestReport,
 } from '../data/products';
 import { COMPANY } from '../data/site';
 import { Badge, Button, Media, cx } from '../components/ui';
@@ -30,6 +31,7 @@ import overheadBannerImg from '../assets/banner-overhead-door.jpg';
 import overheadDoorImg from '../assets/product-overhead-door.jpg';
 import aluminumCardImg from '../assets/card-aluminum-shutter.jpg';
 import steelDrawingImg from '../assets/drawing-steel-shutter.png';
+import steelReportImg from '../assets/report-steel-kict.jpg';
 import s from './ProductPage.module.css';
 
 // 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
@@ -63,6 +65,11 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
 // 제품 구조도(도면) — 있으면 사양표 옆에 나란히. caption은 도면 기준 치수 안내
 const DRAWINGS: Partial<Record<string, { src: string; caption: string }>> = {
   steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
+};
+
+// 시험성적서 스캔 이미지 — 키는 성적서 번호
+const REPORT_IMAGES: Partial<Record<string, string>> = {
+  '2020TSE0051-1-1': steelReportImg,
 };
 
 // 가로로 긴 사진을 정사각형·4:3 칸에 넣을 때 남길 위치 (기본은 가운데)
@@ -409,6 +416,111 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
           </section>
         )
       )}
+
+      {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
+    </div>
+  );
+}
+
+/**
+ * 시험성적서 — 핵심 결과는 표로 읽히게(텍스트), 원본 스캔은 이미지로(증빙).
+ * 의뢰자·시험대상을 숨기지 않고 그대로 표기: 대한방화 명의가 아닌 성적서를 자사 인증처럼 보이게 하면 안 됨
+ */
+function ReportBlock({ report: r }: { report: TestReport }) {
+  const img = REPORT_IMAGES[r.reportNo];
+  const meta: [string, string][] = [
+    ['시험기관', r.accreditation ? `${r.lab} · ${r.accreditation}` : r.lab],
+    ['성적서 번호', r.reportNo],
+    ['의뢰자', r.client],
+    ['시험대상', r.subject],
+    ['시험방법', r.method],
+    ['시험체', r.specimen],
+    ['시험일자', `${r.testDate} (발급 ${r.issueDate})`],
+  ];
+  return (
+    <section className={cx('container', s.block)} aria-labelledby={`report-${r.reportNo}`}>
+      <BlockHead en="TEST REPORT" title="공인 시험성적서" id={`report-${r.reportNo}`} />
+      <div className={s.report}>
+        <div className={s.reportMain}>
+          <p className={s.reportTitle}>
+            {r.title} <Badge tone="accent">60분 전 항목 적합</Badge>
+          </p>
+          <dl className={s.reportMeta}>
+            {meta.map(([k, v]) => (
+              <div key={k}>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <table className={cx(s.spec, s.resultTable)}>
+            <caption className="sr-only">{r.title} 시험결과</caption>
+            <colgroup>
+              <col className={s.colItem} />
+              <col />
+              <col className={s.colShort} />
+              <col className={s.colShort} />
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">시험항목</th>
+                <th scope="col">기준</th>
+                <th scope="col">시간</th>
+                <th scope="col">결과</th>
+              </tr>
+            </thead>
+            <tbody>
+              {r.results.map((x, i) => {
+                // 원본 성적서처럼 같은 시험항목(차염성·차열성)은 칸을 합침: 그룹의 첫 줄만 th를 그리고 rowSpan으로 늘림
+                const first = i === 0 || r.results[i - 1].item !== x.item;
+                const span = first ? r.results.slice(i).findIndex((y) => y.item !== x.item) : 0;
+                const rows = span === -1 ? r.results.length - i : span;
+                return (
+                <tr key={i}>
+                  {first && <th scope="rowgroup" rowSpan={rows}>{x.item}</th>}
+                  <td>{x.criterion}</td>
+                  <td className={s.nowrap}>{x.time}</td>
+                  <td><span className={s.pass}>{x.result}</span></td>
+                </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          {r.heat && (
+            <div className={s.heat} aria-label="차열성 60분 시점 비가열면 온도">
+              <HeatBar label="60분 평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
+              <HeatBar label="60분 최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
+            </div>
+          )}
+        </div>
+
+        {img && (
+          <figure className={s.reportScan}>
+            <a href={img} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
+              <img src={img} alt={`시험성적서 ${r.reportNo} 원본 스캔 (3쪽)`} loading="lazy" />
+              <span className={s.drawingZoom}>원본 보기<span className="sr-only">(새 창)</span></span>
+            </a>
+            <figcaption>{r.note}</figcaption>
+          </figure>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/** 측정값이 기준 대비 어디쯤인지 막대로 — 숫자만 보는 것보다 '여유'가 한눈에 보임 */
+function HeatBar({ label, value, limit }: { label: string; value: number; limit: number }) {
+  const pct = Math.min(100, (value / limit) * 100);
+  return (
+    <div className={s.heatRow}>
+      <p className={s.heatLabel}>
+        {label} <strong>{value}℃</strong> <span>/ 기준 {limit}℃ 이하</span>
+      </p>
+      <div className={s.heatTrack} role="img" aria-label={`${label} ${value}℃, 기준 ${limit}℃의 ${Math.round(pct)}%`}>
+        <div className={s.heatFill} style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }

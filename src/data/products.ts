@@ -19,6 +19,24 @@ export interface Feature {
   body: string;
 }
 
+/** 공인시험기관 시험성적서 — 원본 내용을 그대로 옮김(수치 수정 금지) */
+export interface TestReport {
+  title: string;
+  lab: string; // 시험기관
+  accreditation?: string; // 인정기구
+  reportNo: string;
+  client: string; // 의뢰자 — 대한방화 명의가 아닐 수 있으므로 반드시 표기
+  subject: string; // 시험대상
+  method: string; // 시험방법(규격)
+  testDate: string;
+  issueDate: string;
+  specimen: string; // 시험체 규격
+  results: { item: string; criterion: string; time: string; result: string }[];
+  /** 차열성: 60분 시점 평균·최대 온도와 기준 */
+  heat?: { avg: number; avgLimit: number; max: number; maxLimit: number };
+  note: string; // 성적서 원문 단서 조항
+}
+
 export interface ProductDetail {
   slug: string; // URL 조각 (/products/:slug)
   category: ProductCategory;
@@ -32,6 +50,7 @@ export interface ProductDetail {
   uses: string[];
   specs: SpecRow[];
   certs?: string[]; // 시험성적서·특허 등
+  reports?: TestReport[];
   sharedSafety?: boolean; // true면 FIRE_SAFETY 공통 블록을 함께 노출
   todo?: string[];
 }
@@ -253,8 +272,34 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '슬랫', value: 'EGI 1.55mm' },
       { label: '하단마감재', value: 'SUS / EGI 1.55mm' },
     ],
+    // 출처: 한국건설기술연구원 시험성적서 2020TSE0051-1-1 (첨부 이미지 3페이지)
+    reports: [
+      {
+        title: '90도 오픈형 여닫이 비상문 구조 차연·내화 시험',
+        lab: '한국건설기술연구원(KICT)',
+        accreditation: 'KOLAS 공인시험기관',
+        reportNo: '2020TSE0051-1-1',
+        client: '(주)동도산업',
+        subject: '90도 오픈형 여닫이 비상문 (셔터 일체형)',
+        method: 'KS F 2845:2013 (유리구획 부분의 내화시험방법에 따른 개별성적서)',
+        testDate: '2021.01.24 ~ 2021.01.28',
+        issueDate: '2021.02.05',
+        specimen: '전체 3,000 × 3,000 × 550mm (개구부 2,740 × 2,450mm)',
+        results: [
+          { item: '차염성', criterion: '6mm 균열게이지 관통 후 150mm 이상 이동 없을 것', time: '60분', result: '적합' },
+          { item: '차염성', criterion: '10mm 균열게이지 관통 없을 것', time: '60분', result: '적합' },
+          { item: '내화성', criterion: '10mm 균열게이지 관통 없을 것', time: '60분', result: '적합' },
+          { item: '차열성', criterion: '평균 140℃ 초과하지 않을 것', time: '60분', result: '적합' },
+          { item: '차열성', criterion: '최대 180℃ 초과하지 않을 것', time: '60분', result: '적합' },
+        ],
+        heat: { avg: 130.1, avgLimit: 140, max: 132.1, maxLimit: 180 },
+        note: '위 시험결과는 의뢰자가 제시한 시편에 한하며 용도 이외의 사용을 금합니다. (성적서 원문)',
+      },
+    ],
     sharedSafety: true,
     todo: [
+      '시험성적서: 의뢰자가 (주)동도산업이고 "용도 이외 사용 금지 / 설계사무소 참고용"으로 발급됨 → 대한방화 사이트 게시 가능 여부·동도산업과의 관계(제조사 등) 클라이언트 확인',
+      '도면 하단 치수: 다시 그린 도면은 30 / 2,740 / 30(합 2,800) — 성적서·카탈로그 원본은 130 / 2,740 / 130(합 3,000). 도면 수정 필요',
       '강판 두께: 소개문 1.6T / 도면 슬랫 EGI 1.55mm — 표기 통일 필요',
       '인사말의 "폭 8,000·높이 4,000 초과 대형사이즈 가능"과 최대 8,000 × 4,000 표기가 충돌 — 확인',
     ],
