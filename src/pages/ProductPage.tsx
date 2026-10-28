@@ -20,6 +20,7 @@ import { PRODUCT_GALLERY } from './product/galleryImages';
 import steelShutterImg from '../assets/product-steel-shutter.png';
 import screenShutterImg from '../assets/product-screen-shutter.png';
 import pipeSingleDetailImg from '../assets/detail-pipe-single.jpg';
+import pipeDoubleDetailImg from '../assets/detail-pipe-double.jpg';
 import speedDoorImg from '../assets/product-speed-door.jpg';
 import speedDoorRedImg from '../assets/product-speed-door-red.jpg';
 import steelBannerImg from '../assets/banner-steel-shutter.jpg';
@@ -64,6 +65,15 @@ const DETAIL_IMAGES: Partial<Record<string, { src: string; caption: string; pins
       { x: 50, y: 4, label: '스텐 파이프' },
       { x: 32.5, y: 23.5, label: '연결 링크' },
       { x: 11.5, y: 88.5, label: '엔드캡' },
+    ],
+  },
+  'pipe-double': {
+    src: pipeDoubleDetailImg,
+    caption: '스테인리스 파이프 + 연결 로드 결속 구조',
+    pins: [
+      { x: 50, y: 4, label: '스텐 파이프' },
+      { x: 33.3, y: 14.5, label: '연결 로드' },
+      { x: 13.7, y: 94.7, label: '엔드캡' },
     ],
   },
 };
