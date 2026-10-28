@@ -29,6 +29,7 @@ import screenBannerImg from '../assets/banner-screen-shutter.jpg';
 import overheadBannerImg from '../assets/banner-overhead-door.jpg';
 import overheadDoorImg from '../assets/product-overhead-door.jpg';
 import aluminumCardImg from '../assets/card-aluminum-shutter.jpg';
+import steelDrawingImg from '../assets/drawing-steel-shutter.png';
 import s from './ProductPage.module.css';
 
 // 이미지는 데이터(products.ts)와 분리 — 사진이 정해지면 여기만 채우면 됨. 없으면 Media가 슬랫 플레이스홀더
@@ -57,6 +58,11 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
   aluminum: aluminumBannerImg, // 알루미늄셔터 2연 (와이드)
   'speed-door': speedDoorImg, // 물류센터 외벽 스피드도어 (와이드)
   'overhead-door': overheadBannerImg, // 물류창고 오버헤드도어 개방 (와이드)
+};
+
+// 제품 구조도(도면) — 있으면 사양표 옆에 나란히. caption은 도면 기준 치수 안내
+const DRAWINGS: Partial<Record<string, { src: string; caption: string }>> = {
+  steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
 };
 
 // 가로로 긴 사진을 정사각형·4:3 칸에 넣을 때 남길 위치 (기본은 가운데)
@@ -289,6 +295,7 @@ export function ProductPage() {
 
 function ProductBody({ product: p }: { product: ProductDetail }) {
   const ready = p.intro !== '';
+  const drawing = DRAWINGS[p.slug];
 
   return (
     <div className={s.body}>
@@ -352,35 +359,69 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
       {p.sharedSafety && <SafetyBand />}
 
-      {(p.specs.length > 0 || p.uses.length > 0) && (
-        <section className={cx('container', s.block, s.specWrap)} aria-labelledby="spec-title">
-          {p.specs.length > 0 && (
-            <div>
-              <BlockHead en="SPECIFICATION" title="제품 사양" id="spec-title" />
-              <table className={s.spec}>
-                <caption className="sr-only">{p.name} 사양표</caption>
-                <tbody>
-                  {p.specs.map((r) => (
-                    <tr key={r.label}>
-                      <th scope="row">{r.label}</th>
-                      <td>{r.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {drawing ? (
+        <>
+          {/* 도면이 있는 제품: [구조도 | 사양표] → 아래에 설치 장소 */}
+          <section className={cx('container', s.block)} aria-labelledby="spec-title">
+            <BlockHead en="SPECIFICATION" title="구조도 · 제품 사양" id="spec-title" />
+            <div className={s.specDrawing}>
+              <figure className={s.drawing}>
+                {/* 도면은 글자가 작아서 원본 크기로 열어 볼 수 있게 링크 */}
+                <a href={drawing.src} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
+                  <img src={drawing.src} alt={`${p.name} 구조도 — 케이스, 감기샤프트, 슬랫, 가이드레일 등 부품 위치와 치수`} loading="lazy" />
+                  <span className={s.drawingZoom}>크게 보기<span className="sr-only">(새 창)</span></span>
+                </a>
+                <figcaption>{drawing.caption}{p.maxSize && ` · 최대 ${mm(p.maxSize.width)} × ${mm(p.maxSize.height)}mm`}</figcaption>
+              </figure>
+              {p.specs.length > 0 && <SpecTable product={p} />}
             </div>
-          )}
+          </section>
           {p.uses.length > 0 && (
-            <div>
-              <BlockHead en="APPLICATION" title="주요 설치 장소" id={p.specs.length ? undefined : 'spec-title'} />
+            <section className={cx('container', s.block)} aria-labelledby="uses-title">
+              <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
               <ul className={s.uses}>
                 {p.uses.map((u) => <li key={u}>{u}</li>)}
               </ul>
-            </div>
+            </section>
           )}
-        </section>
+        </>
+      ) : (
+        (p.specs.length > 0 || p.uses.length > 0) && (
+          <section className={cx('container', s.block, s.specWrap)} aria-labelledby="spec-title">
+            {p.specs.length > 0 && (
+              <div>
+                <BlockHead en="SPECIFICATION" title="제품 사양" id="spec-title" />
+                <SpecTable product={p} />
+              </div>
+            )}
+            {p.uses.length > 0 && (
+              <div>
+                <BlockHead en="APPLICATION" title="주요 설치 장소" id={p.specs.length ? undefined : 'spec-title'} />
+                <ul className={s.uses}>
+                  {p.uses.map((u) => <li key={u}>{u}</li>)}
+                </ul>
+              </div>
+            )}
+          </section>
+        )
       )}
     </div>
+  );
+}
+
+function SpecTable({ product: p }: { product: ProductDetail }) {
+  return (
+    <table className={s.spec}>
+      <caption className="sr-only">{p.name} 사양표</caption>
+      <tbody>
+        {p.specs.map((r) => (
+          <tr key={r.label}>
+            <th scope="row">{r.label}</th>
+            <td>{r.value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

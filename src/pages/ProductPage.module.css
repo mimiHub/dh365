@@ -139,6 +139,17 @@
 .spec th, .spec td { padding: var(--space-4) var(--space-3); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .spec th { width: 140px; font-weight: 600; color: var(--ink); background: var(--surface-alt); }
 .spec td { color: var(--ink-muted); }
+/* 구조도 + 사양표 — 도면이 주인공이라 더 넓게 */
+.specDrawing { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-10); align-items: start; }
+.drawing { margin: 0; }
+/* 도면은 흰 바탕 선화라 다크 테마에서도 흰 판 위에 그대로 둠 */
+.drawingLink { position: relative; display: block; padding: var(--space-6); background: #ffffff; border: 1px solid var(--line); border-radius: var(--radius-md); transition: border-color .2s ease, box-shadow .2s ease; }
+.drawingLink:hover { border-color: var(--line-strong); box-shadow: var(--shadow-card); }
+.drawingLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.drawingLink img { width: 100%; height: auto; }
+.drawingZoom { position: absolute; right: var(--space-3); top: var(--space-3); padding: 4px 10px; border-radius: var(--radius-pill); background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 600; opacity: 0; transition: opacity .2s ease; }
+.drawingLink:hover .drawingZoom, .drawingLink:focus-visible .drawingZoom { opacity: 1; }
+.drawing figcaption { margin-top: var(--space-3); font-size: 14px; color: var(--ink-subtle); }
 .uses { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .uses li { padding: var(--space-2) var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); font-size: 15px; }
 
@@ -152,7 +163,8 @@
   .cards { --visible: 3; }
   .prev { left: 0; }
   .next { right: 0; }
-  .overview, .specWrap { grid-template-columns: 1fr; gap: var(--space-8); }
+  .overview, .specWrap, .specDrawing { grid-template-columns: 1fr; gap: var(--space-8); }
+  .drawingZoom { opacity: 1; } /* 터치 기기는 hover가 없으므로 항상 표시 */
   .patents { grid-template-columns: 1fr; }
   .details { grid-template-columns: 1fr 1fr; }
   .patentLine { margin-left: 0; }
