@@ -9,12 +9,11 @@ import s from './SafetyBand.module.css';
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /**
- * 방화셔터 공통 안전 시스템 — 스크린·철재 상세 하단
+ * 방화셔터 공통 안전 시스템 — 스크린·철재 상세, 제품 특징 바로 아래
  *
- * 레이아웃: 체크무늬 2×2 + 사진 띠
+ * 레이아웃: 체크무늬 2×2 (사진 띠는 SafetyDetails로 분리해 상세 맨 끝에 배치)
  *   [흰 글 패널: 제목 + 특허 출원 3종 아코디언] [어두운 비주얼: 빛나는 동심원 + 아이콘 3개]
  *   [사진 비주얼: 장애물 감지 데모]            [흰 글 패널: 안전 브라켓트 · 음성안내]
- *   [사진 배경 띠: 세부 디테일 6 알약 탭 | 선택 디테일·모터·특허 유리 카드]
  * 글 패널과 비주얼 패널을 엇갈려 배치해 리듬을 만들고, 아코디언 선택이 오른쪽 그래픽과 연동돼 '살아 있는' 느낌.
  * 장식(그래픽·애니메이션)은 모두 aria-hidden — 내용은 텍스트로 그대로 읽힘
  */
@@ -22,8 +21,6 @@ export function SafetyBand() {
   const f = FIRE_SAFETY;
   const ref = useReveal<HTMLElement>();
   const [patent, setPatent] = useState(0); // 아코디언에서 열린 특허 출원 항목
-  const [detail, setDetail] = useState(0); // 아래 띠에서 고른 세부 디테일
-  const caps = f.motor.capacities;
 
   return (
     <section ref={ref} className={s.band} aria-labelledby="safety-title">
@@ -129,59 +126,71 @@ export function SafetyBand() {
           </ul>
         </div>
       </div>
+    </section>
+  );
+}
 
-      {/* ⑤ 사진 배경 띠 — 세부 디테일 6 (왼쪽 알약 탭) + 유리 카드 */}
-      <div className={s.strip}>
-        <img className={s.stripPhoto} src={bandPhoto} alt="" aria-hidden="true" loading="lazy" />
-        <div className={cx('container', s.stripInner)}>
-          <div className={s.pillsCol}>
-            <p className={s.eyebrowLight}>SAFETY DETAILS</p>
-            <h4 className={s.stripTitle}>세부 안전 설계</h4>
-            <ul className={s.pills} role="tablist" aria-label="세부 안전 설계">
-              {f.details.map((d, i) => (
-                <li key={d.title}>
-                  <button
-                    type="button"
-                    role="tab"
-                    id={`detail-tab-${i}`}
-                    aria-selected={i === detail}
-                    aria-controls="detail-panel"
-                    className={s.pill}
-                    onClick={() => setDetail(i)}
-                  >
-                    {d.title}
-                  </button>
-                </li>
+/**
+ * 세부 안전 설계 — 사진 배경 띠 (세부 디테일 6 알약 탭 + 선택 디테일·모터·특허 유리 카드)
+ * 체크무늬(SafetyBand)는 제품 특징 바로 아래, 이 띠는 상세 맨 끝(상담 위)에 둠 —
+ * 화려한 그래픽이 한곳에 몰리지 않고 페이지 위·아래로 나뉘어 리듬이 생김
+ */
+export function SafetyDetails() {
+  const f = FIRE_SAFETY;
+  const [detail, setDetail] = useState(0); // 고른 세부 디테일
+  const caps = f.motor.capacities;
+
+  return (
+    <section className={s.strip} aria-labelledby="safety-details-title">
+      <img className={s.stripPhoto} src={bandPhoto} alt="" aria-hidden="true" loading="lazy" />
+      <div className={cx('container', s.stripInner)}>
+        <div className={s.pillsCol}>
+          <p className={s.eyebrowLight}>SAFETY DETAILS</p>
+          <h3 id="safety-details-title" className={s.stripTitle}>세부 안전 설계</h3>
+          <ul className={s.pills} role="tablist" aria-label="세부 안전 설계">
+            {f.details.map((d, i) => (
+              <li key={d.title}>
+                <button
+                  type="button"
+                  role="tab"
+                  id={`detail-tab-${i}`}
+                  aria-selected={i === detail}
+                  aria-controls="detail-panel"
+                  className={s.pill}
+                  onClick={() => setDetail(i)}
+                >
+                  {d.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className={s.glassRow}>
+          <article id="detail-panel" role="tabpanel" aria-labelledby={`detail-tab-${detail}`} className={cx(s.glass, s.glassMain)} key={detail}>
+            <span className={s.glassIcon} aria-hidden="true">{DETAIL_ICONS[detail]}</span>
+            <p className={s.glassNo}>DETAIL {pad(detail + 1)} / {pad(f.details.length)}</p>
+            <h5 className={s.glassTitle}>{f.details[detail].title}</h5>
+            <p className={s.glassBody}>{f.details[detail].body}</p>
+          </article>
+
+          <article className={s.glass}>
+            <p className={s.glassNo}>DH MOTOR SYSTEM</p>
+            <h5 className={s.glassTitle}>모터 라인업 {caps.length}종</h5>
+            <ol className={s.scale} aria-label="모터 용량">
+              {caps.map((c) => (
+                <li key={c}><span className={s.tick} aria-hidden="true" />{c}</li>
               ))}
-            </ul>
-          </div>
+            </ol>
+            <p className={s.glassBody}>개구부 크기에 맞춰 {caps[0]} ~ {caps[caps.length - 1]} 중 선택합니다.</p>
+          </article>
 
-          <div className={s.glassRow}>
-            <article id="detail-panel" role="tabpanel" aria-labelledby={`detail-tab-${detail}`} className={cx(s.glass, s.glassMain)} key={detail}>
-              <span className={s.glassIcon} aria-hidden="true">{DETAIL_ICONS[detail]}</span>
-              <p className={s.glassNo}>DETAIL {pad(detail + 1)} / {pad(f.details.length)}</p>
-              <h5 className={s.glassTitle}>{f.details[detail].title}</h5>
-              <p className={s.glassBody}>{f.details[detail].body}</p>
-            </article>
-
-            <article className={s.glass}>
-              <p className={s.glassNo}>DH MOTOR SYSTEM</p>
-              <h5 className={s.glassTitle}>모터 라인업 {caps.length}종</h5>
-              <ol className={s.scale} aria-label="모터 용량">
-                {caps.map((c) => (
-                  <li key={c}><span className={s.tick} aria-hidden="true" />{c}</li>
-                ))}
-              </ol>
-              <p className={s.glassBody}>개구부 크기에 맞춰 {caps[0]} ~ {caps[caps.length - 1]} 중 선택합니다.</p>
-            </article>
-
-            <article className={s.glass}>
-              <span className={cx(s.glassIcon, s.gold)} aria-hidden="true">{ICON.seal}</span>
-              <p className={s.glassNo}>PATENT</p>
-              <h5 className={s.glassTitle}>특허 {f.patent.no}</h5>
-              <p className={s.glassBody}>{f.patent.title}<br />{f.patent.registered} 등록</p>
-            </article>
-          </div>
+          <article className={s.glass}>
+            <span className={cx(s.glassIcon, s.gold)} aria-hidden="true">{ICON.seal}</span>
+            <p className={s.glassNo}>PATENT</p>
+            <h5 className={s.glassTitle}>특허 {f.patent.no}</h5>
+            <p className={s.glassBody}>{f.patent.title}<br />{f.patent.registered} 등록</p>
+          </article>
         </div>
       </div>
     </section>
