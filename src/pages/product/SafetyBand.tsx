@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { FIRE_SAFETY } from '../../data/products';
 import { Badge, cx } from '../../components/ui';
 import { useReveal } from '../../hooks/useReveal';
@@ -142,6 +142,17 @@ export function SafetyDetails() {
   const f = FIRE_SAFETY;
   const [detail, setDetail] = useState(0); // 고른 세부 디테일
   const caps = f.motor.capacities;
+  const pillList = useRef<HTMLUListElement>(null);
+  const last = f.details.length - 1;
+
+  // 모바일(알약이 한 줄 가로 스크롤)일 때 고른 알약을 줄 가운데로 — 목록만 가로로 스크롤 (페이지 세로 스크롤은 그대로)
+  useEffect(() => {
+    const list = pillList.current;
+    const item = list?.children[detail] as HTMLElement | undefined;
+    if (!list || !item || list.scrollWidth <= list.clientWidth) return;
+    const x = item.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
+    list.scrollTo({ left: x - (list.clientWidth - item.offsetWidth) / 2, behavior: 'smooth' });
+  }, [detail]);
 
   return (
     <section className={s.strip} aria-labelledby="safety-details-title">
@@ -150,23 +161,32 @@ export function SafetyDetails() {
         <div className={s.pillsCol}>
           <p className={s.eyebrowLight}>SAFETY DETAILS</p>
           <h3 id="safety-details-title" className={s.stripTitle}>세부 안전 설계</h3>
-          <ul className={s.pills} role="tablist" aria-label="세부 안전 설계">
-            {f.details.map((d, i) => (
-              <li key={d.title}>
-                <button
-                  type="button"
-                  role="tab"
-                  id={`detail-tab-${i}`}
-                  aria-selected={i === detail}
-                  aria-controls="detail-panel"
-                  className={s.pill}
-                  onClick={() => setDetail(i)}
-                >
-                  {d.title}
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* 모바일: [‹] [알약 한 줄 가로 스크롤] [›] — 메인 시공사례 분류 탭과 같은 방식. PC는 화살표 숨기고 세로 나열 */}
+          <div className={s.pillsRow}>
+            <button type="button" className={cx(s.pillArrow, s.pillPrev)} aria-label="이전 항목" disabled={detail === 0} onClick={() => setDetail((d) => Math.max(0, d - 1))}>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+            <ul ref={pillList} className={s.pills} role="tablist" aria-label="세부 안전 설계">
+              {f.details.map((d, i) => (
+                <li key={d.title}>
+                  <button
+                    type="button"
+                    role="tab"
+                    id={`detail-tab-${i}`}
+                    aria-selected={i === detail}
+                    aria-controls="detail-panel"
+                    className={s.pill}
+                    onClick={() => setDetail(i)}
+                  >
+                    {d.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button type="button" className={cx(s.pillArrow, s.pillNext)} aria-label="다음 항목" disabled={detail === last} onClick={() => setDetail((d) => Math.min(last, d + 1))}>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+          </div>
         </div>
 
         <div className={s.glassRow}>

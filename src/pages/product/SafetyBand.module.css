@@ -112,6 +112,12 @@
 .pill:hover { border-color: rgba(255, 255, 255, 0.6); color: #ffffff; }
 .pill[aria-selected="true"] { background: #ffffff; border-color: #ffffff; color: var(--brand); }
 .pill:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+/* 화살표 — PC에선 숨김, 모바일에서 알약 줄 양옆 */
+.pillsRow { display: flex; align-items: center; gap: var(--space-2); }
+.pillArrow { display: none; flex: none; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 50%; background: rgba(255, 255, 255, 0.06); color: #ffffff; cursor: pointer; transition: background-color .2s ease, color .2s ease, opacity .2s ease; }
+.pillArrow:hover:not(:disabled) { background: #ffffff; color: var(--brand); }
+.pillArrow:disabled { opacity: .3; cursor: default; }
+.pillArrow:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
 
 /* 유리 카드 — 반투명 + 흐림 */
 .glassRow { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: var(--space-5); }
@@ -168,6 +174,12 @@
   .strip { margin-top: var(--space-12); padding: var(--space-12) 0; }
   .stripTitle { font-size: 26px; line-height: 34px; }
   .glassRow { grid-template-columns: 1fr; }
+  /* 모바일: 알약을 한 줄로 두고 가로 스크롤 + 양옆 화살표 (여러 줄로 쌓이면 높이만 차지해서) */
+  .pills { flex: 1; min-width: 0; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px; margin: -2px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent); mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent); }
+  .pills::-webkit-scrollbar { display: none; }
+  .pill { white-space: nowrap; }
+  .pillArrow { display: grid; }
+  .pillsCol, .pillsRow { min-width: 0; } /* 그리드·flex 자식은 기본 min-width:auto라 긴 알약 줄만큼 늘어남 → 0으로 줄여 가로 스크롤이 생기게 */
 }
 
 /* 체크무늬 위·아래 여백을 같게 — 띠(.strip)의 기본 margin-top이 체크무늬의 margin-top과 같은 값
