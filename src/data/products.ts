@@ -432,7 +432,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '셔터박스', value: '600 ~ VAR.' },
       { label: '최대 크기', value: '폭 14m × 높이 12m (초대형 제작)' },
     ],
-    // 슬랫 종류: 협업 업체 「SLAT의 종류」 — 이중압출 / 단열 × 두께 3종
+    // 슬랫 종류: 협업 업체 「SLAT의 종류」 — 이중압출 × 두께 3종 (단열 슬랫은 내풍압단열셔터로)
     slatGroups: [
       {
         name: '이중압출 슬랫',
@@ -442,16 +442,6 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
           { thickness: '1.2T', total: '15mm', pitch: '72mm' },
           { thickness: '1.6T', total: '15mm', pitch: '72mm' },
           { thickness: '1.3T', total: '22.4mm', pitch: '72mm' },
-        ],
-      },
-      {
-        name: '단열 슬랫',
-        nameEn: 'AL INSULATED SLAT',
-        body: '이중압출 슬랫 속에 우레탄을 충진했습니다.',
-        rows: [
-          { thickness: '1.2T', total: '15mm', pitch: '72mm' },
-          { thickness: '1.6T', total: '15mm', pitch: '72mm' },
-          { thickness: '1.3T', total: '22.4mm', pitch: '75mm' },
         ],
       },
     ],
@@ -473,7 +463,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     ],
     certs: ['AL 1.2T × 16mm 45m/s 시험성적서', '방음 시험성적서'],
     todo: [
-      '협업 업체 표: 이중압출 1.3T 피치 72mm, 단열 1.3T 피치 75mm (단열셔터 페이지 표는 둘 다 75mm) → 확인',
+      '협업 업체 표: 이중압출 1.3T 피치 72mm (단열셔터 페이지 표는 75mm) → 확인',
       '전체두께 15mm(협업 업체) vs 16mm(카탈로그 p.15) 확인',
       '최대 크기 14m × 12m는 협업 업체 사진 표기 기준 → 대한방화 시공 가능 범위 확인',
       '내풍압 성능: 카탈로그 45m/s, 협업 업체 45~50m/s → 확인',
@@ -500,8 +490,24 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '윈드락', value: 'AL6063 BEARING TYPE (83 × 35, 10단마다 체결)' },
       { label: '하단', value: 'I BAR' },
     ],
+    // 슬랫 종류: 협업 업체 「AL. 내풍압셔터」 페이지의 단열 슬랫 표 (우레탄 충진 = 내풍압단열)
+    slatGroups: [
+      {
+        name: '단열 슬랫',
+        nameEn: 'AL INSULATED SLAT',
+        body: '이중압출 슬랫 속에 우레탄을 충진했습니다.',
+        rows: [
+          { thickness: '1.2T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.6T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.3T', total: '22.4mm', pitch: '75mm' },
+        ],
+      },
+    ],
     certs: ['AL 1.0T × 28mm 50m/s 시험성적서', '열관류율 1.233W/㎡K'],
-    todo: ['용도 목록은 시공실적(다산 해수담수화, 인천 금곡동 푸드존, 영종도 하수처리장 = 단열내풍압)에서 뽑은 것 — 확인'],
+    todo: [
+      '용도 목록은 시공실적(다산 해수담수화, 인천 금곡동 푸드존, 영종도 하수처리장 = 단열내풍압)에서 뽑은 것 — 확인',
+      '슬랫 종류 표(협업 업체: 1.2·1.6·1.3T, 15/22.4mm, 피치 72/75)와 카탈로그 슬랫(1.0T × 28mm, 피치 80) 다름 → 확인',
+    ],
   },
 
   // ─────────────────────────── ⑶ 알루미늄셔터 ① 방범셔터 ───────────────────────────

@@ -123,7 +123,8 @@ const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
 // 슬랫 계열 사진 — slatGroups와 같은 순서
 const SLAT_GROUP_IMAGES: Partial<Record<string, string[]>> = {
   'al-insulated': [slatExtrudedSetImg, slatInsulatedSetImg],
-  'al-wind': [windExtrudedSetImg, windInsulatedSetImg],
+  'al-wind': [windExtrudedSetImg],
+  'al-wind-insulated': [windInsulatedSetImg],
 };
 // 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
 const WINDOW_IMAGES: Partial<Record<string, string>> = {
@@ -1004,7 +1005,8 @@ function SlatGroupsBlock({ product: p }: { product: ProductDetail }) {
   return (
     <section className={cx('container', s.block)} aria-labelledby="slat-title">
       <BlockHead en="SLAT" title="슬랫 종류" id="slat-title" />
-      <div className={s.slatGroups}>
+      {/* 계열이 하나면 [사진 | 이름·표] 가로 배치 */}
+      <div className={cx(s.slatGroups, p.slatGroups!.length === 1 && s.slatGroupsSingle)}>
         {p.slatGroups!.map((g, i) => (
           <figure key={g.nameEn} className={s.slatGroup}>
             <Media className={s.slatGroupImg} src={imgs[i]} alt={`${g.name} 두께별 견본 ${g.rows.length}종`} label={`IMAGE — ${g.nameEn}`} />
