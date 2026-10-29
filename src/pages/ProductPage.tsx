@@ -49,6 +49,7 @@ import slatInsulated16Img from '../assets/slat-al-insulated-16.jpg';
 import alInsulatedDrawingImg from '../assets/drawing-al-insulated.jpg';
 import slatExtruded16Img from '../assets/slat-al-extruded-16.jpg';
 import slatWind16Img from '../assets/slat-al-wind-16.jpg';
+import slatInsulated28Img from '../assets/slat-al-insulated-28.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
@@ -104,7 +105,7 @@ const PANEL_IMAGES: Partial<Record<string, string>> = {
 };
 // 카드마다 그림이 있는 경우(알루미늄 슬랫 단면) — panels와 같은 순서. 이게 있으면 왼쪽 큰 사진 대신 카드 위에 그림
 const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
-  'al-insulated': [undefined, slatInsulated16Img, slatExtruded16Img],
+  'al-insulated': [slatInsulated28Img, slatInsulated16Img, slatExtruded16Img],
   'al-wind': [slatWind16Img],
 };
 // 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
