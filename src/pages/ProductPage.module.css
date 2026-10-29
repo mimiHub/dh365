@@ -94,7 +94,17 @@
 .blockTitle { font-size: 32px; line-height: 44px; font-weight: 700; letter-spacing: -0.02em; }
 
 .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-5); }
-.feature { padding: var(--space-6); background: var(--surface-alt); border-radius: var(--radius-md); }
+.feature { position: relative; padding: var(--space-6); background: var(--surface-alt); border-radius: var(--radius-md); border: 1px solid transparent; transition: background-color .25s, border-color .25s, box-shadow .25s, transform .25s; }
+.feature:hover { background: var(--surface, #fff); border-color: var(--line); box-shadow: 0 12px 32px rgba(10, 42, 102, .08); transform: translateY(-2px); }
+.featureHead { display: flex; align-items: flex-start; justify-content: space-between; }
+.feature .featureNo { font-size: 28px; line-height: 1; letter-spacing: 0; color: var(--line-strong); transition: color .25s; }
+.feature:hover .featureNo { color: var(--accent-text); }
+/* 아이콘 타일 — 연한 파랑 바탕 + 파랑 선 아이콘. 카드 hover 시 브랜드 그라데이션으로 반전 */
+.featureIcon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--accent-soft); color: var(--accent); transition: background .25s, color .25s; }
+.featureIcon svg { width: 28px; height: 28px; stroke-width: 1.8; }
+.feature:hover .featureIcon { background: linear-gradient(135deg, var(--brand), var(--accent)); color: #fff; }
+.feature .featureTitle { margin-top: var(--space-5); }
+@media (prefers-reduced-motion: reduce) { .feature, .featureIcon, .feature .featureNo { transition: none; } .feature:hover { transform: none; } }
 .featureNo { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-text); }
 .featureTitle { margin-top: var(--space-4); font-size: 20px; line-height: 30px; font-weight: 700; }
 .featureBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
@@ -121,9 +131,11 @@
 .pinLegend li { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
 .pinNo { flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #ffffff; font-size: 11px; font-weight: 800; }
 .featureList { display: flex; flex-direction: column; }
-.featureList li { flex: 1; display: grid; grid-template-columns: 40px 1fr; align-content: center; column-gap: var(--space-3); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); } /* flex:1 — 항목들이 높이를 나눠 가져 마지막 선이 왼쪽 카드 바닥과 맞음 */
+.featureList li { flex: 1; display: grid; grid-template-columns: 56px 1fr; grid-template-rows: auto auto; align-content: center; column-gap: var(--space-3); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); } /* flex:1 — 항목들이 높이를 나눠 가져 마지막 선이 왼쪽 카드 바닥과 맞음 */
 .featureList li:first-child { border-top: 2px solid var(--ink); }
-.featureList .featureNo { line-height: 30px; } /* 제목 줄 높이와 같게 */
+.featureList li { column-gap: var(--space-5); }
+.featureList .featureIcon { grid-row: 1 / span 2; align-self: start; }
+.featureList .featureNo { margin-right: var(--space-2); font-size: 14px; } /* 번호는 제목 앞 작은 라벨로 */
 .featureList .featureTitle { margin-top: 0; }
 .featureList .featureBody { grid-column: 2; }
 

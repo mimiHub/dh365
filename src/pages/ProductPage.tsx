@@ -16,6 +16,7 @@ import { Contact } from '../sections/Contact';
 import { SafetyBand } from './product/SafetyBand';
 import { ProductTabBar } from './product/ProductTabBar';
 import { ProductGallery } from './product/ProductGallery';
+import { FeatureIcon } from './product/FeatureIcon';
 import { PRODUCT_GALLERY } from './product/galleryImages';
 import steelShutterImg from '../assets/product-steel-shutter.png';
 import screenShutterImg from '../assets/product-screen-shutter.png';
@@ -379,9 +380,9 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
               <ol className={s.featureList}>
                 {p.features.map((f, i) => (
                   <li key={f.title}>
-                    {/* 2열 그리드: [번호 | 제목] 같은 행 → 번호와 제목이 항상 한 줄에 맞음, 설명은 제목 아래 열 */}
-                    <span className={s.featureNo}>{pad(i + 1)}</span>
-                    <h4 className={s.featureTitle}>{f.title}</h4>
+                    {/* 2열 그리드: [아이콘 | 번호+제목 / 설명] — 아이콘이 두 행에 걸쳐 왼쪽에 고정 */}
+                    <span className={s.featureIcon}><FeatureIcon title={f.title} /></span>
+                    <h4 className={s.featureTitle}><span className={s.featureNo}>{pad(i + 1)}</span>{f.title}</h4>
                     <p className={s.featureBody}>{f.body}</p>
                   </li>
                 ))}
@@ -391,7 +392,10 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
             <ol className={s.features}>
               {p.features.map((f, i) => (
                 <li key={f.title} className={s.feature}>
-                  <span className={s.featureNo}>{pad(i + 1)}</span>
+                  <div className={s.featureHead}>
+                    <span className={s.featureIcon}><FeatureIcon title={f.title} /></span>
+                    <span className={s.featureNo}>{pad(i + 1)}</span>
+                  </div>
                   <h4 className={s.featureTitle}>{f.title}</h4>
                   <p className={s.featureBody}>{f.body}</p>
                 </li>
