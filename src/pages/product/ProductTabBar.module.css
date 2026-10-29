@@ -16,15 +16,22 @@
 
 .mobile { display: none; }
 
-/* ── 2단계 칩 (PC 전용) ── 탭 줄 아래, 선 없이 위 여백만 두고 가운데 */
-.chips { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--space-2); padding-top: var(--space-10); }
-.chip { display: inline-flex; align-items: center; height: 44px; padding: 0 var(--space-6); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--surface); font-size: 15px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; transition: border-color .2s ease, color .2s ease, background-color .2s ease; }
-.chip:hover { border-color: var(--ink); color: var(--ink); }
-.chip[aria-current="page"] { border-color: var(--brand); background: var(--brand); color: #ffffff; font-weight: 700; }
-.chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* ── 2단계 탭 (PC 전용) ── 1단계 탭 바로 아래 붙은 연회색 띠. 글자 탭 + 사이 구분선, 선택은 파란 글자 + 밑줄
+   (칩처럼 떨어져 떠 있으면 '필터 버튼'으로 읽혀서, 탭에 붙여 하위 메뉴임을 보이게) */
+.subRow { background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.subList { display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; }
+.subList::-webkit-scrollbar { display: none; }
+.subList > li { display: flex; align-items: center; }
+.subList > li + li::before { content: ""; width: 1px; height: 14px; background: var(--line-strong); } /* 항목 사이 세로 구분선 */
+.subTab { position: relative; display: flex; align-items: center; height: 56px; padding: 0 var(--space-6); font-size: 15px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; transition: color .2s ease; }
+.subTab:hover { color: var(--ink); }
+.subTab::after { content: ""; position: absolute; left: var(--space-6); right: var(--space-6); bottom: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.subTab[aria-current="page"] { color: var(--accent-text); font-weight: 700; }
+.subTab[aria-current="page"]::after { transform: scaleX(1); }
+.subTab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
 @media (max-width: 767px) {
-  .list, .chipsRow { display: none; }
+  .list, .subRow { display: none; }
   .tabRow { border-bottom: 0; }
   .mobile { border-bottom: 1px solid var(--line); }
   .mobile { position: relative; display: block; padding-top: var(--space-4); padding-bottom: var(--space-4); }

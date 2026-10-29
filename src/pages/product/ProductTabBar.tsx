@@ -10,7 +10,7 @@ const swap = { replace: true, state: { keepScroll: true } } as const;
 /**
  * 제품 탭 바 — 소개(회색 띠)와 상세(흰 영역) 경계에 놓이는 전체 폭 밑줄형 탭 (코아드 상단 탭 방식).
  * 1단계 = 구분(알루미늄: 방범셔터·단열셔터·내풍압셔터·내풍압단열셔터) 탭, 칸 너비는 균등.
- * 2단계 = 구분 안에 제품이 여럿이면(방범셔터: 싱글·이중·철재·웨이브) 탭 아래 칩 줄.
+ * 2단계 = 구분 안에 제품이 여럿이면(방범셔터: 싱글·이중·철재·웨이브) 탭 바로 아래 연회색 띠의 작은 탭.
  * 모바일(≤767px): 탭·칩 대신 드롭다운 하나 (1단계 구분 + 2단계 제품을 들여쓰기로)
  * 제품이 하나뿐인 카테고리에는 쓰지 않음 (부모에서 판단)
  */
@@ -37,7 +37,7 @@ export function ProductTabBar({ category, current }: { category: CategoryInfo; c
   const groups = category.groups ?? category.slugs.map((slug) => ({ key: slug, label: getProduct(slug)!.name, slugs: [slug] }));
   const index = groups.findIndex((g) => g.slugs.includes(current));
   const active = groups[index];
-  // 2단계: 선택한 구분 안에 제품이 여럿이면(방범셔터 4종) 탭 아래에 칩으로
+  // 2단계: 선택한 구분 안에 제품이 여럿이면(방범셔터 4종) 탭 아래 2단 탭으로
   const chips = active && active.slugs.length > 1 ? active : undefined;
 
   // 모바일처럼 넘칠 때 선택 탭을 가운데로 (scrollIntoView는 페이지 세로 스크롤까지 움직여서 목록만 직접 스크롤)
@@ -48,7 +48,7 @@ export function ProductTabBar({ category, current }: { category: CategoryInfo; c
     el.scrollTo({ left: item.offsetLeft - el.offsetLeft - (el.clientWidth - item.offsetWidth) / 2, behavior: 'smooth' });
   }, [index]);
 
-  // 칩 줄도 넘치면(모바일) 선택한 칩이 보이게 가로 스크롤
+  // 2단 탭이 넘치면 선택 항목이 보이게 가로 스크롤
   const chipList = useRef<HTMLUListElement>(null);
   const chipIndex = chips ? chips.slugs.indexOf(current) : -1;
   useEffect(() => {
@@ -119,13 +119,14 @@ export function ProductTabBar({ category, current }: { category: CategoryInfo; c
         </div>
       </div>
 
-      {/* 2단계 칩 — PC 전용. 선택한 구분에 제품이 여럿일 때만 (모바일은 드롭다운 안에 2단계까지 있어서 숨김) */}
+      {/* 2단계 탭 — PC 전용. 탭 바로 아래 붙은 연회색 띠에 작은 글자 탭 (1depth/2depth 구조).
+          선택한 구분에 제품이 여럿일 때만, 모바일은 드롭다운 안에 2단계까지 있어서 숨김 */}
       {chips && (
-        <div className={s.chipsRow}>
-          <ul ref={chipList} className={cx('container', s.chips)} aria-label={`${chips.label} 종류`}>
+        <div className={s.subRow}>
+          <ul ref={chipList} className={cx('container', s.subList)} aria-label={`${chips.label} 종류`}>
             {chips.slugs.map((slug) => (
               <li key={slug}>
-                <Link to={productPath(category, slug)} {...swap} className={s.chip} aria-current={slug === current ? 'page' : undefined}>
+                <Link to={productPath(category, slug)} {...swap} className={s.subTab} aria-current={slug === current ? 'page' : undefined}>
                   {getProduct(slug)!.name}
                 </Link>
               </li>
