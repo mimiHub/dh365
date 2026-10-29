@@ -58,6 +58,8 @@ export interface ProductDetail {
   steps?: { title: string; heading: string; items: { title: string; body: string }[] };
   /** 선택 가능한 색상 — hex는 화면 표시용 근사색 */
   colors?: { name: string; nameEn: string; hex: string; vision?: boolean }[];
+  /** 투시창(채광창) 안내 — 그림은 ProductPage의 WINDOW_IMAGES */
+  window?: { title: string; spec: string; body: string };
   /** 부착 가능한 센서·조작 장치 */
   sensors?: { name: string; nameEn: string; body: string }[];
   /** 패널 종류 — 두께·피치 비교표 (이미지는 ProductPage의 PANEL_IMAGES) */
@@ -571,6 +573,16 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { name: '구동부', nameEn: 'DRIVE UNIT', body: '카운터 밸런스 시스템으로 작동이 원활하며, 수동 체인으로도 열고 닫을 수 있습니다.' },
       { name: '조작 스위치', nameEn: 'PUSH BUTTON SWITCH', body: '열림(OPEN) · 정지(STOP) · 닫힘(CLOSE) 버튼으로 간단하게 조작합니다.' },
     ],
+    // 투시창·색상: 협업 업체 오버헤드도어 상세 페이지 자료 (이미지 사용 허락 확인 필요)
+    window: {
+      title: '투시창',
+      spec: '이중 아크릴 630 × 330 × 3T',
+      body: '투시창으로 채광률을 높여 에너지 효율을 높이고, 견고한 보안을 유지하면서 미관도 살립니다.',
+    },
+    colors: [
+      { name: '화이트', nameEn: 'WHITE', hex: '#f1f2f3' },
+      { name: '그레이', nameEn: 'GRAY', hex: '#9ba1a8' },
+    ],
     panels: [
       { name: '우레탄', nameEn: 'URETHANE', thickness: '50T', pitch: '480 / 530mm' },
       { name: '우레탄', nameEn: 'URETHANE', thickness: '80T', pitch: '480 / 530mm' },
@@ -583,7 +595,11 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { name: '풀버티컬', nameEn: 'FULL VERTICAL TYPE', headroom: '헤드룸 = 개구부 높이 + 500mm', body: '도어가 열릴 때 수직으로 올라가는 타입입니다.' },
     ],
     certs: ['내풍압 시험성적서(45m/s)', '단열재 시험성적서'],
-    todo: ['DOOR OPEN TYPE 설명 문구가 "HEAD ROOM이 OPEN HEIGHT + 600MM"로 그림 표기(HEAD ROOM : 600MM)와 다름 → 그림 기준으로 정리, 확인 필요'],
+    todo: [
+      '협업 업체 상세 페이지의 최대 사이즈 "115,000(W) × 5,000(H)"는 115m라 오기로 보임(11,500?) → 확인 전까지 미표기',
+      '협업 업체 이미지(패널·투시창·색상) 사용 허락 확인',
+      'DOOR OPEN TYPE 설명 문구가 "HEAD ROOM이 OPEN HEIGHT + 600MM"로 그림 표기(HEAD ROOM : 600MM)와 다름 → 그림 기준으로 정리, 확인 필요',
+    ],
   },
 ];
 

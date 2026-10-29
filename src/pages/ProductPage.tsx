@@ -39,6 +39,10 @@ import speedRepairImg from '../assets/steps-speed-door-repair.jpg';
 import overheadBandImg from '../assets/band-overhead-warehouse.jpg';
 import overheadDriveImg from '../assets/component-overhead-drive.jpg';
 import overheadSwitchImg from '../assets/component-overhead-switch.jpg';
+import overheadPanelImg from '../assets/panel-overhead.jpg';
+import overheadWindowImg from '../assets/window-overhead.jpg';
+import overheadWhiteImg from '../assets/color-overhead-white.jpg';
+import overheadGrayImg from '../assets/color-overhead-gray.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
 import speedGuideRailImg from '../assets/component-speed-guiderail.jpg';
 import s from './ProductPage.module.css';
@@ -81,7 +85,16 @@ const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: 
 };
 
 // 패널 종류 사진 (한 장) · 개폐 방식 그림 (openTypes와 같은 순서)
-const PANEL_IMAGES: Partial<Record<string, string>> = {};
+const PANEL_IMAGES: Partial<Record<string, string>> = {
+  'overhead-door': overheadPanelImg,
+};
+// 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
+const WINDOW_IMAGES: Partial<Record<string, string>> = {
+  'overhead-door': overheadWindowImg,
+};
+const COLOR_IMAGES: Partial<Record<string, string[]>> = {
+  'overhead-door': [overheadWhiteImg, overheadGrayImg],
+};
 const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {};
 
 // 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
@@ -482,8 +495,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
               {drawing.caption}{p.maxSize && ` · 최대 ${mm(p.maxSize.width)} × ${mm(p.maxSize.height)}mm`}
             </p>
           </section>
-          {(p.colors || p.sensors) && <OptionsBlock product={p} />}
           {p.panels && <PanelBlock product={p} />}
+          {(p.window || p.colors || p.sensors) && <OptionsBlock product={p} />}
           {p.openTypes && <OpenTypesBlock product={p} />}
           {p.uses.length > 0 && (
             <section className={cx('container', s.block)} aria-labelledby="uses-title">
@@ -793,26 +806,58 @@ function StepsBand({ product: p }: { product: ProductDetail }) {
   );
 }
 
-/** 도어 색상 + 센서 — 색상은 이미지 없이 CSS로 그린 미니 도어(시트 색 + 비전 창), 센서는 아이콘 목록 */
+/**
+ * 옵션 묶음 — [투시창] [도어 색상] [센서] 중 있는 것만 2열로.
+ * 색상은 실물 질감 사진(COLOR_IMAGES)이 있으면 사진 타일, 없으면 CSS로 그린 미니 도어 견본
+ */
 function OptionsBlock({ product: p }: { product: ProductDetail }) {
+  const colorImgs = COLOR_IMAGES[p.slug];
   return (
-    <section className={cx('container', s.block, s.options)} aria-label="색상·센서 옵션">
+    <section className={cx('container', s.block, s.options)} aria-label="투시창·색상·센서 옵션">
+      {p.window && (
+        <div>
+          <BlockHead en="WINDOW" title={p.window.title} />
+          <figure className={s.windowFig}>
+            <Media className={s.windowImg} src={WINDOW_IMAGES[p.slug]} alt={`${p.name} ${p.window.title} — 패널에 끼운 사각 채광창`} label="IMAGE — WINDOW" />
+            <figcaption>
+              <span className={s.headroom}>{p.window.spec}</span>
+              <p className={s.optionsLead}>{p.window.body}</p>
+            </figcaption>
+          </figure>
+        </div>
+      )}
       {p.colors && (
         <div>
           <BlockHead en="DOOR COLOR" title="도어 색상" />
-          <p className={s.optionsLead}>시트 색상을 고르고, 투명한 비전 시트를 조합할 수 있습니다.</p>
-          <ul className={s.colors}>
-            {p.colors.map((c) => (
-              <li key={c.nameEn} className={s.color}>
-                {/* 미니 도어: 프레임 안에 시트 색, 비전 시트는 반투명 창으로 */}
-                <span className={cx(s.swatch, c.vision && s.swatchVision)} style={{ '--sheet': c.hex } as CSSProperties} aria-hidden="true">
-                  <span className={s.swatchWindow} />
-                </span>
-                <b>{c.name}</b>
-                <span>{c.nameEn}</span>
-              </li>
-            ))}
-          </ul>
+          {colorImgs ? (
+            <>
+              <p className={s.optionsLead}>엠보스 가공 강판으로 질감이 살아 있습니다.</p>
+              <ul className={s.colorTiles}>
+                {p.colors.map((c, i) => (
+                  <li key={c.nameEn}>
+                    <img src={colorImgs[i]} alt={`${c.name} 패널 표면 질감`} loading="lazy" />
+                    <span><b>{c.name}</b> {c.nameEn}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <>
+              <p className={s.optionsLead}>시트 색상을 고르고, 투명한 비전 시트를 조합할 수 있습니다.</p>
+              <ul className={s.colors}>
+                {p.colors.map((c) => (
+                  <li key={c.nameEn} className={s.color}>
+                    {/* 미니 도어: 프레임 안에 시트 색, 비전 시트는 반투명 창으로 */}
+                    <span className={cx(s.swatch, c.vision && s.swatchVision)} style={{ '--sheet': c.hex } as CSSProperties} aria-hidden="true">
+                      <span className={s.swatchWindow} />
+                    </span>
+                    <b>{c.name}</b>
+                    <span>{c.nameEn}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       )}
       {p.sensors && (

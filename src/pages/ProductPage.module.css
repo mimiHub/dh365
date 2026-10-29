@@ -403,6 +403,17 @@
 .openTypes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
 .headroom { display: inline-block; margin-top: var(--space-2); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; color: var(--accent-text); background: var(--accent-soft); }
 
+/* ── 투시창 · 색상 질감 ── */
+.windowFig { margin: 0; }
+.windowImg { aspect-ratio: 16 / 9; border-radius: var(--radius-md); }
+.windowImg:has(img) { background: #ffffff; border: 1px solid var(--line); }
+.windowFig figcaption { margin-top: var(--space-5); }
+.windowFig figcaption .optionsLead { margin: var(--space-3) 0 0; }
+.colorTiles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.colorTiles img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-md); box-shadow: inset 0 0 0 1px var(--line), 0 10px 24px -12px rgba(10, 42, 102, .35); }
+.colorTiles span { display: block; margin-top: var(--space-3); font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--ink-subtle); }
+.colorTiles b { margin-right: var(--space-1); font-size: 16px; letter-spacing: 0; color: var(--ink); }
+
 /* 도면 이미지가 아직 없을 때의 자리 — 사양표 높이에 맞춰 늘어남 */
 .drawingEmpty { flex: 1; min-height: 360px; border-radius: var(--radius-md); }
 
