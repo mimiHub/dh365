@@ -304,9 +304,12 @@
 /* ── 단계별 동작 띠 (자동 복구) ── */
 .stepsBand { margin-top: var(--space-16); padding: var(--space-16) 0; background: var(--surface-alt); }
 .stepsImg { aspect-ratio: 16 / 5; border-radius: var(--radius-lg); }
-/* 그림이 들어오면 상자 비율 대신 그림 비율 그대로 (잘리거나 여백 없이) */
-.stepsImg:has(img) { aspect-ratio: auto; background: none; box-shadow: 0 20px 48px -20px rgba(10, 42, 102, .35); }
-.stepsImg > img { position: static; display: block; height: auto; }
+/* 그림이 들어오면: 상자는 전체 폭, 그림은 가운데 작게(최대 860px) + 좌우는 그림 배경과 같은 하늘색으로 채움.
+   그림 가장자리를 mask로 살짝 투명하게 풀어 상자 색과 이어 붙인 경계가 안 보이게 */
+.stepsImg:has(img) { aspect-ratio: auto; background: #63b5e7; box-shadow: 0 20px 48px -20px rgba(10, 42, 102, .35); }
+.stepsImg > img { position: static; display: block; width: 100%; max-width: 860px; height: auto; margin: 0 auto;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); margin-top: var(--space-8); counter-reset: step; }
 .step { position: relative; padding-top: var(--space-8); }
 /* 단계 사이를 잇는 선: 번호 원 오른쪽에서 다음 칸까지 */
@@ -318,7 +321,7 @@
 .stepBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 .stepTag { display: none; }
 /* 그림 아래 모드: 번호 원·선 숨김, 세 칸 가운데 정렬, 제목 앞 작은 번호 라벨 */
-.stepsUnderImg { margin-top: var(--space-6); }
+.stepsUnderImg { max-width: 860px; margin: var(--space-6) auto 0; } /* 그림과 같은 폭으로 → 세 칸 글이 그림의 세 장면 바로 아래에 옴 */
 .stepsUnderImg .step { padding-top: 0; text-align: center; }
 .stepsUnderImg .step::before, .stepsUnderImg .stepNo { display: none; }
 .stepsUnderImg .stepTitle { margin-top: 0; }
