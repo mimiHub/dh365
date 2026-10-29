@@ -304,8 +304,9 @@
 /* ── 단계별 동작 띠 (자동 복구) ── */
 .stepsBand { margin-top: var(--space-16); padding: var(--space-16) 0; background: var(--surface-alt); }
 .stepsImg { aspect-ratio: 16 / 5; border-radius: var(--radius-lg); }
-.stepsImg:has(img) { background: #ffffff; }
-.stepsImg > img { object-fit: contain; }
+/* 그림이 들어오면 상자 비율 대신 그림 비율 그대로 (잘리거나 여백 없이) */
+.stepsImg:has(img) { aspect-ratio: auto; background: none; box-shadow: 0 20px 48px -20px rgba(10, 42, 102, .35); }
+.stepsImg > img { position: static; display: block; height: auto; }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); margin-top: var(--space-8); counter-reset: step; }
 .step { position: relative; padding-top: var(--space-8); }
 /* 단계 사이를 잇는 선: 번호 원 오른쪽에서 다음 칸까지 */
@@ -315,6 +316,13 @@
 .step:last-child .stepNo { background: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
 .stepTitle { margin-top: var(--space-6); font-size: 20px; line-height: 30px; font-weight: 700; }
 .stepBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
+.stepTag { display: none; }
+/* 그림 아래 모드: 번호 원·선 숨김, 세 칸 가운데 정렬, 제목 앞 작은 번호 라벨 */
+.stepsUnderImg { margin-top: var(--space-6); }
+.stepsUnderImg .step { padding-top: 0; text-align: center; }
+.stepsUnderImg .step::before, .stepsUnderImg .stepNo { display: none; }
+.stepsUnderImg .stepTitle { margin-top: 0; }
+.stepsUnderImg .stepTag { display: inline-block; margin-right: var(--space-2); font-size: 14px; font-weight: 800; color: var(--accent-text); vertical-align: 2px; }
 
 /* ── 색상 · 센서 ── */
 .options { display: grid; grid-template-columns: 5fr 6fr; gap: var(--space-12); align-items: start; }
@@ -361,12 +369,14 @@
   .componentName { font-size: 17px; line-height: 26px; }
   .componentBody { font-size: 14px; line-height: 22px; }
   .stepsBand { padding: var(--space-12) 0; }
-  .stepsImg { aspect-ratio: 4 / 3; }
+  .stepsImg:not(:has(img)) { aspect-ratio: 4 / 3; }
   .steps { grid-template-columns: 1fr; gap: var(--space-6); }
   /* 세로로 쌓이면 선도 세로로: 번호 원 아래에서 다음 단계까지 */
   .step { padding: 0 0 0 60px; min-height: 42px; }
   .step::before { top: 48px; left: 20px; right: auto; bottom: calc(var(--space-6) * -1 + 6px); width: 2px; height: auto; background: linear-gradient(180deg, var(--accent), var(--line-strong)); }
   .stepTitle { margin-top: 6px; font-size: 18px; }
+  .stepsUnderImg .step { padding-left: 0; text-align: left; min-height: 0; }
+  .stepsImg:has(img) { border-radius: var(--radius-md); }
   .colors { gap: var(--space-3); }
   .drawingEmpty { min-height: 240px; }
 }

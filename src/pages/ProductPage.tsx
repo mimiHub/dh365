@@ -35,6 +35,7 @@ import screenDrawingImg from '../assets/drawing-screen-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
 import speedMotorImg from '../assets/component-speed-motor.jpg';
 import speedDrawingImg from '../assets/drawing-speed-door.jpg';
+import speedRepairImg from '../assets/steps-speed-door-repair.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
 import speedGuideRailImg from '../assets/component-speed-guiderail.jpg';
 import s from './ProductPage.module.css';
@@ -77,7 +78,9 @@ const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean } 
   'speed-door': [{ src: speedMotorImg }, { src: speedControlImg }, { src: speedGuideRailImg, wide: true }],
 };
 // 단계별 동작 그림(자동 복구 등) — 한 장짜리 일러스트
-const STEP_IMAGES: Partial<Record<string, string>> = {};
+const STEP_IMAGES: Partial<Record<string, string>> = {
+  'speed-door': speedRepairImg,
+};
 
 // 구조 상세 사진(부품·결속부 확대) — 있으면 '제품 특징'을 [사진 | 특징 목록]으로 배치
 // 라벨: 사진 위에 번호 핀으로 표시할 지점 (x·y는 사진 기준 %)
@@ -718,16 +721,18 @@ function ComponentsBlock({ product: p }: { product: ProductDetail }) {
  */
 function StepsBand({ product: p }: { product: ProductDetail }) {
   const st = p.steps!;
+  const img = STEP_IMAGES[p.slug];
   return (
     <section className={s.stepsBand} aria-labelledby="steps-title">
       <div className="container">
         <BlockHead en={st.title} title={st.heading} id="steps-title" />
-        <Media className={s.stepsImg} src={STEP_IMAGES[p.slug]} alt={`${p.name} ${st.heading} — ${st.items.map((x) => x.title).join(' → ')}`} label={`IMAGE — ${st.title}`} />
-        <ol className={s.steps}>
+        <Media className={s.stepsImg} src={img} alt={`${p.name} ${st.heading} — ${st.items.map((x) => x.title).join(' → ')}`} label={`IMAGE — ${st.title}`} />
+        {/* 그림에 이미 01·02·03 번호와 화살표가 있으면 아래 목록의 번호 원·연결선은 숨기고 그림의 세 칸 아래에 글만 맞춤 */}
+        <ol className={cx(s.steps, img && s.stepsUnderImg)}>
           {st.items.map((x, i) => (
             <li key={x.title} className={s.step}>
               <span className={s.stepNo}>{pad(i + 1)}</span>
-              <h4 className={s.stepTitle}>{x.title}</h4>
+              <h4 className={s.stepTitle}><span className={s.stepTag}>{pad(i + 1)}</span>{x.title}</h4>
               <p className={s.stepBody}>{x.body}</p>
             </li>
           ))}
