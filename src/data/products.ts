@@ -362,12 +362,17 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     // 슬랫 2종: 카탈로그 p.14 「AL. 열관류율셔터」(28mm) + p.16 「AL. 압출(단열)셔터」(16mm)
     // p.16 도면의 슬랫 표기가 "AL 1.2T (이중압출, 우레탄 충진)"이라 단열셔터의 16mm형으로 묶음
     panelsHead: { en: 'SLAT', title: '슬랫 종류', sizeLabel: '두께 × 폭' },
+    // 16mm는 p.16 슬랫 그림 2종(곡면 = 단열 SLAT, 평면 = 압출 SLAT)
     panels: [
       { name: '열관류율 단열 슬랫', nameEn: 'AL 28mm', thickness: '1.0T × 28mm', pitch: '80mm' },
-      { name: '이중압출 단열 슬랫', nameEn: 'AL 16mm', thickness: '0.8 / 1.2T × 16mm', pitch: '72mm' },
+      { name: '단열 슬랫', nameEn: 'AL 16mm · 단열 SLAT', thickness: '0.8 / 1.2T × 16mm', pitch: '72mm' },
+      { name: '압출 슬랫', nameEn: 'AL 16mm · 압출 SLAT', thickness: '0.8 / 1.2T × 16mm', pitch: '72mm' },
     ],
     certs: ['열관류율 1.233W/㎡K', '기밀성 1등급 시험성적서', '우레탄 시험성적서'],
-    todo: ['p.16 「AL. 압출(단열)셔터」 본문에는 우레탄 언급이 없고 도면에만 "우레탄 충진" → 16mm형도 우레탄 충진인지 확인'],
+    todo: [
+      '받은 단열 SLAT 그림은 "AL 0.5T or 1.2T", 카탈로그 p.16은 "AL 0.8T or 1.2T" → 화면 카드는 카탈로그(0.8T) 기준, 그림 수정 필요',
+      'p.16 「AL. 압출(단열)셔터」 본문에는 우레탄 언급이 없고 도면에만 "우레탄 충진" → 16mm형도 우레탄 충진인지 확인',
+    ],
   },
   {
     slug: 'al-wind',

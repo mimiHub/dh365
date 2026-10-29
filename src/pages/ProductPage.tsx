@@ -45,6 +45,8 @@ import overheadWhiteImg from '../assets/color-overhead-white.jpg';
 import overheadGrayImg from '../assets/color-overhead-gray.jpg';
 import overheadDrawingImg from '../assets/drawing-overhead-door.jpg';
 import openStandardImg from '../assets/opentype-standard.jpg';
+import slatInsulated16Img from '../assets/slat-al-insulated-16.jpg';
+import slatExtruded16Img from '../assets/slat-al-extruded-16.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
@@ -96,6 +98,10 @@ const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: 
 // 패널 종류 사진 (한 장) · 개폐 방식 그림 (openTypes와 같은 순서)
 const PANEL_IMAGES: Partial<Record<string, string>> = {
   'overhead-door': overheadPanelImg,
+};
+// 카드마다 그림이 있는 경우(알루미늄 슬랫 단면) — panels와 같은 순서. 이게 있으면 왼쪽 큰 사진 대신 카드 위에 그림
+const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
+  'al-insulated': [undefined, slatInsulated16Img, slatExtruded16Img],
 };
 // 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
 const WINDOW_IMAGES: Partial<Record<string, string>> = {
@@ -891,28 +897,51 @@ function OptionsBlock({ product: p }: { product: ProductDetail }) {
   );
 }
 
-/** 패널 종류 — [패널 사진 | 두께·피치 비교표]. 표는 패널이 열(가로)로 나란한 비교형 */
+/**
+ * 패널(슬랫) 종류 — 두 가지 배치
+ *  ① 사진 1장 + 비교 카드: [패널 사진 | 두께·피치 카드] (오버헤드도어)
+ *  ② 카드마다 단면 그림: 그림 카드를 가로로 나열 (알루미늄 슬랫, PANEL_CARD_IMAGES)
+ */
 function PanelBlock({ product: p }: { product: ProductDetail }) {
   const panels = p.panels!;
   const head = p.panelsHead ?? { en: 'PANEL', title: '패널 종류', sizeLabel: '전체 두께' };
+  const cardImgs = PANEL_CARD_IMAGES[p.slug];
+  const dl = (x: (typeof panels)[number]) => (
+    <dl className={s.panelDl}>
+      <div><dt>{head.sizeLabel}</dt><dd>{x.thickness}</dd></div>
+      <div><dt>피치</dt><dd>{x.pitch}</dd></div>
+    </dl>
+  );
   return (
     <section className={cx('container', s.block)} aria-labelledby="panel-title">
       <BlockHead en={head.en} title={head.title} id="panel-title" />
-      <div className={s.panelWrap}>
-        <Media className={s.panelImg} src={PANEL_IMAGES[p.slug]} alt={`${p.name} ${head.title} 단면 — ${panels.map((x) => x.nameEn).join(', ')}`} label={`IMAGE — ${head.en}`} />
-        <ul className={s.panelCards}>
-          {panels.map((x) => (
-            <li key={x.nameEn + x.thickness} className={s.panelCard}>
-              <p className={s.panelEn}>{x.nameEn}</p>
-              <h4 className={s.panelName}>{x.name}</h4>
-              <dl className={s.panelDl}>
-                <div><dt>{head.sizeLabel}</dt><dd>{x.thickness}</dd></div>
-                <div><dt>피치</dt><dd>{x.pitch}</dd></div>
-              </dl>
+      {cardImgs ? (
+        <ul className={s.panelImgCards}>
+          {panels.map((x, i) => (
+            <li key={x.nameEn + x.thickness} className={s.panelImgCard}>
+              <Media className={s.panelCardImg} src={cardImgs[i]} alt={`${x.name} 단면도 — ${x.thickness}, 피치 ${x.pitch}`} label={`IMAGE — ${x.nameEn}`} />
+              <div className={s.panelImgText}>
+                <p className={s.panelEn}>{x.nameEn}</p>
+                <h4 className={s.panelName}>{x.name}</h4>
+                {dl(x)}
+              </div>
             </li>
           ))}
         </ul>
-      </div>
+      ) : (
+        <div className={s.panelWrap}>
+          <Media className={s.panelImg} src={PANEL_IMAGES[p.slug]} alt={`${p.name} ${head.title} 단면 — ${panels.map((x) => x.nameEn).join(', ')}`} label={`IMAGE — ${head.en}`} />
+          <ul className={s.panelCards}>
+            {panels.map((x) => (
+              <li key={x.nameEn + x.thickness} className={s.panelCard}>
+                <p className={s.panelEn}>{x.nameEn}</p>
+                <h4 className={s.panelName}>{x.name}</h4>
+                {dl(x)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

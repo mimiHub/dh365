@@ -400,6 +400,14 @@
 .panelDl dd { margin: 2px 0 0; white-space: nowrap; font-size: 20px; line-height: 28px; font-weight: 800; color: var(--brand); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 [data-theme="dark"] .panelDl dd { color: var(--ink); }
 
+/* 카드마다 단면 그림 (알루미늄 슬랫) */
+.panelImgCards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+.panelImgCard { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius-md); background: var(--surface); }
+.panelCardImg { aspect-ratio: 1; }
+.panelCardImg:has(img) { background: #ffffff; border-bottom: 1px solid var(--line); }
+.panelCardImg > img { object-fit: contain; padding: var(--space-6); mix-blend-mode: multiply; }
+.panelImgText { display: flex; flex-direction: column; flex: 1; padding: var(--space-5) var(--space-6) var(--space-6); background: var(--surface-alt); }
+
 /* ── 개폐 방식 ── (카드 모양은 구성품 카드 .component 재사용) */
 .openLead { margin-top: calc(var(--space-4) * -1); margin-bottom: var(--space-6); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 .openTypes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
@@ -425,6 +433,7 @@
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
   .panelWrap { grid-template-columns: 1fr; }
+  .panelImgCards { grid-template-columns: 1fr 1fr; }
   .panelImg { min-height: 0; aspect-ratio: 16 / 9; }
   .openTypes { grid-template-columns: 1fr 1fr; }
 }
@@ -436,6 +445,8 @@
   .openTypes .componentImg:has(img) { border-right: 0; border-bottom: 1px solid var(--line); }
   .openTypes .componentText { align-self: stretch; }
   .panelCards { gap: var(--space-3); }
+  .panelImgCards { grid-template-columns: 1fr; gap: var(--space-3); }
+  .panelCardImg { aspect-ratio: 4 / 3; }
   .panelCard { padding: var(--space-4); }
   .panelDl { grid-template-columns: 1fr; gap: var(--space-2); } /* 폭이 좁아 두께·피치를 위아래로 */
   .panelDl dd { font-size: 17px; white-space: nowrap; }
