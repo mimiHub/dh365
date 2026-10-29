@@ -851,69 +851,73 @@ function FeatureBand({ product: p, bg }: { product: ProductDetail; bg: string })
 }
 
 /**
- * 형태 + 용도 — [형태 카드(사진)] 다음 줄에 [용도 카드(아이콘 + 큰 사양 숫자 + 작동 방식)]
- * 비상문 일체형처럼 사진이 2장이면 [닫힘 → 열림] 사이에 화살표
+ * 형태 + 용도 — 에디토리얼 레이아웃
+ *  형태: 큰 사진 위에 큰 제목이 걸쳐 겹치고(음수 margin), 설명은 반대편 아래 작게. 두 번째 형태는 좌우 반전
+ *  용도: [슬랫 그림 | 큰 두께 숫자 줄 2개] — 카드 대신 굵은 숫자와 가는 선으로
  */
 function TypesBlock({ product: p }: { product: ProductDetail }) {
   const imgs = TYPE_IMAGES[p.slug] ?? [];
+  const slatImg = USAGE_IMAGES[p.slug];
   return (
     <section className={cx('container', s.block)} aria-labelledby="types-title">
-      <BlockHead en="TYPE & USAGE" title="형태 · 용도" id="types-title" />
-      {p.types && (
-        <ul className={s.types}>
-          {p.types.map((x, i) => {
-            const set = imgs[i] ?? [];
-            return (
-              <li key={x.nameEn} className={s.typeCard}>
-                <div className={s.typeImgs}>
-                  {set.length === 0 && <Media className={s.typeImg} label={`IMAGE — ${x.nameEn}`} />}
-                  {set.map((src, j) => (
-                    <Fragment key={src}>
-                      {j > 0 && (
-                        <span className={s.typeArrow} aria-hidden="true">
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h11M11 5.5 15.5 10 11 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                        </span>
-                      )}
-                      <img className={s.typeImg} src={src} alt={`${p.name} ${x.name}${set.length > 1 ? (j === 0 ? ' — 닫힌 모습' : ' — 비상문을 연 모습') : ''}`} loading="lazy" />
-                    </Fragment>
-                  ))}
-                </div>
-                <div className={s.typeText}>
-                  <p className={s.componentEn}>{x.nameEn}</p>
-                  <h4 className={s.componentName}>{x.name}</h4>
-                  <p className={s.componentBody}>{x.body}</p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <p className={s.edEyebrow}>TYPE &amp; USAGE</p>
+      <h3 id="types-title" className="sr-only">형태 · 용도</h3>
+      {p.types?.map((x, i) => {
+        const set = imgs[i] ?? [];
+        return (
+          <article key={x.nameEn} className={cx(s.typeRow, i % 2 === 1 && s.typeRowAlt)}>
+            <p className={s.typeLabel}>
+              TYPE {pad(i + 1)}
+              <br />
+              {x.nameEn}
+            </p>
+            <div className={cx(s.typeMedia, set.length > 1 && s.typeMediaPair)}>
+              {set.length === 0 && <Media className={s.typeMediaEmpty} label={`IMAGE — ${x.nameEn}`} />}
+              {set.map((src, j) => (
+                <img key={src} src={src} alt={`${p.name} ${x.name}${set.length > 1 ? (j === 0 ? ' — 닫힌 모습' : ' — 비상문을 연 모습') : ''}`} loading="lazy" />
+              ))}
+              {set.length > 1 && (
+                <span className={s.typePairArrow} aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M4 10h11M11 5.5 15.5 10 11 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </span>
+              )}
+            </div>
+            <h4 className={s.typeHead}>
+              {x.name}
+              <svg className={s.typeHeadArrow} viewBox="0 0 40 24" fill="none" aria-hidden="true"><path d="M2 12h34M26 3l10 9-10 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </h4>
+            <p className={s.typeDesc}>{x.body}</p>
+          </article>
+        );
+      })}
       {p.usages && (
-        <div className={cx(s.usageWrap, USAGE_IMAGES[p.slug] && s.usageWrapImg)}>
-        {USAGE_IMAGES[p.slug] && (
-          <figure className={s.usageFig}>
-            <img src={USAGE_IMAGES[p.slug]} alt={`${p.name} 슬랫 — ${p.usages.map((u) => `${u.name} ${u.spec}`).join(', ')}`} loading="lazy" />
-            <figcaption>슬랫 SLAT</figcaption>
-          </figure>
-        )}
-        <ul className={s.usages}>
-          {p.usages.map((u) => (
-            <li key={u.nameEn} className={cx(s.usage, u.icon === 'fire' && s.usageFire)}>
-              <span className={s.usageIcon} aria-hidden="true">{USAGE_ICONS[u.icon]}</span>
-              <div className={s.usageMain}>
-                <p className={s.usageEn}>{u.nameEn}</p>
-                <h4 className={s.usageName}>{u.name}</h4>
-              </div>
-              <dl className={s.usageSpec}>
-                <dt>{u.specLabel}</dt>
-                <dd>{u.spec}</dd>
-              </dl>
-              <ul className={s.usageItems}>
-                {u.items.map((it) => <li key={it}>{it}</li>)}
-              </ul>
-            </li>
-          ))}
-        </ul>
+        <div className={s.usageEd}>
+          <div className={s.usageEdHead}>
+            <p className={s.typeLabel}>USAGE</p>
+            <h4 className={s.usageEdTitle}>용도에 따라<br />두께를 고릅니다</h4>
+            {slatImg && <img className={s.usageEdImg} src={slatImg} alt={`${p.name} 슬랫 — ${p.usages.map((u) => `${u.name} ${u.spec}`).join(', ')}`} loading="lazy" />}
+          </div>
+          <ul className={s.usageEdList}>
+            {p.usages.map((u) => (
+              <li key={u.nameEn} className={cx(s.usageEdRow, u.icon === 'fire' && s.usageEdFire)}>
+                <div className={s.usageEdName}>
+                  <span className={s.usageEdIcon} aria-hidden="true">{USAGE_ICONS[u.icon]}</span>
+                  <div>
+                    <p className={s.usageEn}>{u.nameEn}</p>
+                    <p className={s.usageEdLabel}>{u.name}</p>
+                  </div>
+                </div>
+                <p className={s.usageEdSpec}>
+                  <span className="sr-only">{u.specLabel} </span>
+                  {u.spec.replace(/^EGI\s*/, '')}
+                  <small>{u.spec.match(/^EGI/) ? 'EGI' : ''}</small>
+                </p>
+                <ul className={s.usageEdItems}>
+                  {u.items.map((it) => <li key={it}>{it}</li>)}
+                </ul>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </section>
