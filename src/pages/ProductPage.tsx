@@ -38,6 +38,7 @@ import steelTypeNormalImg from '../assets/steel-type-normal.jpg';
 import steelTypeDoorClosedImg from '../assets/steel-type-door-closed.jpg';
 import steelTypeDoorOpenImg from '../assets/steel-type-door-open.jpg';
 import steelForming1Img from '../assets/steel-forming-1.jpg';
+import steelSlatImg from '../assets/slat-steel.jpg';
 import steelForming2Img from '../assets/steel-forming-2.jpg';
 import steelForming3Img from '../assets/steel-forming-3.jpg';
 import steelForming4Img from '../assets/steel-forming-4.jpg';
@@ -151,6 +152,10 @@ const STEEL_TYPE_IMAGES = [[steelTypeNormalImg], [steelTypeDoorClosedImg, steelT
 const TYPE_IMAGES: Partial<Record<string, string[][]>> = {
   steel: STEEL_TYPE_IMAGES,
   'steel-insulated': STEEL_TYPE_IMAGES,
+};
+// 용도 카드 옆 슬랫 그림 (방화용·방범용이 같은 모양 슬랫이고 두께만 다름)
+const USAGE_IMAGES: Partial<Record<string, string>> = {
+  steel: steelSlatImg,
 };
 const STEEL_PRODUCTION_IMAGES = [steelForming1Img, steelForming2Img, steelForming3Img, steelForming4Img];
 const PRODUCTION_IMAGES: Partial<Record<string, string[]>> = {
@@ -884,6 +889,13 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
         </ul>
       )}
       {p.usages && (
+        <div className={cx(s.usageWrap, USAGE_IMAGES[p.slug] && s.usageWrapImg)}>
+        {USAGE_IMAGES[p.slug] && (
+          <figure className={s.usageFig}>
+            <img src={USAGE_IMAGES[p.slug]} alt={`${p.name} 슬랫 — ${p.usages.map((u) => `${u.name} ${u.spec}`).join(', ')}`} loading="lazy" />
+            <figcaption>슬랫 SLAT</figcaption>
+          </figure>
+        )}
         <ul className={s.usages}>
           {p.usages.map((u) => (
             <li key={u.nameEn} className={cx(s.usage, u.icon === 'fire' && s.usageFire)}>
@@ -902,6 +914,7 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
             </li>
           ))}
         </ul>
+        </div>
       )}
     </section>
   );

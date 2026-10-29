@@ -325,7 +325,14 @@
 .typeImgs:has(.typeArrow) .typeImg { max-width: calc(50% - 30px); } /* 2장 + 화살표: 한 장은 절반에서 화살표 몫을 뺀 폭까지 */
 .typeArrow { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; }
 .typeText { padding: var(--space-5) var(--space-6) var(--space-6); }
-.usages { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-top: var(--space-6); }
+.usageWrap { margin-top: var(--space-6); }
+.usages { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+/* 슬랫 그림이 있으면 [그림 | 용도 카드 2장 위아래] */
+.usageWrapImg { display: grid; grid-template-columns: 4fr 7fr; gap: var(--space-6); align-items: stretch; }
+.usageWrapImg .usages { grid-template-columns: 1fr; }
+.usageFig { position: relative; display: flex; align-items: center; justify-content: center; margin: 0; padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); background: #fff; }
+.usageFig img { display: block; max-width: 100%; max-height: 340px; width: auto; height: auto; }
+.usageFig figcaption { position: absolute; left: var(--space-5); top: var(--space-4); font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
 .usage { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "icon main spec" "items items items"; align-items: center; column-gap: var(--space-4); row-gap: var(--space-5); padding: var(--space-6); border-radius: var(--radius-md); color: #fff; background: linear-gradient(135deg, #0a2a66, #163f8a); }
 .usageFire { background: linear-gradient(135deg, #0a2a66 0%, #0163ce 100%); }
 .usageIcon { grid-area: icon; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .25); }
@@ -521,6 +528,8 @@
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
   .types, .usages { grid-template-columns: 1fr; }
+  .usageWrapImg { grid-template-columns: 1fr; }
+  .usageFig img { max-height: 240px; }
   .production { grid-template-columns: 1fr 1fr; }
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .panelWrap { grid-template-columns: 1fr; }
