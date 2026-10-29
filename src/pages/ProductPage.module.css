@@ -401,6 +401,9 @@
 /* ── 개폐 방식 ── (카드 모양은 구성품 카드 .component 재사용) */
 .openLead { margin-top: calc(var(--space-4) * -1); margin-bottom: var(--space-6); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 .openTypes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+/* 개폐 방식 그림은 [단면도 | 입체도]가 나란한 약 2:1 비율 → 상자도 2:1로, 여백은 작게 해서 치수 글자가 읽히게 */
+.openTypes .componentImg { aspect-ratio: 2 / 1; }
+.openTypes .componentImg > img { padding: var(--space-3); }
 .headroom { display: inline-block; margin-top: var(--space-2); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; color: var(--accent-text); background: var(--accent-soft); }
 
 /* ── 투시창 · 색상 질감 ── */
@@ -426,6 +429,10 @@
 @media (max-width: 767px) {
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
   .openTypes { grid-template-columns: 1fr; gap: var(--space-3); }
+  .openTypes .component { flex-direction: column; }
+  .openTypes .componentImg { width: 100%; aspect-ratio: 2 / 1; }
+  .openTypes .componentImg:has(img) { border-right: 0; border-bottom: 1px solid var(--line); }
+  .openTypes .componentText { align-self: stretch; }
   .panelCards { gap: var(--space-3); }
   .panelCard { padding: var(--space-4); }
   .panelDl { grid-template-columns: 1fr; gap: var(--space-2); } /* 폭이 좁아 두께·피치를 위아래로 */

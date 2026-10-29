@@ -43,6 +43,9 @@ import overheadPanelImg from '../assets/panel-overhead.jpg';
 import overheadWindowImg from '../assets/window-overhead.jpg';
 import overheadWhiteImg from '../assets/color-overhead-white.jpg';
 import overheadGrayImg from '../assets/color-overhead-gray.jpg';
+import openStandardImg from '../assets/opentype-standard.jpg';
+import openHiliftImg from '../assets/opentype-hilift.jpg';
+import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
 import speedGuideRailImg from '../assets/component-speed-guiderail.jpg';
 import s from './ProductPage.module.css';
@@ -95,7 +98,9 @@ const WINDOW_IMAGES: Partial<Record<string, string>> = {
 const COLOR_IMAGES: Partial<Record<string, string[]>> = {
   'overhead-door': [overheadWhiteImg, overheadGrayImg],
 };
-const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {};
+const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
+  'overhead-door': [openStandardImg, openHiliftImg, openFullVerticalImg],
+};
 
 // 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
 // wide: 가로로 긴 사진(단면도+입체도 등) → 카드가 한 줄 전체를 차지
