@@ -33,6 +33,10 @@ import aluminumCardImg from '../assets/card-aluminum-shutter.jpg';
 import steelDrawingImg from '../assets/drawing-steel-shutter.png';
 import screenDrawingImg from '../assets/drawing-screen-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
+import speedMotorImg from '../assets/component-speed-motor.jpg';
+import speedDrawingImg from '../assets/drawing-speed-door.jpg';
+import speedControlImg from '../assets/component-speed-control.jpg';
+import speedGuideRailImg from '../assets/component-speed-guiderail.jpg';
 import s from './ProductPage.module.css';
 
 // 상세 상단 갤러리 사진은 product/galleryImages.ts (제품별 여러 장)
@@ -54,18 +58,24 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
 
 // 제품 구조도(도면) — 있으면 사양표 옆에 나란히. caption은 도면 기준 치수 안내
 // src가 없으면 같은 자리에 이미지 자리(placeholder)를 그림 — 이미지만 받으면 src 한 줄 추가로 끝
-const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: string; alt?: string }>> = {
+// wide: 가로로 긴 도면(정면도+입체도) → 박스 폭을 꽉 채움 (기본은 78%로 여백을 둠)
+const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: string; alt?: string; wide?: boolean }>> = {
   steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
   screen: { src: screenDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
   'speed-door': {
-    caption: '구성도 · 최소 확보 공간 좌 200mm / 우(모터측) 450mm',
+    src: speedDrawingImg,
+    wide: true,
+    caption: '구성도 · 개구부 폭·높이는 현장에 맞춰 제작 (OPEN WIDTH / HEIGHT = VAR.)',
     title: '구성도 · 제품 사양',
     alt: '스피드도어 구성도 — 모터, 샤프트, 도어 시트, 비전 시트, 가이드레일, 컨트롤 박스, 포토센서, 하단바 위치',
   },
 };
 
 // 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
-const COMPONENT_IMAGES: Partial<Record<string, (string | undefined)[]>> = {};
+// wide: 가로로 긴 사진(단면도+입체도 등) → 카드가 한 줄 전체를 차지
+const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean } | undefined)[]>> = {
+  'speed-door': [{ src: speedMotorImg }, { src: speedControlImg }, { src: speedGuideRailImg, wide: true }],
+};
 // 단계별 동작 그림(자동 복구 등) — 한 장짜리 일러스트
 const STEP_IMAGES: Partial<Record<string, string>> = {};
 
@@ -436,7 +446,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
               <figure className={s.drawing} aria-describedby="drawing-note">
                 {/* 도면은 글자가 작아서 원본 크기로 열어 볼 수 있게 링크. 이미지가 아직 없으면 같은 크기의 자리만 */}
                 {drawing.src ? (
-                  <a href={drawing.src} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
+                  <a href={drawing.src} target="_blank" rel="noopener noreferrer" className={cx(s.drawingLink, drawing.wide && s.drawingWide)}>
                     <img src={drawing.src} alt={drawing.alt ?? `${p.name} 구조도 — 케이스, 감기샤프트, 슬랫, 가이드레일 등 부품 위치와 치수`} loading="lazy" />
                     <span className={s.drawingZoom}>크게 보기<span className="sr-only">(새 창)</span></span>
                   </a>
@@ -688,8 +698,8 @@ function ComponentsBlock({ product: p }: { product: ProductDetail }) {
       <BlockHead en="COMPONENTS" title="구성품" id="components-title" />
       <ul className={s.components}>
         {p.components!.map((c, i) => (
-          <li key={c.nameEn} className={s.component}>
-            <Media className={s.componentImg} src={imgs[i]} alt={`${p.name} ${c.name}`} label={`IMAGE — ${c.nameEn}`} />
+          <li key={c.nameEn} className={cx(s.component, imgs[i]?.wide && s.componentWide)}>
+            <Media className={s.componentImg} src={imgs[i]?.src} alt={`${p.name} ${c.name}`} label={`IMAGE — ${c.nameEn}`} />
             <div className={s.componentText}>
               <p className={s.componentEn}>{c.nameEn}</p>
               <h4 className={s.componentName}>{c.name}</h4>

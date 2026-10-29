@@ -160,6 +160,8 @@
 /* 구조도는 박스 안에서 여백을 두고 작게 — 박스 높이는 옆 사양표에 맞춰 늘어나므로 그림만 줄이면 위아래·좌우로 숨 쉴 공간이 생김 */
 .specDrawing .drawingLink { padding: var(--space-10); }
 .specDrawing .drawingLink img { width: 78%; max-width: 520px; }
+.specDrawing .drawingWide { padding: var(--space-6); }
+.specDrawing .drawingWide img { width: 100%; max-width: none; }
 @media (max-width: 767px) { .specDrawing .drawingLink { padding: var(--space-6); } .specDrawing .drawingLink img { width: 92%; } }
 .drawingZoom { position: absolute; right: var(--space-3); top: var(--space-3); padding: 4px 10px; border-radius: var(--radius-pill); background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 600; opacity: 0; transition: opacity .2s ease; }
 .drawingLink:hover .drawingZoom, .drawingLink:focus-visible .drawingZoom { opacity: 1; }
@@ -281,17 +283,23 @@
 }
 
 /* ── 구성품 카드 ── */
-.components { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+.components { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
 .component { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); transition: box-shadow .25s, transform .25s; }
 .component:hover { box-shadow: 0 12px 32px rgba(10, 42, 102, .08); transform: translateY(-2px); }
-.componentImg { aspect-ratio: 4 / 3; }
+.componentImg { aspect-ratio: 16 / 9; }
 /* 받은 사진은 흰 배경 누끼 사진이라 잘리지 않게 contain + 여백 */
 .componentImg:has(img) { background: #ffffff; border-bottom: 1px solid var(--line); }
-.componentImg > img { object-fit: contain; padding: var(--space-6); }
+.componentImg > img { object-fit: contain; padding: var(--space-6); mix-blend-mode: multiply; } /* multiply: 사진의 '거의 흰' 배경이 카드 흰색에 녹아 사각 경계가 안 보임 */
 .componentText { padding: var(--space-5) var(--space-6) var(--space-6); }
 .componentEn { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
 .componentName { margin-top: var(--space-1); font-size: 20px; line-height: 30px; font-weight: 700; }
 .componentBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
+/* 가로로 긴 사진 카드: 두 칸을 다 쓰고 [사진 | 글]을 옆으로 — 사진 비율이 약 3:1이라 세로 카드에 넣으면 작아짐.
+   .component보다 아래에 써야 flex-direction이 덮어써짐 (같은 우선순위면 나중 규칙이 이김) */
+.componentWide { grid-column: 1 / -1; flex-direction: row; }
+.componentWide .componentImg { flex: 1; aspect-ratio: auto; min-height: 260px; }
+.componentWide .componentImg:has(img) { border-bottom: 0; border-right: 1px solid var(--line); }
+.componentWide .componentText { flex: none; width: 34%; align-self: center; padding: var(--space-8); }
 
 /* ── 단계별 동작 띠 (자동 복구) ── */
 .stepsBand { margin-top: var(--space-16); padding: var(--space-16) 0; background: var(--surface-alt); }
@@ -336,13 +344,16 @@
 .drawingEmpty { flex: 1; min-height: 360px; border-radius: var(--radius-md); }
 
 @media (max-width: 1023px) {
-  .components { grid-template-columns: 1fr 1fr; }
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
 }
 @media (max-width: 767px) {
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
   /* 모바일: 카드를 가로형으로 [사진 | 글] — 세로로 쌓으면 사진 3장이 화면을 너무 길게 차지 */
   .component { flex-direction: row; }
+  .componentWide { flex-direction: column; }
+  .componentWide .componentImg { width: 100%; min-height: 0; aspect-ratio: 3 / 1; }
+  .componentWide .componentImg:has(img) { border-right: 0; border-bottom: 1px solid var(--line); }
+  .componentWide .componentText { width: auto; align-self: stretch; padding: var(--space-4); }
   .componentImg { flex: none; width: 38%; aspect-ratio: 1; }
   .componentImg:has(img) { border-bottom: 0; border-right: 1px solid var(--line); }
   .componentImg > img { padding: var(--space-3); }
