@@ -325,7 +325,7 @@
 .componentImg > img { object-fit: contain; padding: var(--space-6); mix-blend-mode: multiply; } /* multiply: 사진의 '거의 흰' 배경이 카드 흰색에 녹아 사각 경계가 안 보임 */
 .componentText { padding: var(--space-5) var(--space-6) var(--space-6); }
 .componentEn { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
-.componentName { margin-top: var(--space-1); font-size: 20px; line-height: 30px; font-weight: 700; }
+.componentName { margin: var(--space-1) 0 0; font-size: 20px; line-height: 30px; font-weight: 700; }
 .componentBody { margin-top: var(--space-2); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 /* 가로로 긴 사진 카드: 두 칸을 다 쓰고 [사진 | 글]을 옆으로 — 사진 비율이 약 3:1이라 세로 카드에 넣으면 작아짐.
    .component보다 아래에 써야 flex-direction이 덮어써짐 (같은 우선순위면 나중 규칙이 이김) */
@@ -333,6 +333,14 @@
 .componentWide .componentImg { flex: 1; aspect-ratio: auto; min-height: 260px; }
 .componentWide .componentImg:has(img) { border-bottom: 0; border-right: 1px solid var(--line); }
 .componentWide .componentText { flex: none; width: 34%; align-self: center; padding: var(--space-8); }
+
+/* 구성품 묶음(소제목 + 카드 줄) */
+.componentGroup + .componentGroup { margin-top: var(--space-10); }
+.componentGroupTitle { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); font-size: 17px; font-weight: 700; color: var(--ink); }
+.componentGroupTitle::before { content: ""; width: 4px; height: 16px; border-radius: 2px; background: var(--accent); }
+.componentBody { white-space: pre-line; } /* 데이터의 줄바꿈(\n) 그대로 */
+/* 배경까지 찍힌 사진은 꽉 채움 (흰 배경 누끼만 contain + 여백) */
+.components .componentImg.componentImgCover > img { object-fit: cover; padding: 0; mix-blend-mode: normal; } /* 클래스 3개로 4열 카드의 여백 규칙(.componentsFour .componentImg > img)보다 우선 */
 
 /* 구성품 4개 이상(알루미늄 셔터의 구성): 4열 작은 카드, 사진은 받은 비율 그대로 */
 .componentsFour { grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }

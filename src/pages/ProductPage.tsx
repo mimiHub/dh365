@@ -51,6 +51,18 @@ import partRailRearImg from '../assets/part-al-rail-rear.jpg';
 import partRailSideImg from '../assets/part-al-rail-side.jpg';
 import partBottomTImg from '../assets/part-al-bottom-t.jpg';
 import partBottomIImg from '../assets/part-al-bottom-i.jpg';
+import windExtrudedSetImg from '../assets/slat-al-wind-extruded-set.jpg';
+import windInsulatedSetImg from '../assets/slat-al-wind-insulated-set.jpg';
+import windRail1Img from '../assets/part-wind-rail-1.jpg';
+import windRail2Img from '../assets/part-wind-rail-2.jpg';
+import windRail3Img from '../assets/part-wind-rail-3.jpg';
+import windRail4Img from '../assets/part-wind-rail-4.jpg';
+import windLock1Img from '../assets/part-windlock-1.jpg';
+import windLock2Img from '../assets/part-windlock-2.jpg';
+import windLock3Img from '../assets/part-windlock-3.jpg';
+import windLock4Img from '../assets/part-windlock-4.jpg';
+import windGuideAImg from '../assets/part-wind-guiderail-a.jpg';
+import windGuideBImg from '../assets/part-wind-guiderail-b.jpg';
 import slatInsulatedSetImg from '../assets/slat-al-insulated-set.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
@@ -111,6 +123,7 @@ const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
 // 슬랫 계열 사진 — slatGroups와 같은 순서
 const SLAT_GROUP_IMAGES: Partial<Record<string, string[]>> = {
   'al-insulated': [slatExtrudedSetImg, slatInsulatedSetImg],
+  'al-wind': [windExtrudedSetImg, windInsulatedSetImg],
 };
 // 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
 const WINDOW_IMAGES: Partial<Record<string, string>> = {
@@ -125,10 +138,16 @@ const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
 
 // 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
 // wide: 가로로 긴 사진(단면도+입체도 등) → 카드가 한 줄 전체를 차지
-const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean } | undefined)[]>> = {
+const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean; cover?: boolean } | undefined)[]>> = {
   'speed-door': [{ src: speedMotorImg }, { src: speedControlImg }, { src: speedGuideRailImg, wide: true }],
   'overhead-door': [{ src: overheadDriveImg }, { src: overheadSwitchImg }],
   'al-insulated': [{ src: partRailRearImg }, { src: partRailSideImg }, { src: partBottomTImg }, { src: partBottomIImg }],
+  // 앞 3장은 배경까지 찍힌 사진 → cover(꽉 채움), 나머지는 흰 배경 누끼 → contain
+  'al-wind': [
+    { src: windRail1Img, cover: true }, { src: windRail2Img, cover: true }, { src: windRail3Img, cover: true }, { src: windRail4Img },
+    { src: windLock1Img }, { src: windLock2Img }, { src: windLock3Img }, { src: windLock4Img },
+    { src: windGuideAImg }, { src: windGuideBImg }, { src: partBottomTImg }, { src: partBottomIImg },
+  ],
 };
 
 // 제품 특징을 '사진 배경 띠 + 원형 아이콘'으로 보여줄 제품 — 배경 사진이 있으면 카드 대신 이 레이아웃
@@ -794,21 +813,34 @@ function FeatureBand({ product: p, bg }: { product: ProductDetail; bg: string })
 /** 구성품 — 사진 카드 3장 (영문 라벨 + 이름 + 한 줄 설명) */
 function ComponentsBlock({ product: p }: { product: ProductDetail }) {
   const imgs = COMPONENT_IMAGES[p.slug] ?? [];
+  const list = p.components!.map((c, i) => ({ ...c, img: imgs[i] }));
+  // group이 있으면 같은 group끼리 묶어 소제목 + 카드 줄, 없으면 한 줄
+  const groups = list.reduce<{ title?: string; items: typeof list }[]>((acc, c) => {
+    const last = acc[acc.length - 1];
+    if (last && last.title === c.group) last.items.push(c);
+    else acc.push({ title: c.group, items: [c] });
+    return acc;
+  }, []);
   return (
     <section className={cx('container', s.block)} aria-labelledby="components-title">
       <BlockHead en={p.componentsHead?.en ?? 'COMPONENTS'} title={p.componentsHead?.title ?? '구성품'} id="components-title" />
-      <ul className={cx(s.components, p.components!.length >= 4 && s.componentsFour)}>
-        {p.components!.map((c, i) => (
-          <li key={c.nameEn} className={cx(s.component, imgs[i]?.wide && s.componentWide)}>
-            <Media className={s.componentImg} src={imgs[i]?.src} alt={`${p.name} ${c.name}`} label={`IMAGE — ${c.nameEn}`} />
-            <div className={s.componentText}>
-              <p className={s.componentEn}>{c.nameEn}</p>
-              <h4 className={s.componentName}>{c.name}</h4>
-              <p className={s.componentBody}>{c.body}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {groups.map((g, gi) => (
+        <div key={gi} className={s.componentGroup}>
+          {g.title && <h4 className={s.componentGroupTitle}>{g.title}</h4>}
+          <ul className={cx(s.components, g.items.length >= 4 && s.componentsFour)}>
+            {g.items.map((c) => (
+              <li key={c.nameEn + c.name} className={cx(s.component, c.img?.wide && s.componentWide)}>
+                <Media className={cx(s.componentImg, c.img?.cover && s.componentImgCover)} src={c.img?.src} alt={`${p.name} ${c.name}`} label={`IMAGE — ${c.nameEn}`} />
+                <div className={s.componentText}>
+                  <p className={s.componentEn}>{c.nameEn}</p>
+                  <h5 className={s.componentName}>{c.name}</h5>
+                  <p className={s.componentBody}>{c.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </section>
   );
 }

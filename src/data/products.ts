@@ -53,7 +53,8 @@ export interface ProductDetail {
   reports?: TestReport[];
   sharedSafety?: boolean; // true면 FIRE_SAFETY 공통 블록을 함께 노출
   /** 구성품 카드 (이미지는 ProductPage의 COMPONENT_IMAGES에서 같은 순서로) */
-  components?: { name: string; nameEn: string; body: string }[];
+  /** group: 같은 group끼리 소제목 아래 묶음(알루미늄 내풍압 '셔터의 구성'), body의 줄바꿈(\n)은 그대로 표시 */
+  components?: { name: string; nameEn: string; body: string; group?: string }[];
   /** 구성품 블록 제목 바꾸기 (기본: COMPONENTS / 구성품) */
   componentsHead?: { en: string; title: string };
   /** 자동 복구 등 단계별 동작 설명 (이미지는 ProductPage의 STEP_IMAGES) */
@@ -370,8 +371,8 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     components: [
       { name: '가이드레일 + 슬랫 · 후면 부착', nameEn: 'REAR ATTACHMENT', body: '재질 SUS 1.2T / 1.5T, EGI 1.2T / 1.6T' },
       { name: '가이드레일 + 슬랫 · 측면 부착', nameEn: 'SIDE ATTACHMENT', body: '재질 SUS 1.2T / 1.5T, EGI 1.2T / 1.6T' },
-      { name: '하단바 T 타입', nameEn: 'BOTTOM BAR · TYPE T', body: '슬랫 아래에 T자 받침과 고무 씰을 단 하단바입니다.' },
-      { name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: '슬랫 끝에 고무 씰을 바로 단 일자형 하단바입니다.' },
+      { name: '하단바 T 타입', nameEn: 'BOTTOM BAR · TYPE T', body: 'TYPE T' },
+      { name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: 'TYPE I' },
     ],
     // 슬랫 종류: 협업 업체 상세 페이지 「SLAT의 종류」 — 이중압출 / 단열 두 계열 × 두께 4종
     slatGroups: [
@@ -400,7 +401,6 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     ],
     certs: ['열관류율 1.233W/㎡K', '기밀성 1등급 시험성적서', '우레탄 시험성적서'],
     todo: [
-      '셔터의 구성: 하단바 T·I 타입 설명 문장은 그림을 보고 쓴 것(원자료는 "TYPE : T / I"만) → 확인',
       '슬랫 종류 표(협업 업체 자료): 전체두께 15mm — 카탈로그 p.16은 16mm, 두께 0.8/1.2T만 표기(1.6T·1.3T 없음) → 대한방화 기준 확인',
       '슬랫 종류 표에 카탈로그 p.14의 28mm(1.0T, 피치 80) 열관류율 슬랫이 없음 → 사양표에만 남김, 확인',
       '구조도 그림 표기가 카탈로그 p.16 도면과 다름(175 고강도 스프링·2T 철판·아연도금·무게임 옵션·가이드레일 0.5T 등) → 표기 확인·수정 필요',
@@ -455,12 +455,29 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
         ],
       },
     ],
+    // 셔터의 구성: 협업 업체 「제품구성요소 > 셔터의 구성」 (3묶음 × 4)
+    componentsHead: { en: 'SHUTTER PARTS', title: '셔터의 구성' },
+    components: [
+      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-1 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.2T / 1.3T × 15mm\n피치 72mm · 윈드락 DJWL-1' },
+      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-2 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.3T × 22.4mm\n피치 72mm · 윈드락 DJWL-2' },
+      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-3 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.2T / 1.3T × 15mm\n피치 72mm · 윈드락 DJWL-3' },
+      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-4 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.3T × 22.4mm\n피치 72mm · 윈드락 DJWL-4' },
+      { group: '윈드락', name: 'DJWL-1', nameEn: 'WIND LOCK', body: '재질 AL' },
+      { group: '윈드락', name: 'DJWL-2', nameEn: 'WIND LOCK · 22.4mm', body: '재질 아세탈' },
+      { group: '윈드락', name: 'DJWL-3', nameEn: 'WIND LOCK', body: '재질 AL' },
+      { group: '윈드락', name: 'DJWL-4', nameEn: 'WIND LOCK', body: '재질 아세탈' },
+      { group: '가이드레일 · 하단바', name: '가이드레일', nameEn: 'GUIDE RAIL', body: '양쪽에 각파이프를 지지해 강한 풍압에 견디도록 설계했습니다.' },
+      { group: '가이드레일 · 하단바', name: '가이드레일', nameEn: 'GUIDE RAIL', body: 'AL 내풍압 가이드레일' },
+      { group: '가이드레일 · 하단바', name: '하단바 T 타입', nameEn: 'BOTTOM BAR · TYPE T', body: 'TYPE T' },
+      { group: '가이드레일 · 하단바', name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: 'TYPE I' },
+    ],
     certs: ['AL 1.2T × 16mm 45m/s 시험성적서', '방음 시험성적서'],
     todo: [
       '협업 업체 표: 이중압출 1.3T 피치 72mm, 단열 1.3T 피치 75mm (단열셔터 페이지 표는 둘 다 75mm) → 확인',
       '전체두께 15mm(협업 업체) vs 16mm(카탈로그 p.15) 확인',
       '최대 크기 14m × 12m는 협업 업체 사진 표기 기준 → 대한방화 시공 가능 범위 확인',
       '내풍압 성능: 카탈로그 45m/s, 협업 업체 45~50m/s → 확인',
+      '셔터의 구성 두 번째 가이드레일: 원자료에 설명 없음("GUIDE RAIL"만) → "AL 내풍압 가이드레일"로 임시 표기, 확인',
     ],
   },
   {
