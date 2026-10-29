@@ -170,9 +170,8 @@
   .glassRow { grid-template-columns: 1fr; }
 }
 
-/* ── 짝꿍 배치: 체크무늬 바로 다음에 띠가 오면 간격을 줄여 한 묶음으로 보이게 (겹치지 않음).
-   + 인접 형제 선택자 → 둘이 붙어 있을 때만 적용 */
-.band + .strip { margin-top: var(--space-10); }
+/* 체크무늬 위·아래 여백을 같게 — 띠(.strip)의 기본 margin-top이 체크무늬의 margin-top과 같은 값
+   (PC space-16 / 모바일 space-12)이라 따로 줄이지 않음 */
 
 /* 아주 좁은 폰(320px대): 한 줄을 지키려고 한 단계 더 줄임 */
 @media (max-width: 359px) {
