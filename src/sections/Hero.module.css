@@ -128,8 +128,16 @@
   .inner { padding-bottom: 72px; }
   .bar { width: 80px; }
   .scroll { display: none; }
-  .spec { top: 12%; right: 16%; width: 62%; }
+  /* 모바일: 글 블록이 아래에서 위로 쌓여 화면 높이가 낮을수록 위로 올라옴 → 도면은 헤더 바로 아래에 두고
+     '남는 높이'만큼만 크게. 글 시작 위치 ≈ 화면 높이 − 450px, 도면 아래 치수선·라벨 ≈ 60px 이므로
+     도면 높이 = 100svh − 600px 정도, 너비 = 높이 × 1.41(12,000 : 8,500 비율). 최대 58vw */
+  .spec { top: 84px; right: calc(var(--gutter) + 36px); width: min(58vw, calc((100svh - 600px) * 1.41)); }
   .dimLabel { font-size: 13px; }
   .dimW { bottom: -32px; } .dimH { right: -28px; }
   .dimH .dimLabel { left: 8px; }
+}
+/* 아주 낮은 화면(가로 모드·작은 폰)은 도면 들어갈 높이가 없음 → 글 뒤의 옅은 배경 무늬로만 (치수선 숨김) */
+@media (max-width: 767px) and (max-height: 680px) {
+  .spec { top: 84px; right: 6%; width: 72vw; opacity: .18; }
+  .dimW, .dimH { display: none; }
 }
