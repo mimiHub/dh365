@@ -34,6 +34,15 @@ export interface GalleryImage {
   fit?: 'contain';
 }
 
+// 철재방화셔터 사진 — 철재단열방화셔터도 같이 씀 (겉모습이 같고 슬랫 속 충전재만 다름)
+const STEEL_GALLERY: GalleryImage[] = [
+  { src: steelShutterImg, alt: '물류센터 철재방화셔터 설치 모습' },
+  { src: steelBannerImg, alt: '물류센터 철재방화셔터 전경' },
+  { src: caseSteelFactoryImg, alt: '[시공사례] 자동차 부품공장' },
+  { src: caseSteelWarehouseImg, alt: '[시공사례] 식품 물류창고' },
+  { src: caseSteelParkingImg, alt: '[시공사례] 아파트 지하주차장' },
+];
+
 export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
   // product-screen-shutter.png = case-screen-gwangju-tech-hs.png(광주공고)와 같은 사진 → 한 장만
   screen: [
@@ -42,13 +51,9 @@ export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
     { src: caseScreenAnsanImg, alt: '[시공사례] 안산성곡물류센터 하역장' },
     { src: caseScreenGongjuImg, alt: '[시공사례] 공주대학교 사범대학' },
   ],
-  steel: [
-    { src: steelShutterImg, alt: '물류센터 철재방화셔터 설치 모습' },
-    { src: steelBannerImg, alt: '물류센터 철재방화셔터 전경' },
-    { src: caseSteelFactoryImg, alt: '[시공사례] 자동차 부품공장' },
-    { src: caseSteelWarehouseImg, alt: '[시공사례] 식품 물류창고' },
-    { src: caseSteelParkingImg, alt: '[시공사례] 아파트 지하주차장' },
-  ],
+  steel: STEEL_GALLERY,
+  // 철재단열방화셔터 사진이 없어 철재방화셔터 사진을 임시로 같이 씀(겉모습 동일) → 받으면 교체
+  'steel-insulated': STEEL_GALLERY,
   'al-insulated': [{ src: alInsulatedImg, alt: '건물 출입구 알루미늄 단열셔터' }],
   'al-wind': [
     { src: windShutterImg, alt: '내풍압셔터 설치 모습' },

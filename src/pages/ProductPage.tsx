@@ -92,6 +92,8 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
 // wide: 가로로 긴 도면(정면도+입체도) → 박스 폭을 꽉 채움 (기본은 78%로 여백을 둠)
 const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: string; alt?: string; wide?: boolean }>> = {
   steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
+  // 구조가 같아 철재방화셔터 도면을 같이 씀 (슬랫 내부 충전재만 다름)
+  'steel-insulated': { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준 · 슬랫 내부 단열재 충진' },
   screen: { src: screenDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
   'speed-door': {
     src: speedDrawingImg,
