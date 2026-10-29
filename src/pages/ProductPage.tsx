@@ -81,6 +81,10 @@ const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: 
     title: '구성도 · 제품 사양',
     alt: '스피드도어 구성도 — 모터, 샤프트, 도어 시트, 비전 시트, 가이드레일, 컨트롤 박스, 포토센서, 하단바 위치',
   },
+  'al-insulated': {
+    caption: '예시 도면 · 개구부 폭·높이는 현장에 맞춰 제작',
+    alt: '알루미늄 단열셔터 구조도 — 브라켓, 셔터박스, AL 조인트, 샤프트, 가이드레일, AL 슬랫, 하단바 위치',
+  },
   'overhead-door': {
     src: overheadDrawingImg, // wide 없음 → 박스 안 78%(최대 520px) + 여백
     caption: '구성도 · 개구부 폭·높이는 현장에 맞춰 제작 (OPEN WIDTH / HEIGHT = VAR.)',
@@ -890,18 +894,19 @@ function OptionsBlock({ product: p }: { product: ProductDetail }) {
 /** 패널 종류 — [패널 사진 | 두께·피치 비교표]. 표는 패널이 열(가로)로 나란한 비교형 */
 function PanelBlock({ product: p }: { product: ProductDetail }) {
   const panels = p.panels!;
+  const head = p.panelsHead ?? { en: 'PANEL', title: '패널 종류', sizeLabel: '전체 두께' };
   return (
     <section className={cx('container', s.block)} aria-labelledby="panel-title">
-      <BlockHead en="PANEL" title="패널 종류" id="panel-title" />
+      <BlockHead en={head.en} title={head.title} id="panel-title" />
       <div className={s.panelWrap}>
-        <Media className={s.panelImg} src={PANEL_IMAGES[p.slug]} alt={`${p.name} 패널 단면 — ${panels.map((x) => x.nameEn).join(', ')}`} label="IMAGE — PANEL" />
+        <Media className={s.panelImg} src={PANEL_IMAGES[p.slug]} alt={`${p.name} ${head.title} 단면 — ${panels.map((x) => x.nameEn).join(', ')}`} label={`IMAGE — ${head.en}`} />
         <ul className={s.panelCards}>
           {panels.map((x) => (
             <li key={x.nameEn + x.thickness} className={s.panelCard}>
               <p className={s.panelEn}>{x.nameEn}</p>
               <h4 className={s.panelName}>{x.name}</h4>
               <dl className={s.panelDl}>
-                <div><dt>전체 두께</dt><dd>{x.thickness}</dd></div>
+                <div><dt>{head.sizeLabel}</dt><dd>{x.thickness}</dd></div>
                 <div><dt>피치</dt><dd>{x.pitch}</dd></div>
               </dl>
             </li>

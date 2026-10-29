@@ -390,12 +390,14 @@
 .panelImg:has(img) { background: #ffffff; border: 1px solid var(--line); }
 .panelImg > img { object-fit: contain; padding: var(--space-6); mix-blend-mode: multiply; }
 .panelCards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+/* 카드가 딱 2개면(알루미늄 슬랫) 2×2 칸을 다 못 채워 세로로 늘어나므로 → 한 열로 위아래 쌓기 */
+.panelCards:has(> :nth-child(2):last-child) { grid-template-columns: 1fr; }
 .panelCard { display: flex; flex-direction: column; padding: var(--space-5) var(--space-6); border-radius: var(--radius-md); background: var(--surface-alt); border-top: 3px solid var(--accent); }
 .panelEn { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
 .panelName { margin-top: 2px; font-size: 18px; line-height: 28px; font-weight: 700; }
 .panelDl { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); }
 .panelDl dt { font-size: 12px; color: var(--ink-subtle); }
-.panelDl dd { margin: 2px 0 0; font-size: 20px; line-height: 28px; font-weight: 800; color: var(--brand); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.panelDl dd { margin: 2px 0 0; white-space: nowrap; font-size: 20px; line-height: 28px; font-weight: 800; color: var(--brand); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 [data-theme="dark"] .panelDl dd { color: var(--ink); }
 
 /* ── 개폐 방식 ── (카드 모양은 구성품 카드 .component 재사용) */

@@ -62,8 +62,10 @@ export interface ProductDetail {
   window?: { title: string; spec: string; body: string };
   /** 부착 가능한 센서·조작 장치 */
   sensors?: { name: string; nameEn: string; body: string }[];
-  /** 패널 종류 — 두께·피치 비교표 (이미지는 ProductPage의 PANEL_IMAGES) */
+  /** 패널(슬랫) 종류 — 규격·피치 비교 카드 (이미지는 ProductPage의 PANEL_IMAGES) */
   panels?: { name: string; nameEn: string; thickness: string; pitch: string }[];
+  /** 패널 블록 제목·라벨 바꾸기 (기본: PANEL / 패널 종류 / 전체 두께) — 알루미늄은 '슬랫 종류' */
+  panelsHead?: { en: string; title: string; sizeLabel: string };
   /** 개폐 방식 — 헤드룸(천장 여유 공간)에 따라 고르는 타입 (그림은 OPEN_TYPE_IMAGES, 같은 순서) */
   openTypes?: { name: string; nameEn: string; headroom: string; body: string }[];
   todo?: string[];
@@ -347,18 +349,25 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       'AL6063 이중압출 슬랫 속에 우레탄을 충진한 단열셔터입니다. KS F 2278(창호의 단열성 시험)에 따른 열관류율 기준을 충족해 에너지 절약형 건물에 적합합니다.',
     features: [
       { title: '열관류율 1.233W/㎡K', body: '열관류율 1.233W/㎡K, 기밀성 1등급 시험성적서를 보유하고 있습니다.' },
-      { title: '가볍고 조용한 개폐', body: '경량 알루미늄이라 개폐 소음이 적고 설치 후 관리가 쉽습니다.' },
+      { title: '가볍고 조용한 개폐', body: '내구성이 좋고 특수수지를 사용해 개폐 시 소음이 적으며, 가벼워 설치 후 관리가 쉽습니다.' },
       { title: '다양한 색상', body: '현장 마감에 맞춰 여러 색상 중 선택할 수 있습니다.' },
     ],
     uses: ['에너지 절약 설계 대상 건축물', '공장·창고 출입구', '상가·주택·차고'],
     specs: [
       { label: '슬랫', value: 'Pitch 80mm, 1.0T × 28mm AL6063 이중압출물(우레탄 충진)' },
-      { label: '슬랫 (16mm형)', value: 'Pitch 72mm, AL 0.8T / 1.2T × 16mm AL6063 (우레탄 충진)' },
+      { label: '슬랫 (16mm형)', value: 'Pitch 72mm, AL 0.8T / 1.2T × 16mm AL6063 이중압출물(우레탄 충진)' },
       { label: '가이드레일', value: 'SUS 1.2T H/L' },
       { label: '하단', value: 'I BAR (16mm형 I 또는 T BAR)' },
     ],
+    // 슬랫 2종: 카탈로그 p.14 「AL. 열관류율셔터」(28mm) + p.16 「AL. 압출(단열)셔터」(16mm)
+    // p.16 도면의 슬랫 표기가 "AL 1.2T (이중압출, 우레탄 충진)"이라 단열셔터의 16mm형으로 묶음
+    panelsHead: { en: 'SLAT', title: '슬랫 종류', sizeLabel: '두께 × 폭' },
+    panels: [
+      { name: '열관류율 단열 슬랫', nameEn: 'AL 28mm', thickness: '1.0T × 28mm', pitch: '80mm' },
+      { name: '이중압출 단열 슬랫', nameEn: 'AL 16mm', thickness: '0.8 / 1.2T × 16mm', pitch: '72mm' },
+    ],
     certs: ['열관류율 1.233W/㎡K', '기밀성 1등급 시험성적서', '우레탄 시험성적서'],
-    todo: ['카탈로그의 "AL. 압출(단열)셔터"(우레탄 없는 이중압출 슬랫)를 이 페이지에 함께 넣을지, 별도 제품으로 둘지 확인'],
+    todo: ['p.16 「AL. 압출(단열)셔터」 본문에는 우레탄 언급이 없고 도면에만 "우레탄 충진" → 16mm형도 우레탄 충진인지 확인'],
   },
   {
     slug: 'al-wind',
