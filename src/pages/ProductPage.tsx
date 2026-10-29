@@ -287,9 +287,6 @@ export function ProductPage() {
       {/* key: 제품이 바뀔 때 상세 영역을 새로 그려 등장 모션이 다시 재생되게 */}
       <ProductBody key={product.slug} product={product} />
 
-      {/* 방화셔터 공통 '세부 안전 설계' 띠 — 상세 맨 끝, 상담 바로 위 (체크무늬는 ProductBody 안 제품 특징 아래) */}
-      {product.sharedSafety && <SafetyDetails />}
-
       <Contact />
     </>
   );
@@ -405,8 +402,14 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
         </section>
       )}
 
-      {/* 화려한 안전장치 그래픽을 제품 특징 바로 아래로 — 위쪽(심플)·아래쪽(화려)으로 쏠리지 않게 중간에 무게를 둠 */}
-      {p.sharedSafety && <SafetyBand />}
+      {/* 방화셔터 공통 안전장치 — 제품 특징 바로 아래에 [특허 출원 체크무늬 + 세부 안전 설계 띠] 한 쌍으로.
+          화려한 그래픽을 페이지 중간으로 올려 위쪽(심플)·아래쪽(화려)으로 쏠리지 않게 함 */}
+      {p.sharedSafety && (
+        <>
+          <SafetyBand />
+          <SafetyDetails />
+        </>
+      )}
 
       {drawing ? (
         <>

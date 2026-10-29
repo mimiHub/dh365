@@ -160,3 +160,11 @@
   .stripTitle { font-size: 26px; line-height: 34px; }
   .glassRow { grid-template-columns: 1fr; }
 }
+
+/* ── 짝꿍 배치: 체크무늬 바로 다음에 띠가 오면 띠를 위로 끌어올려 체크무늬 아래쪽 160px가 어두운 띠 위에 걸치게 함.
+   (+ 인접 형제 선택자 → 둘이 붙어 있을 때만 적용) 체크무늬는 z-index로 띠 위에 올림 */
+.band { position: relative; z-index: 1; }
+.band + .strip { margin-top: -160px; padding-top: calc(160px + var(--space-16)); }
+@media (max-width: 767px) {
+  .band + .strip { margin-top: -80px; padding-top: calc(80px + var(--space-12)); }
+}
