@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { Fragment, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   PRODUCT_CATEGORIES,
@@ -549,8 +549,10 @@ function ReportBlock({ report: r }: { report: TestReport }) {
         {r.heat && (
           <div className={s.heat}>
             <p className={s.heatTitle}>차열성 · 60분 시점 비가열면 온도</p>
-            <HeatBar label="평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
-            <HeatBar label="최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
+            <div className={s.donuts}>
+              <HeatDonut label="평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
+              <HeatDonut label="최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
+            </div>
           </div>
         )}
       </div>
@@ -558,18 +560,44 @@ function ReportBlock({ report: r }: { report: TestReport }) {
   );
 }
 
-/** 측정값이 기준 대비 어디쯤인지 막대로 — 숫자만 보는 것보다 '여유'가 한눈에 보임 */
-function HeatBar({ label, value, limit }: { label: string; value: number; limit: number }) {
+/**
+ * 측정값이 기준 대비 어디쯤인지 도넛으로 — 숫자만 보는 것보다 '여유'가 한눈에 보임
+ * SVG 원의 테두리(stroke)를 점선처럼 끊어 호를 그림: pathLength=100으로 두면 원 둘레가 100이 되어
+ * stroke-dasharray="pct 100" = '앞 pct만큼 그리고 나머지는 빈칸' → 퍼센트를 그대로 넣으면 됨
+ */
+function HeatDonut({ label, value, limit }: { label: string; value: number; limit: number }) {
   const pct = Math.min(100, (value / limit) * 100);
+  const gid = useId(); // 그라데이션 id — 도넛이 2개라 겹치지 않게
   return (
-    <div className={s.heatRow}>
-      <p className={s.heatLabel}>
-        {label} <strong>{value}℃</strong> <span>/ 기준 {limit}℃ 이하</span>
-      </p>
-      <div className={s.heatTrack} role="img" aria-label={`${label} ${value}℃, 기준 ${limit}℃의 ${Math.round(pct)}%`}>
-        <div className={s.heatFill} style={{ width: `${pct}%` }} />
+    <figure className={s.donut}>
+      <div className={s.donutChart} role="img" aria-label={`${label} ${value}℃, 기준 ${limit}℃의 ${Math.round(pct)}%`}>
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <defs>
+            <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--accent)" />
+              <stop offset="100%" stopColor="var(--brand)" />
+            </linearGradient>
+          </defs>
+          <circle className={s.donutTrack} cx="60" cy="60" r="50" pathLength={100} />
+          {/* -90° 회전: SVG 원은 3시 방향에서 시작하므로 12시에서 시작하게 */}
+          <circle
+            className={s.donutFill}
+            cx="60" cy="60" r="50" pathLength={100}
+            stroke={`url(#${gid})`}
+            style={{ '--pct': pct } as CSSProperties}
+          />
+        </svg>
+        <div className={s.donutCenter}>
+          <strong>{value}<small>℃</small></strong>
+          <span>기준의 {Math.round(pct)}%</span>
+        </div>
       </div>
-    </div>
+      <figcaption className={s.donutCap}>
+        <b>{label}</b>
+        <span>기준 {limit}℃ 이하</span>
+        <span><em>여유 {(limit - value).toFixed(1)}℃</em></span>
+      </figcaption>
+    </figure>
   );
 }
 
