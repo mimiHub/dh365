@@ -45,11 +45,10 @@ import overheadWhiteImg from '../assets/color-overhead-white.jpg';
 import overheadGrayImg from '../assets/color-overhead-gray.jpg';
 import overheadDrawingImg from '../assets/drawing-overhead-door.jpg';
 import openStandardImg from '../assets/opentype-standard.jpg';
-import slatInsulated16Img from '../assets/slat-al-insulated-16.jpg';
 import alInsulatedDrawingImg from '../assets/drawing-al-insulated.jpg';
-import slatExtruded16Img from '../assets/slat-al-extruded-16.jpg';
 import slatWind16Img from '../assets/slat-al-wind-16.jpg';
-import slatInsulated28Img from '../assets/slat-al-insulated-28.jpg';
+import slatExtrudedSetImg from '../assets/slat-al-extruded-set.jpg';
+import slatInsulatedSetImg from '../assets/slat-al-insulated-set.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
@@ -105,8 +104,11 @@ const PANEL_IMAGES: Partial<Record<string, string>> = {
 };
 // 카드마다 그림이 있는 경우(알루미늄 슬랫 단면) — panels와 같은 순서. 이게 있으면 왼쪽 큰 사진 대신 카드 위에 그림
 const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
-  'al-insulated': [slatInsulated28Img, slatInsulated16Img, slatExtruded16Img],
   'al-wind': [slatWind16Img],
+};
+// 슬랫 계열 사진 — slatGroups와 같은 순서
+const SLAT_GROUP_IMAGES: Partial<Record<string, string[]>> = {
+  'al-insulated': [slatExtrudedSetImg, slatInsulatedSetImg],
 };
 // 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
 const WINDOW_IMAGES: Partial<Record<string, string>> = {
@@ -518,6 +520,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
             </p>
           </section>
           {p.panels && <PanelBlock product={p} />}
+          {p.slatGroups && <SlatGroupsBlock product={p} />}
           {(p.window || p.colors || p.sensors) && <OptionsBlock product={p} />}
           {p.openTypes && <OpenTypesBlock product={p} />}
           {p.uses.length > 0 && (
@@ -551,6 +554,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       )}
       {/* 도면 없는 제품도 슬랫 단면이 있으면 사양·설치장소 아래에 */}
       {!drawing && p.panels && <PanelBlock product={p} />}
+      {!drawing && p.slatGroups && <SlatGroupsBlock product={p} />}
 
       {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
     </div>
@@ -949,6 +953,50 @@ function PanelBlock({ product: p }: { product: ProductDetail }) {
           </ul>
         </div>
       )}
+    </section>
+  );
+}
+
+/**
+ * 슬랫 종류 — 계열(이중압출 / 단열)마다 [사진 + 두께별 비교표] 2열.
+ * 표는 두께가 열(가로)로 나란한 비교형: 첫 열이 항목 머리(th scope=row), 첫 행이 두께(th scope=col)
+ */
+function SlatGroupsBlock({ product: p }: { product: ProductDetail }) {
+  const imgs = SLAT_GROUP_IMAGES[p.slug] ?? [];
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="slat-title">
+      <BlockHead en="SLAT" title="슬랫 종류" id="slat-title" />
+      <div className={s.slatGroups}>
+        {p.slatGroups!.map((g, i) => (
+          <figure key={g.nameEn} className={s.slatGroup}>
+            <Media className={s.slatGroupImg} src={imgs[i]} alt={`${g.name} 두께별 견본 ${g.rows.length}종`} label={`IMAGE — ${g.nameEn}`} />
+            <figcaption className={s.slatGroupHead}>
+              <p className={s.panelEn}>{g.nameEn}</p>
+              <h4 className={s.panelName}>{g.name}</h4>
+              <p className={s.slatGroupBody}>{g.body}</p>
+            </figcaption>
+            <table className={s.slatTable}>
+              <caption className="sr-only">{g.name} 두께별 전체두께·피치</caption>
+              <thead>
+                <tr>
+                  <th scope="col">두께</th>
+                  {g.rows.map((r) => <th key={r.thickness} scope="col">{r.thickness}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">전체두께</th>
+                  {g.rows.map((r) => <td key={r.thickness}>{r.total}</td>)}
+                </tr>
+                <tr>
+                  <th scope="row">피치</th>
+                  {g.rows.map((r) => <td key={r.thickness}>{r.pitch}</td>)}
+                </tr>
+              </tbody>
+            </table>
+          </figure>
+        ))}
+      </div>
     </section>
   );
 }

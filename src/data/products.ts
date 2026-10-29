@@ -66,6 +66,8 @@ export interface ProductDetail {
   panels?: { name: string; nameEn: string; thickness: string; pitch: string }[];
   /** 패널 블록 제목·라벨 바꾸기 (기본: PANEL / 패널 종류 / 전체 두께) — 알루미늄은 '슬랫 종류' */
   panelsHead?: { en: string; title: string; sizeLabel: string };
+  /** 슬랫 계열별 두께 비교표 — 계열마다 [사진 + 두께별 전체두께·피치 표] (사진은 ProductPage의 SLAT_GROUP_IMAGES, 같은 순서) */
+  slatGroups?: { name: string; nameEn: string; body: string; rows: { thickness: string; total: string; pitch: string }[] }[];
   /** 개폐 방식 — 헤드룸(천장 여유 공간)에 따라 고르는 타입 (그림은 OPEN_TYPE_IMAGES, 같은 순서) */
   openTypes?: { name: string; nameEn: string; headroom: string; body: string }[];
   todo?: string[];
@@ -361,15 +363,35 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     ],
     // 슬랫 2종: 카탈로그 p.14 「AL. 열관류율셔터」(28mm) + p.16 「AL. 압출(단열)셔터」(16mm)
     // p.16 도면의 슬랫 표기가 "AL 1.2T (이중압출, 우레탄 충진)"이라 단열셔터의 16mm형으로 묶음
-    panelsHead: { en: 'SLAT', title: '슬랫 종류', sizeLabel: '두께 × 폭' },
-    // 16mm는 p.16 슬랫 그림 2종(곡면 = 단열 SLAT, 평면 = 압출 SLAT)
-    panels: [
-      { name: '열관류율 단열 슬랫', nameEn: 'AL 28mm', thickness: '1.0T × 28mm', pitch: '80mm' },
-      { name: '단열 슬랫', nameEn: 'AL 16mm · 단열 SLAT', thickness: '0.8 / 1.2T × 16mm', pitch: '72mm' },
-      { name: '압출 슬랫', nameEn: 'AL 16mm · 압출 SLAT', thickness: '0.8 / 1.2T × 16mm', pitch: '72mm' },
+    // 슬랫 종류: 협업 업체 상세 페이지 「SLAT의 종류」 — 이중압출 / 단열 두 계열 × 두께 4종
+    slatGroups: [
+      {
+        name: '이중압출 슬랫',
+        nameEn: 'AL EXTRUDED SLAT',
+        body: 'AL6063 이중압출 슬랫입니다.',
+        rows: [
+          { thickness: '0.8T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.2T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.6T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.3T', total: '22.4mm', pitch: '75mm' },
+        ],
+      },
+      {
+        name: '단열 슬랫',
+        nameEn: 'AL INSULATED SLAT',
+        body: '이중압출 슬랫 속에 우레탄을 충진했습니다.',
+        rows: [
+          { thickness: '0.8T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.2T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.6T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.3T', total: '22.4mm', pitch: '75mm' },
+        ],
+      },
     ],
     certs: ['열관류율 1.233W/㎡K', '기밀성 1등급 시험성적서', '우레탄 시험성적서'],
     todo: [
+      '슬랫 종류 표(협업 업체 자료): 전체두께 15mm — 카탈로그 p.16은 16mm, 두께 0.8/1.2T만 표기(1.6T·1.3T 없음) → 대한방화 기준 확인',
+      '슬랫 종류 표에 카탈로그 p.14의 28mm(1.0T, 피치 80) 열관류율 슬랫이 없음 → 사양표에만 남김, 확인',
       '구조도 그림 표기가 카탈로그 p.16 도면과 다름(175 고강도 스프링·2T 철판·아연도금·무게임 옵션·가이드레일 0.5T 등) → 표기 확인·수정 필요',
       '받은 단열 SLAT 그림은 "AL 0.5T or 1.2T", 카탈로그 p.16은 "AL 0.8T or 1.2T" → 화면 카드는 카탈로그(0.8T) 기준, 그림 수정 필요',
       'p.16 「AL. 압출(단열)셔터」 본문에는 우레탄 언급이 없고 도면에만 "우레탄 충진" → 16mm형도 우레탄 충진인지 확인',
