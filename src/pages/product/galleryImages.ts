@@ -6,6 +6,7 @@ import screenShutterImg from '../../assets/product-screen-shutter.png';
 import steelShutterImg from '../../assets/product-steel-shutter.png';
 import steelBannerImg from '../../assets/banner-steel-shutter.jpg';
 import windShutterImg from '../../assets/product-wind-shutter.png';
+import alInsulatedImg from '../../assets/product-al-insulated.jpg';
 import securityShutterImg from '../../assets/product-security-shutter.png';
 import pipeSingleImg from '../../assets/product-pipe-single.jpg';
 import pipeDoubleImg from '../../assets/product-pipe-double.jpg';
@@ -48,6 +49,7 @@ export const PRODUCT_GALLERY: Partial<Record<string, GalleryImage[]>> = {
     { src: caseSteelWarehouseImg, alt: '[시공사례] 식품 물류창고' },
     { src: caseSteelParkingImg, alt: '[시공사례] 아파트 지하주차장' },
   ],
+  'al-insulated': [{ src: alInsulatedImg, alt: '건물 출입구 알루미늄 단열셔터' }],
   'al-wind': [
     { src: windShutterImg, alt: '내풍압셔터 설치 모습' },
     { src: caseWindGarageImg, alt: '[시공사례] 차고지 내풍압셔터' },
