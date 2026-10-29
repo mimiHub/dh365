@@ -24,106 +24,109 @@ export function SafetyBand() {
 
   return (
     <section ref={ref} className={s.band} aria-labelledby="safety-title">
-      <div className={cx('container', s.grid)}>
-        {/* ① 흰 글 패널 — 제목 + 특허 출원 3종 아코디언 */}
-        <div className={cx(s.panel, s.light, 'reveal')}>
-          <p className={s.eyebrow}>SAFETY SYSTEM</p>
-          <h3 id="safety-title" className={s.title}>
-            3가지 <em>특허 출원</em>
-            <br />
-            안전장치 기본 적용
-          </h3>
-          <p className={s.lead}>대한방화가 설치하는 방화셔터에는 추락·끼임·고립을 막는 장치가 옵션이 아닌 기본으로 들어갑니다.</p>
+      {/* container(가운데 정렬 + 좌우 여백) 안에 grid를 따로 둠 — 그림자가 여백 포함 상자가 아니라 패널 크기에 딱 맞게 */}
+      <div className="container">
+        <div className={s.grid}>
+          {/* ① 흰 글 패널 — 제목 + 특허 출원 3종 아코디언 */}
+          <div className={cx(s.panel, s.light, 'reveal')}>
+            <p className={s.eyebrow}>SAFETY SYSTEM</p>
+            <h3 id="safety-title" className={s.title}>
+              3가지 <em>특허 출원</em>
+              <br />
+              안전장치 기본 적용
+            </h3>
+            <p className={s.lead}>대한방화가 설치하는 방화셔터에는 추락·끼임·고립을 막는 장치가 옵션이 아닌 기본으로 들어갑니다.</p>
 
-          <ul className={s.accordion}>
-            {f.patents.map((pt, i) => {
-              const open = i === patent;
-              return (
-                <li key={pt.title} className={cx(s.accItem, open && s.accOpen)}>
-                  <button type="button" className={s.accHead} aria-expanded={open} aria-controls={`patent-${i}`} onClick={() => setPatent(i)}>
-                    <span className={s.accNo}>{pad(i + 1)}</span>
-                    {pt.title}
-                    <span className={s.accChevron} aria-hidden="true" />
-                  </button>
-                  <div id={`patent-${i}`} className={s.accBody} role="region" aria-label={pt.title}>
-                    <div>
-                      <p>{pt.body}</p>
+            <ul className={s.accordion}>
+              {f.patents.map((pt, i) => {
+                const open = i === patent;
+                return (
+                  <li key={pt.title} className={cx(s.accItem, open && s.accOpen)}>
+                    <button type="button" className={s.accHead} aria-expanded={open} aria-controls={`patent-${i}`} onClick={() => setPatent(i)}>
+                      <span className={s.accNo}>{pad(i + 1)}</span>
+                      {pt.title}
+                      <span className={s.accChevron} aria-hidden="true" />
+                    </button>
+                    <div id={`patent-${i}`} className={s.accBody} role="region" aria-label={pt.title}>
+                      <div>
+                        <p>{pt.body}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
 
-        {/* ② 어두운 비주얼 — 빛나는 동심원, 아코디언에서 고른 항목의 아이콘이 함께 빛남 */}
-        <div className={cx(s.panel, s.visual, s.rings)} aria-hidden="true">
-          <div className={s.ringWrap}>
-            <span className={cx(s.ring, s.r1)} />
-            <span className={cx(s.ring, s.r2)} />
-            <span className={cx(s.ring, s.r3)} />
-            <span className={s.ringDash} />
-            <div className={s.core}>
-              <span className={s.coreLabel}>Fire Shutter</span>
-              <strong className={s.coreTitle}>SAFETY</strong>
-              <span className={s.coreSub}>특허 출원 {f.patents.length}종</span>
+          {/* ② 어두운 비주얼 — 빛나는 동심원, 아코디언에서 고른 항목의 아이콘이 함께 빛남 */}
+          <div className={cx(s.panel, s.visual, s.rings)} aria-hidden="true">
+            <div className={s.ringWrap}>
+              <span className={cx(s.ring, s.r1)} />
+              <span className={cx(s.ring, s.r2)} />
+              <span className={cx(s.ring, s.r3)} />
+              <span className={s.ringDash} />
+              <div className={s.core}>
+                <span className={s.coreLabel}>Fire Shutter</span>
+                <strong className={s.coreTitle}>SAFETY</strong>
+                <span className={s.coreSub}>특허 출원 {f.patents.length}종</span>
+              </div>
+              {PATENT_ICONS.map((icon, i) => (
+                <span key={i} className={cx(s.node, s[`n${i}`], i === patent && s.nodeOn)}>
+                  {icon}
+                </span>
+              ))}
             </div>
-            {PATENT_ICONS.map((icon, i) => (
-              <span key={i} className={cx(s.node, s[`n${i}`], i === patent && s.nodeOn)}>
-                {icon}
-              </span>
-            ))}
           </div>
-        </div>
 
-        {/* ③ 사진 비주얼 — 장애물 감지 데모 */}
-        <div className={cx(s.panel, s.visual, s.photoPanel)}>
-          <img className={s.panelPhoto} src={shutterPhoto} alt="" aria-hidden="true" loading="lazy" />
-          <div className={s.photoInner}>
-            <p className={s.eyebrowLight}>OBSTACLE SENSOR</p>
-            <h4 className={s.photoTitle}>
-              {f.obstacle.title} <Badge tone="fire">{f.obstacle.badge}</Badge>
-            </h4>
-            <ObstacleDemo />
-            <ol className={s.steps}>
-              <li><span>1</span>장애물 접촉</li>
-              <li><span>2</span>5초 상승 후 정지</li>
-              <li><span>3</span>음성 안내</li>
-            </ol>
-            <p className="sr-only">{f.obstacle.body}</p>
+          {/* ③ 사진 비주얼 — 장애물 감지 데모 */}
+          <div className={cx(s.panel, s.visual, s.photoPanel)}>
+            <img className={s.panelPhoto} src={shutterPhoto} alt="" aria-hidden="true" loading="lazy" />
+            <div className={s.photoInner}>
+              <p className={s.eyebrowLight}>OBSTACLE SENSOR</p>
+              <h4 className={s.photoTitle}>
+                {f.obstacle.title} <Badge tone="fire">{f.obstacle.badge}</Badge>
+              </h4>
+              <ObstacleDemo />
+              <ol className={s.steps}>
+                <li><span>1</span>장애물 접촉</li>
+                <li><span>2</span>5초 상승 후 정지</li>
+                <li><span>3</span>음성 안내</li>
+              </ol>
+              <p className="sr-only">{f.obstacle.body}</p>
+            </div>
           </div>
-        </div>
 
-        {/* ④ 흰 글 패널 — 안전 브라켓트 + 음성안내 */}
-        <div className={cx(s.panel, s.light, s.alignEnd, 'reveal')}>
-          <p className={s.eyebrow}>SMART CONTROL</p>
-          <h3 className={cx(s.title, s.titleAlt)}>
-            추락은 막고
-            <br />
-            <em>상황은 알립니다</em>
-          </h3>
-          <p className={s.lead}>{f.bracket.body}</p>
+          {/* ④ 흰 글 패널 — 안전 브라켓트 + 음성안내 */}
+          <div className={cx(s.panel, s.light, s.alignEnd, 'reveal')}>
+            <p className={s.eyebrow}>SMART CONTROL</p>
+            <h3 className={cx(s.title, s.titleAlt)}>
+              추락은 막고
+              <br />
+              <em>상황은 알립니다</em>
+            </h3>
+            <p className={s.lead}>{f.bracket.body}</p>
 
-          <p className={s.cellHead}>
-            <span className={s.cellIcon} aria-hidden="true">{ICON.bracket}</span>
-            {f.bracket.title}
-          </p>
-          <ul className={s.cells}>
-            <li>500K 이상 모터<br /><b>기본 장착</b></li>
-            <li>체인 처짐 방지<br /><b>방진 러버</b></li>
-            <li>체인 이탈 시<br /><b>추락 방지</b></li>
-          </ul>
+            <p className={s.cellHead}>
+              <span className={s.cellIcon} aria-hidden="true">{ICON.bracket}</span>
+              {f.bracket.title}
+            </p>
+            <ul className={s.cells}>
+              <li>500K 이상 모터<br /><b>기본 장착</b></li>
+              <li>체인 처짐 방지<br /><b>방진 러버</b></li>
+              <li>체인 이탈 시<br /><b>추락 방지</b></li>
+            </ul>
 
-          <p className={s.cellHead}>
-            <span className={s.cellIcon} aria-hidden="true">{ICON.speaker}</span>
-            연동제어기 음성안내 <Badge tone="fire">특허 출원</Badge>
-            <span className={s.wave} aria-hidden="true"><i /><i /><i /><i /><i /></span>
-          </p>
-          <ul className={s.voice}>
-            {f.voiceMessages.map((m) => (
-              <li key={m}>“{m}”</li>
-            ))}
-          </ul>
+            <p className={s.cellHead}>
+              <span className={s.cellIcon} aria-hidden="true">{ICON.speaker}</span>
+              연동제어기 음성안내 <Badge tone="fire">특허 출원</Badge>
+              <span className={s.wave} aria-hidden="true"><i /><i /><i /><i /><i /></span>
+            </p>
+            <ul className={s.voice}>
+              {f.voiceMessages.map((m) => (
+                <li key={m}>“{m}”</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
