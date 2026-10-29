@@ -552,14 +552,6 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
           {p.slatGroups && p.components && <ComponentsBlock product={p} />}
           {(p.window || p.colors || p.sensors) && <OptionsBlock product={p} />}
           {p.openTypes && <OpenTypesBlock product={p} />}
-          {p.uses.length > 0 && (
-            <section className={cx('container', s.block)} aria-labelledby="uses-title">
-              <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
-              <ul className={s.uses}>
-                {p.uses.map((u) => <li key={u}>{u}</li>)}
-              </ul>
-            </section>
-          )}
         </>
       ) : (
         p.slatGroups ? (
@@ -589,7 +581,11 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       {/* 도면 없는 제품도 슬랫 단면이 있으면 사양·설치장소 아래에 */}
       {!drawing && p.panels && <PanelBlock product={p} />}
       {!drawing && p.slatGroups && p.components && <ComponentsBlock product={p} />}
-      {!drawing && p.slatGroups && p.uses.length > 0 && (
+
+      {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
+
+      {/* 주요 설치 장소 — 상세 맨 아래(상담 바로 위). 도면·슬랫이 없는 제품은 위에서 사양표 옆에 붙어 나옴 */}
+      {(drawing || p.slatGroups) && p.uses.length > 0 && (
         <section className={cx('container', s.block)} aria-labelledby="uses-title">
           <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
           <ul className={s.uses}>
@@ -597,8 +593,6 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
           </ul>
         </section>
       )}
-
-      {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
     </div>
   );
 }
