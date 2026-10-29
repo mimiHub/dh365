@@ -46,6 +46,7 @@ import overheadGrayImg from '../assets/color-overhead-gray.jpg';
 import overheadDrawingImg from '../assets/drawing-overhead-door.jpg';
 import openStandardImg from '../assets/opentype-standard.jpg';
 import slatInsulated16Img from '../assets/slat-al-insulated-16.jpg';
+import alInsulatedDrawingImg from '../assets/drawing-al-insulated.jpg';
 import slatExtruded16Img from '../assets/slat-al-extruded-16.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
@@ -84,8 +85,9 @@ const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: 
     alt: '스피드도어 구성도 — 모터, 샤프트, 도어 시트, 비전 시트, 가이드레일, 컨트롤 박스, 포토센서, 하단바 위치',
   },
   'al-insulated': {
+    src: alInsulatedDrawingImg,
     caption: '예시 도면 · 개구부 폭·높이는 현장에 맞춰 제작',
-    alt: '알루미늄 단열셔터 구조도 — 브라켓, 셔터박스, AL 조인트, 샤프트, 가이드레일, AL 슬랫, 하단바 위치',
+    alt: '알루미늄 단열셔터 구조도 — 브라켓, 셔터박스, 알루미늄 샤프트, 가이드레일, AL 슬랫, 하부 씰, 푸시버튼 스위치 위치',
   },
   'overhead-door': {
     src: overheadDrawingImg, // wide 없음 → 박스 안 78%(최대 520px) + 여백
