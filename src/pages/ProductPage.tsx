@@ -564,16 +564,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       ) : (
         p.slatGroups ? (
           <>
-            {/* 슬랫 종류가 있는 제품(내풍압 계열): [사양표 + 슬랫 두께표 | 슬랫 사진] → 주요 설치 장소는 따로 */}
+            {/* 슬랫 종류가 있는 제품(내풍압 계열): [사양표 + 슬랫 두께표 | 슬랫 사진], 주요 설치 장소는 맨 아래 */}
             <SpecSlatBlock product={p} />
-            {p.uses.length > 0 && (
-              <section className={cx('container', s.block)} aria-labelledby="uses-title">
-                <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
-                <ul className={s.uses}>
-                  {p.uses.map((u) => <li key={u}>{u}</li>)}
-                </ul>
-              </section>
-            )}
           </>
         ) : (p.specs.length > 0 || p.uses.length > 0) && (
           <section className={cx('container', s.block, s.specWrap)} aria-labelledby="spec-title">
@@ -597,6 +589,14 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       {/* 도면 없는 제품도 슬랫 단면이 있으면 사양·설치장소 아래에 */}
       {!drawing && p.panels && <PanelBlock product={p} />}
       {!drawing && p.slatGroups && p.components && <ComponentsBlock product={p} />}
+      {!drawing && p.slatGroups && p.uses.length > 0 && (
+        <section className={cx('container', s.block)} aria-labelledby="uses-title">
+          <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
+          <ul className={s.uses}>
+            {p.uses.map((u) => <li key={u}>{u}</li>)}
+          </ul>
+        </section>
+      )}
 
       {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
     </div>
