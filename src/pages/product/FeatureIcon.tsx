@@ -39,6 +39,7 @@ const I = {
 };
 
 const RULES: [RegExp, ReactNode][] = [
+  [/초대형|대형/, I.expand],
   [/풍속|내풍압|윈드/, I.wind],
   [/열관류|단열/, I.thermo],
   [/밀폐|기밀/, I.lock],
@@ -57,7 +58,7 @@ const RULES: [RegExp, ReactNode][] = [
   [/부식/, I.drop],
   [/개방감|광고|채광/, I.eye],
   [/적층|수직/, I.layers],
-  [/복구/, I.refresh],
+  [/복구|복원/, I.refresh],
   [/센서/, I.radar],
   [/색상|컬러/, I.palette],
   [/가볍|경량/, I.feather],

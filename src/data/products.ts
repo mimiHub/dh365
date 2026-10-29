@@ -413,28 +413,55 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     category: 'aluminum',
     name: '내풍압셔터',
     nameEn: 'AL. Wind Resistant Shutter',
-    summary: '45m/s 강풍을 견디는 윈드락 알루미늄셔터',
+    model: 'DOORS-4000',
+    summary: '45~50m/s 강풍을 견디는 윈드락 알루미늄셔터',
+    // 출처: 카탈로그 p.15 + 협업 업체 「AL. 내풍압셔터」 상세 페이지(특징·제품구성요소)
     intro:
-      '윈드락을 체결해 45m/s의 강풍에도 과도한 변형이나 손상이 없도록 설계한 알루미늄셔터입니다. 바람이 강한 남부지방과 해안가, 대형 물류센터·공장에 주로 설치합니다.',
+      '이중압출 슬랫과 윈드락, AL 내풍압 가이드레일로 45~50m/s의 풍압을 견디도록 설계한 알루미늄셔터입니다. 강한 역풍에도 정상 작동 상태를 유지하고, 악천후로부터 시설과 장비를 보호합니다.',
     features: [
-      { title: '풍속 45m/s 시험 통과', body: 'AL 1.2T × 16mm 슬랫 기준 45m/s 시험성적서를 보유하고 있습니다.' },
-      { title: '윈드락 체결', body: '슬랫 10단마다 베어링 타입 윈드락을 체결해 풍압을 가이드레일로 분산합니다.' },
-      { title: '방범 겸용', body: '견고한 구조로 상가·주택·차고 등 방범이 필요한 곳에도 씁니다.' },
+      { title: '뛰어난 복원력', body: '부드럽게 열리고 멈추며 소음이 적고, 철제보다 풍압에 의한 복원력이 뛰어납니다.' },
+      { title: '초대형 내풍압셔터 제작', body: '윈드락을 장착해 강한 풍압을 견디며, 최대 14m까지 초대형으로 제작할 수 있습니다.' },
+      { title: '소음 및 이물질 차단', body: '금속 마찰 소음이 적고 세밀한 결합으로 먼지·이물질을 막습니다. 방음셔터 제작도 가능합니다.' },
     ],
-    uses: ['남부지방·해안가', '발전소', '대형 물류센터', '공장·군부대', '백화점·상가·차고'],
+    uses: ['발전소', '공장·기계반입실', '대형 물류창고·물류센터', '남부지방·해안가', '군부대', '백화점·상가·차고'],
     specs: [
       { label: '슬랫', value: 'Pitch 72mm, 1.2T × 16mm AL6063 이중압출물' },
       { label: '가이드레일', value: '150 × 5T AL6063 이중압출물' },
       { label: '윈드락', value: 'AL6063 BEARING TYPE (10단마다 체결)' },
       { label: '하단', value: 'I BAR' },
       { label: '셔터박스', value: '600 ~ VAR.' },
+      { label: '최대 크기', value: '폭 14m × 높이 12m (초대형 제작)' },
     ],
-    // 슬랫 단면: 카탈로그 p.15 「AL 1.2T × 16mm 내풍압 셔터 슬라트」
-    panelsHead: { en: 'SLAT', title: '슬랫', sizeLabel: '두께 × 폭' },
-    panels: [
-      { name: '내풍압 셔터 슬랫', nameEn: 'AL 16mm', thickness: '1.2T × 16mm', pitch: '72mm' },
+    // 슬랫 종류: 협업 업체 「SLAT의 종류」 — 이중압출 / 단열 × 두께 3종
+    slatGroups: [
+      {
+        name: '이중압출 슬랫',
+        nameEn: 'AL EXTRUDED SLAT',
+        body: 'AL6063 이중압출 슬랫입니다.',
+        rows: [
+          { thickness: '1.2T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.6T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.3T', total: '22.4mm', pitch: '72mm' },
+        ],
+      },
+      {
+        name: '단열 슬랫',
+        nameEn: 'AL INSULATED SLAT',
+        body: '이중압출 슬랫 속에 우레탄을 충진했습니다.',
+        rows: [
+          { thickness: '1.2T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.6T', total: '15mm', pitch: '72mm' },
+          { thickness: '1.3T', total: '22.4mm', pitch: '75mm' },
+        ],
+      },
     ],
-    certs: ['AL 1.2T × 16mm 45m/s 시험성적서'],
+    certs: ['AL 1.2T × 16mm 45m/s 시험성적서', '방음 시험성적서'],
+    todo: [
+      '협업 업체 표: 이중압출 1.3T 피치 72mm, 단열 1.3T 피치 75mm (단열셔터 페이지 표는 둘 다 75mm) → 확인',
+      '전체두께 15mm(협업 업체) vs 16mm(카탈로그 p.15) 확인',
+      '최대 크기 14m × 12m는 협업 업체 사진 표기 기준 → 대한방화 시공 가능 범위 확인',
+      '내풍압 성능: 카탈로그 45m/s, 협업 업체 45~50m/s → 확인',
+    ],
   },
   {
     slug: 'al-wind-insulated',

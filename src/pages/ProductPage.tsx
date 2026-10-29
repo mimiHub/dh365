@@ -46,7 +46,6 @@ import overheadGrayImg from '../assets/color-overhead-gray.jpg';
 import overheadDrawingImg from '../assets/drawing-overhead-door.jpg';
 import openStandardImg from '../assets/opentype-standard.jpg';
 import alInsulatedDrawingImg from '../assets/drawing-al-insulated.jpg';
-import slatWind16Img from '../assets/slat-al-wind-16.jpg';
 import slatExtrudedSetImg from '../assets/slat-al-extruded-set.jpg';
 import partRailRearImg from '../assets/part-al-rail-rear.jpg';
 import partRailSideImg from '../assets/part-al-rail-side.jpg';
@@ -108,7 +107,6 @@ const PANEL_IMAGES: Partial<Record<string, string>> = {
 };
 // 카드마다 그림이 있는 경우(알루미늄 슬랫 단면) — panels와 같은 순서. 이게 있으면 왼쪽 큰 사진 대신 카드 위에 그림
 const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
-  'al-wind': [slatWind16Img],
 };
 // 슬랫 계열 사진 — slatGroups와 같은 순서
 const SLAT_GROUP_IMAGES: Partial<Record<string, string[]>> = {
