@@ -52,6 +52,14 @@ export interface ProductDetail {
   certs?: string[]; // 시험성적서·특허 등
   reports?: TestReport[];
   sharedSafety?: boolean; // true면 FIRE_SAFETY 공통 블록을 함께 노출
+  /** 구성품 카드 (이미지는 ProductPage의 COMPONENT_IMAGES에서 같은 순서로) */
+  components?: { name: string; nameEn: string; body: string }[];
+  /** 자동 복구 등 단계별 동작 설명 (이미지는 ProductPage의 STEP_IMAGES) */
+  steps?: { title: string; heading: string; items: { title: string; body: string }[] };
+  /** 선택 가능한 색상 — hex는 화면 표시용 근사색 */
+  colors?: { name: string; nameEn: string; hex: string; vision?: boolean }[];
+  /** 부착 가능한 센서·조작 장치 */
+  sensors?: { name: string; nameEn: string; body: string }[];
   todo?: string[];
 }
 
@@ -488,7 +496,36 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '가이드레일', value: 'AL 피막처리 / PVC 고강도 압출성형재' },
       { label: '모터', value: '1/2HP(0.43kW) · 1HP(0.75kW) · 2HP(1.5kW) — Made in Italy / Japan' },
       { label: '컨트롤', value: '단상 AC220V, 인버터 타입' },
+      { label: '가이드레일 커버', value: 'SUS 1.2T H/L' },
       { label: '최소 확보 공간', value: '좌 200mm / 우(모터측) 450mm' },
+    ],
+    // 출처: 카탈로그 p.23 구성품 및 구성도 · 자동 복구 기능 · DOOR COLOR · SENSOR
+    components: [
+      { name: '모터', nameEn: 'MOTOR', body: '이탈리아·일본산 모터를 사용합니다.' },
+      { name: '컨트롤', nameEn: 'CONTROL', body: '다양한 센서를 부착할 수 있습니다.' },
+      { name: '알루미늄 가이드레일', nameEn: 'AL. GUIDE RAIL', body: 'AL 사이드 가이드 · 스프링 가이드 · 스프링 · PVC 가이드 · 투스(Tooth)로 구성됩니다.' },
+    ],
+    steps: {
+      title: 'AUTO REPAIR',
+      heading: '자동 복구 기능',
+      items: [
+        { title: '충돌', body: '차량·지게차 등이 닫힌 도어에 부딪힙니다.' },
+        { title: '시트 이탈', body: '시트가 레일에서 빠져나가며 충격을 흘려 보내 파손을 줄입니다.' },
+        { title: '자동 복구', body: '다시 작동하면 시트가 레일로 들어가 원래대로 돌아옵니다.' },
+      ],
+    },
+    colors: [
+      { name: '그레이', nameEn: 'GRAY', hex: '#8b9099' },
+      { name: '오렌지', nameEn: 'ORANGE', hex: '#ee6a2c' },
+      { name: '블루', nameEn: 'BLUE', hex: '#3d3fae' },
+      { name: '비전 시트', nameEn: 'VISION SHEET', hex: '#e9eef3', vision: true },
+    ],
+    sensors: [
+      { name: '푸시버튼', nameEn: 'PUSH BUTTON', body: '손으로 터치하여 열고 닫습니다.' },
+      { name: '포토센서', nameEn: 'PHOTO SENSOR', body: '빛을 이용해 물체의 유무를 감지합니다.' },
+      { name: '적외선센서', nameEn: 'INFRARED SENSOR', body: '원추형 영역 안의 물체를 감지해 도어를 작동합니다.' },
+      { name: '루프센서', nameEn: 'LOOP SENSOR', body: '지면에 자기장을 형성해 물체를 감지하고 도어를 작동합니다.' },
+      { name: '리모컨', nameEn: 'REMOTE CONTROL', body: '원격으로 도어를 작동합니다.' },
     ],
     certs: ['특허 제10-0698757호'],
     todo: ['특허 제10-0698757호의 권리자 확인(대한방화 특허인지 제조사 특허인지)'],

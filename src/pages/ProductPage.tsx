@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
+import { Fragment, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   PRODUCT_CATEGORIES,
@@ -53,10 +53,21 @@ const BANNER_IMAGES: Partial<Record<ProductCategory, string>> = {
 };
 
 // 제품 구조도(도면) — 있으면 사양표 옆에 나란히. caption은 도면 기준 치수 안내
-const DRAWINGS: Partial<Record<string, { src: string; caption: string }>> = {
+// src가 없으면 같은 자리에 이미지 자리(placeholder)를 그림 — 이미지만 받으면 src 한 줄 추가로 끝
+const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: string; alt?: string }>> = {
   steel: { src: steelDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
   screen: { src: screenDrawingImg, caption: '예시 도면 · 개구부 3,000 × 3,000mm 기준' },
+  'speed-door': {
+    caption: '구성도 · 최소 확보 공간 좌 200mm / 우(모터측) 450mm',
+    title: '구성도 · 제품 사양',
+    alt: '스피드도어 구성도 — 모터, 샤프트, 도어 시트, 비전 시트, 가이드레일, 컨트롤 박스, 포토센서, 하단바 위치',
+  },
 };
+
+// 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
+const COMPONENT_IMAGES: Partial<Record<string, (string | undefined)[]>> = {};
+// 단계별 동작 그림(자동 복구 등) — 한 장짜리 일러스트
+const STEP_IMAGES: Partial<Record<string, string>> = {};
 
 // 구조 상세 사진(부품·결속부 확대) — 있으면 '제품 특징'을 [사진 | 특징 목록]으로 배치
 // 라벨: 사진 위에 번호 핀으로 표시할 지점 (x·y는 사진 기준 %)
@@ -411,20 +422,27 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
         </>
       )}
 
+      {p.components && <ComponentsBlock product={p} />}
+      {p.steps && <StepsBand product={p} />}
+
       {drawing ? (
         <>
-          {/* 도면이 있는 제품: [구조도 | 사양표] → 아래에 설치 장소 */}
+          {/* 도면이 있는 제품: [구조도 | 사양표] → (색상·센서) → 아래에 설치 장소 */}
           <section className={cx('container', s.block)} aria-labelledby="spec-title">
-            <BlockHead en="SPECIFICATION" title="구조도 · 제품 사양" id="spec-title" />
+            <BlockHead en="SPECIFICATION" title={drawing.title ?? '구조도 · 제품 사양'} id="spec-title" />
             {/* 도면 박스와 사양표의 높이를 맞춤: 그리드 행 높이(둘 중 큰 쪽)에 양쪽이 늘어남.
                 그래서 도면 설명은 그리드 밖(아래)으로 뺌 — 안에 두면 설명 줄만큼 도면 쪽이 더 길어져 끝선이 어긋남 */}
             <div className={s.specDrawing}>
               <figure className={s.drawing} aria-describedby="drawing-note">
-                {/* 도면은 글자가 작아서 원본 크기로 열어 볼 수 있게 링크 */}
-                <a href={drawing.src} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
-                  <img src={drawing.src} alt={`${p.name} 구조도 — 케이스, 감기샤프트, 슬랫, 가이드레일 등 부품 위치와 치수`} loading="lazy" />
-                  <span className={s.drawingZoom}>크게 보기<span className="sr-only">(새 창)</span></span>
-                </a>
+                {/* 도면은 글자가 작아서 원본 크기로 열어 볼 수 있게 링크. 이미지가 아직 없으면 같은 크기의 자리만 */}
+                {drawing.src ? (
+                  <a href={drawing.src} target="_blank" rel="noopener noreferrer" className={s.drawingLink}>
+                    <img src={drawing.src} alt={drawing.alt ?? `${p.name} 구조도 — 케이스, 감기샤프트, 슬랫, 가이드레일 등 부품 위치와 치수`} loading="lazy" />
+                    <span className={s.drawingZoom}>크게 보기<span className="sr-only">(새 창)</span></span>
+                  </a>
+                ) : (
+                  <Media className={s.drawingEmpty} label={`IMAGE — ${p.nameEn} 구성도`} />
+                )}
               </figure>
               {p.specs.length > 0 && <SpecTable product={p} />}
             </div>
@@ -432,6 +450,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
               {drawing.caption}{p.maxSize && ` · 최대 ${mm(p.maxSize.width)} × ${mm(p.maxSize.height)}mm`}
             </p>
           </section>
+          {(p.colors || p.sensors) && <OptionsBlock product={p} />}
           {p.uses.length > 0 && (
             <section className={cx('container', s.block)} aria-labelledby="uses-title">
               <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
@@ -660,6 +679,107 @@ function HeatDonut({ label, value, limit, delay = 0 }: { label: string; value: n
     </figure>
   );
 }
+
+/** 구성품 — 사진 카드 3장 (영문 라벨 + 이름 + 한 줄 설명) */
+function ComponentsBlock({ product: p }: { product: ProductDetail }) {
+  const imgs = COMPONENT_IMAGES[p.slug] ?? [];
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="components-title">
+      <BlockHead en="COMPONENTS" title="구성품" id="components-title" />
+      <ul className={s.components}>
+        {p.components!.map((c, i) => (
+          <li key={c.nameEn} className={s.component}>
+            <Media className={s.componentImg} src={imgs[i]} alt={`${p.name} ${c.name}`} label={`IMAGE — ${c.nameEn}`} />
+            <div className={s.componentText}>
+              <p className={s.componentEn}>{c.nameEn}</p>
+              <h4 className={s.componentName}>{c.name}</h4>
+              <p className={s.componentBody}>{c.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/**
+ * 단계별 동작(자동 복구) — 회색 전체 폭 띠: [제목 + 그림 1장] 아래에 01→02→03 단계를 화살표로 연결.
+ * 그림은 3단계가 한 장에 그려진 일러스트라, 단계 글을 그림의 세 칸과 같은 3열로 맞춤
+ */
+function StepsBand({ product: p }: { product: ProductDetail }) {
+  const st = p.steps!;
+  return (
+    <section className={s.stepsBand} aria-labelledby="steps-title">
+      <div className="container">
+        <BlockHead en={st.title} title={st.heading} id="steps-title" />
+        <Media className={s.stepsImg} src={STEP_IMAGES[p.slug]} alt={`${p.name} ${st.heading} — ${st.items.map((x) => x.title).join(' → ')}`} label={`IMAGE — ${st.title}`} />
+        <ol className={s.steps}>
+          {st.items.map((x, i) => (
+            <li key={x.title} className={s.step}>
+              <span className={s.stepNo}>{pad(i + 1)}</span>
+              <h4 className={s.stepTitle}>{x.title}</h4>
+              <p className={s.stepBody}>{x.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/** 도어 색상 + 센서 — 색상은 이미지 없이 CSS로 그린 미니 도어(시트 색 + 비전 창), 센서는 아이콘 목록 */
+function OptionsBlock({ product: p }: { product: ProductDetail }) {
+  return (
+    <section className={cx('container', s.block, s.options)} aria-label="색상·센서 옵션">
+      {p.colors && (
+        <div>
+          <BlockHead en="DOOR COLOR" title="도어 색상" />
+          <p className={s.optionsLead}>시트 색상을 고르고, 투명한 비전 시트를 조합할 수 있습니다.</p>
+          <ul className={s.colors}>
+            {p.colors.map((c) => (
+              <li key={c.nameEn} className={s.color}>
+                {/* 미니 도어: 프레임 안에 시트 색, 비전 시트는 반투명 창으로 */}
+                <span className={cx(s.swatch, c.vision && s.swatchVision)} style={{ '--sheet': c.hex } as CSSProperties} aria-hidden="true">
+                  <span className={s.swatchWindow} />
+                </span>
+                <b>{c.name}</b>
+                <span>{c.nameEn}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {p.sensors && (
+        <div>
+          <BlockHead en="SENSOR" title="센서 · 조작 장치" />
+          <ul className={s.sensors}>
+            {p.sensors.map((x) => (
+              <li key={x.nameEn} className={s.sensor}>
+                <span className={s.sensorIcon} aria-hidden="true">{SENSOR_ICONS[x.nameEn] ?? SENSOR_ICONS.DEFAULT}</span>
+                <div>
+                  <h4 className={s.sensorName}>{x.name} <span>{x.nameEn}</span></h4>
+                  <p className={s.sensorBody}>{x.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
+const sensorSvg = (children: ReactNode) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
+);
+const SENSOR_ICONS: Record<string, ReactNode> = {
+  'PUSH BUTTON': sensorSvg(<><rect x="5" y="3" width="14" height="18" rx="2" /><circle cx="12" cy="9" r="2.5" /><circle cx="12" cy="16" r="2.5" /></>),
+  'PHOTO SENSOR': sensorSvg(<><path d="M3 12h3M18 12h3" /><circle cx="12" cy="12" r="3" /><path d="M7 12h1.5M15.5 12H17" strokeDasharray="1 2" /><path d="M12 5v2M12 17v2" /></>),
+  'INFRARED SENSOR': sensorSvg(<><rect x="9" y="3" width="6" height="4" rx="1" /><path d="M12 7 5 20M12 7l7 13M7 20h10" /></>),
+  'LOOP SENSOR': sensorSvg(<><rect x="4" y="13" width="16" height="7" rx="1.5" /><path d="M8 13V9a4 4 0 0 1 8 0v4" /><path d="M7.5 16.5h9" strokeDasharray="1.5 2" /></>),
+  'REMOTE CONTROL': sensorSvg(<><rect x="8" y="7" width="8" height="14" rx="2" /><circle cx="12" cy="12" r="1.5" /><path d="M12 16v1" /><path d="M9 4.5a4.5 4.5 0 0 1 6 0M7 2.5a7.5 7.5 0 0 1 10 0" /></>),
+  DEFAULT: sensorSvg(<circle cx="12" cy="12" r="8" />),
+};
 
 function SpecTable({ product: p }: { product: ProductDetail }) {
   return (
