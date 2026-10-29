@@ -18,7 +18,8 @@
 
 /* ── 2단계 탭 (PC 전용) ── 1단계 탭 바로 아래 붙은 연회색 띠. 글자 탭 + 사이 구분선, 선택은 파란 글자 + 밑줄
    (칩처럼 떨어져 떠 있으면 '필터 버튼'으로 읽혀서, 탭에 붙여 하위 메뉴임을 보이게) */
-.subRow { background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+/* 위 소개 띠(회색)와 겹치지 않게 연한 파랑 — 선택 글자색(파랑)과 같은 계열이라 '하위 메뉴'로 묶여 보임 */
+.subRow { background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface)); border-bottom: 1px solid var(--line); }
 .subList { display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; }
 .subList::-webkit-scrollbar { display: none; }
 .subList > li { display: flex; align-items: center; }
