@@ -396,6 +396,11 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '하단', value: 'I BAR' },
       { label: '셔터박스', value: '600 ~ VAR.' },
     ],
+    // 슬랫 단면: 카탈로그 p.15 「AL 1.2T × 16mm 내풍압 셔터 슬라트」
+    panelsHead: { en: 'SLAT', title: '슬랫', sizeLabel: '두께 × 폭' },
+    panels: [
+      { name: '내풍압 셔터 슬랫', nameEn: 'AL 16mm', thickness: '1.2T × 16mm', pitch: '72mm' },
+    ],
     certs: ['AL 1.2T × 16mm 45m/s 시험성적서'],
   },
   {

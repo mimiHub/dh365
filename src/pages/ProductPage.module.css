@@ -408,6 +408,15 @@
 .panelCardImg > img { object-fit: contain; padding: var(--space-6); mix-blend-mode: multiply; }
 .panelImgText { display: flex; flex-direction: column; flex: 1; padding: var(--space-5) var(--space-6) var(--space-6); background: var(--surface-alt); }
 
+/* 슬랫이 하나뿐일 때: 3열 칸에 카드 하나만 덩그러니 → 가로형 [그림 | 글] 한 장으로 */
+.panelImgSingle { grid-template-columns: 1fr; }
+.panelImgSingle .panelImgCard { flex-direction: row; }
+.panelImgSingle .panelCardImg { flex: 0 0 46%; aspect-ratio: 16 / 10; } /* 가로가 넓어 4:3이면 너무 높아짐 */
+.panelImgSingle .panelCardImg:has(img) { border-bottom: 0; border-right: 1px solid var(--line); }
+.panelImgSingle .panelImgText { justify-content: center; padding: var(--space-8) var(--space-10); }
+.panelImgSingle .panelName { font-size: 22px; }
+.panelImgSingle .panelDl { margin-top: var(--space-6); padding-top: 0; }
+
 /* ── 개폐 방식 ── (카드 모양은 구성품 카드 .component 재사용) */
 .openLead { margin-top: calc(var(--space-4) * -1); margin-bottom: var(--space-6); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
 .openTypes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
@@ -446,6 +455,9 @@
   .openTypes .componentText { align-self: stretch; }
   .panelCards { gap: var(--space-3); }
   .panelImgCards { grid-template-columns: 1fr; gap: var(--space-3); }
+  .panelImgSingle .panelImgCard { flex-direction: column; }
+  .panelImgSingle .panelCardImg:has(img) { border-right: 0; border-bottom: 1px solid var(--line); }
+  .panelImgSingle .panelImgText { padding: var(--space-5); }
   .panelCardImg { aspect-ratio: 4 / 3; }
   .panelCard { padding: var(--space-4); }
   .panelDl { grid-template-columns: 1fr; gap: var(--space-2); } /* 폭이 좁아 두께·피치를 위아래로 */

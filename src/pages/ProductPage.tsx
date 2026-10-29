@@ -48,6 +48,7 @@ import openStandardImg from '../assets/opentype-standard.jpg';
 import slatInsulated16Img from '../assets/slat-al-insulated-16.jpg';
 import alInsulatedDrawingImg from '../assets/drawing-al-insulated.jpg';
 import slatExtruded16Img from '../assets/slat-al-extruded-16.jpg';
+import slatWind16Img from '../assets/slat-al-wind-16.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
@@ -104,6 +105,7 @@ const PANEL_IMAGES: Partial<Record<string, string>> = {
 // 카드마다 그림이 있는 경우(알루미늄 슬랫 단면) — panels와 같은 순서. 이게 있으면 왼쪽 큰 사진 대신 카드 위에 그림
 const PANEL_CARD_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
   'al-insulated': [undefined, slatInsulated16Img, slatExtruded16Img],
+  'al-wind': [slatWind16Img],
 };
 // 투시창 사진 · 색상 실물(질감) 사진 — 색상 사진이 있으면 CSS 미니 도어 대신 사진 타일로
 const WINDOW_IMAGES: Partial<Record<string, string>> = {
@@ -546,6 +548,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
           </section>
         )
       )}
+      {/* 도면 없는 제품도 슬랫 단면이 있으면 사양·설치장소 아래에 */}
+      {!drawing && p.panels && <PanelBlock product={p} />}
 
       {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
     </div>
@@ -918,7 +922,7 @@ function PanelBlock({ product: p }: { product: ProductDetail }) {
     <section className={cx('container', s.block)} aria-labelledby="panel-title">
       <BlockHead en={head.en} title={head.title} id="panel-title" />
       {cardImgs ? (
-        <ul className={s.panelImgCards}>
+        <ul className={cx(s.panelImgCards, panels.length === 1 && s.panelImgSingle)}>
           {panels.map((x, i) => (
             <li key={x.nameEn + x.thickness} className={s.panelImgCard}>
               <Media className={s.panelCardImg} src={cardImgs[i]} alt={`${x.name} 단면도 — ${x.thickness}, 피치 ${x.pitch}`} label={`IMAGE — ${x.nameEn}`} />
