@@ -137,18 +137,22 @@ const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
   'overhead-door': [openStandardImg, openHiliftImg, openFullVerticalImg],
 };
 
+// 내풍압 계열 공통 '셔터의 구성' 사진 (products.ts의 WIND_SHUTTER_PARTS 순서)
+// 앞 3장은 배경까지 찍힌 사진 → cover(꽉 채움), 나머지는 흰 배경 누끼 → contain
+const WIND_PART_IMAGES = [
+  { src: windRail1Img, cover: true }, { src: windRail2Img, cover: true }, { src: windRail3Img, cover: true }, { src: windRail4Img },
+  { src: windLock1Img }, { src: windLock2Img }, { src: windLock3Img }, { src: windLock4Img },
+  { src: windGuideAImg }, { src: windGuideBImg }, { src: partBottomTImg }, { src: partBottomIImg },
+];
+
 // 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
 // wide: 가로로 긴 사진(단면도+입체도 등) → 카드가 한 줄 전체를 차지
 const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean; cover?: boolean } | undefined)[]>> = {
   'speed-door': [{ src: speedMotorImg }, { src: speedControlImg }, { src: speedGuideRailImg, wide: true }],
   'overhead-door': [{ src: overheadDriveImg }, { src: overheadSwitchImg }],
   'al-insulated': [{ src: partRailRearImg }, { src: partRailSideImg }, { src: partBottomTImg }, { src: partBottomIImg }],
-  // 앞 3장은 배경까지 찍힌 사진 → cover(꽉 채움), 나머지는 흰 배경 누끼 → contain
-  'al-wind': [
-    { src: windRail1Img, cover: true }, { src: windRail2Img, cover: true }, { src: windRail3Img, cover: true }, { src: windRail4Img },
-    { src: windLock1Img }, { src: windLock2Img }, { src: windLock3Img }, { src: windLock4Img },
-    { src: windGuideAImg }, { src: windGuideBImg }, { src: partBottomTImg }, { src: partBottomIImg },
-  ],
+  'al-wind': WIND_PART_IMAGES,
+  'al-wind-insulated': WIND_PART_IMAGES,
 };
 
 // 제품 특징을 '사진 배경 띠 + 원형 아이콘'으로 보여줄 제품 — 배경 사진이 있으면 카드 대신 이 레이아웃

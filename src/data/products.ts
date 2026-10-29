@@ -230,6 +230,22 @@ export const FIRE_SAFETY = {
   patent: { no: '제 10-2121150 호', title: '방화스크린셔터 구동장치', registered: '2020.06.03' },
 };
 
+/** 내풍압 계열(내풍압셔터·내풍압단열셔터) 공통 '셔터의 구성' — 가이드레일·윈드락·하단바가 같음 */
+const WIND_SHUTTER_PARTS: ProductDetail['components'] = [
+    { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-1 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.2T / 1.3T × 15mm\n피치 72mm · 윈드락 DJWL-1' },
+    { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-2 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.3T × 22.4mm\n피치 72mm · 윈드락 DJWL-2' },
+    { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-3 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.2T / 1.3T × 15mm\n피치 72mm · 윈드락 DJWL-3' },
+    { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-4 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.3T × 22.4mm\n피치 72mm · 윈드락 DJWL-4' },
+    { group: '윈드락', name: 'DJWL-1', nameEn: 'WIND LOCK', body: '재질 AL' },
+    { group: '윈드락', name: 'DJWL-2', nameEn: 'WIND LOCK · 22.4mm', body: '재질 아세탈' },
+    { group: '윈드락', name: 'DJWL-3', nameEn: 'WIND LOCK', body: '재질 AL' },
+    { group: '윈드락', name: 'DJWL-4', nameEn: 'WIND LOCK', body: '재질 아세탈' },
+    { group: '가이드레일 · 하단바', name: '가이드레일', nameEn: 'GUIDE RAIL', body: '양쪽에 각파이프를 지지해 강한 풍압에 견디도록 설계했습니다.' },
+    { group: '가이드레일 · 하단바', name: '가이드레일', nameEn: 'GUIDE RAIL', body: 'AL 내풍압 가이드레일' },
+    { group: '가이드레일 · 하단바', name: '하단바 T 타입', nameEn: 'BOTTOM BAR · TYPE T', body: 'TYPE T' },
+    { group: '가이드레일 · 하단바', name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: 'TYPE I' },
+];
+
 export const PRODUCT_DETAILS: ProductDetail[] = [
   // ─────────────────────────── ⑴ 스크린방화셔터 · ⑵ 철재방화셔터 ───────────────────────────
   {
@@ -445,22 +461,9 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
         ],
       },
     ],
-    // 셔터의 구성: 협업 업체 「제품구성요소 > 셔터의 구성」 (3묶음 × 4)
+    // 셔터의 구성: 협업 업체 「제품구성요소 > 셔터의 구성」 (3묶음 × 4) — 내풍압단열셔터와 공통
     componentsHead: { en: 'SHUTTER PARTS', title: '셔터의 구성' },
-    components: [
-      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-1 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.2T / 1.3T × 15mm\n피치 72mm · 윈드락 DJWL-1' },
-      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-2 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.3T × 22.4mm\n피치 72mm · 윈드락 DJWL-2' },
-      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-3 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.2T / 1.3T × 15mm\n피치 72mm · 윈드락 DJWL-3' },
-      { group: '가이드레일 + 윈드락 + 슬랫', name: 'DJWL-4 조합', nameEn: 'AL GUIDE RAIL 5T', body: 'AL 슬랫 1.3T × 22.4mm\n피치 72mm · 윈드락 DJWL-4' },
-      { group: '윈드락', name: 'DJWL-1', nameEn: 'WIND LOCK', body: '재질 AL' },
-      { group: '윈드락', name: 'DJWL-2', nameEn: 'WIND LOCK · 22.4mm', body: '재질 아세탈' },
-      { group: '윈드락', name: 'DJWL-3', nameEn: 'WIND LOCK', body: '재질 AL' },
-      { group: '윈드락', name: 'DJWL-4', nameEn: 'WIND LOCK', body: '재질 아세탈' },
-      { group: '가이드레일 · 하단바', name: '가이드레일', nameEn: 'GUIDE RAIL', body: '양쪽에 각파이프를 지지해 강한 풍압에 견디도록 설계했습니다.' },
-      { group: '가이드레일 · 하단바', name: '가이드레일', nameEn: 'GUIDE RAIL', body: 'AL 내풍압 가이드레일' },
-      { group: '가이드레일 · 하단바', name: '하단바 T 타입', nameEn: 'BOTTOM BAR · TYPE T', body: 'TYPE T' },
-      { group: '가이드레일 · 하단바', name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: 'TYPE I' },
-    ],
+    components: WIND_SHUTTER_PARTS,
     certs: ['AL 1.2T × 16mm 45m/s 시험성적서', '방음 시험성적서'],
     todo: [
       '협업 업체 표: 이중압출 1.3T 피치 72mm (단열셔터 페이지 표는 75mm) → 확인',
@@ -503,6 +506,8 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
         ],
       },
     ],
+    componentsHead: { en: 'SHUTTER PARTS', title: '셔터의 구성' },
+    components: WIND_SHUTTER_PARTS,
     certs: ['AL 1.0T × 28mm 50m/s 시험성적서', '열관류율 1.233W/㎡K'],
     todo: [
       '용도 목록은 시공실적(다산 해수담수화, 인천 금곡동 푸드존, 영종도 하수처리장 = 단열내풍압)에서 뽑은 것 — 확인',
