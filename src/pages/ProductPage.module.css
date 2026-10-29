@@ -269,6 +269,7 @@
   .size dd { font-size: 28px; line-height: 36px; }
   .block, .body + section { margin-top: var(--space-12); }
   .spec th { width: 104px; }
+  .specSlatGroup .slatTable thead th:first-child, .specSlatGroup .slatTable tbody th { width: 104px; }
   .reportMeta { grid-template-columns: 1fr; }
   .colItem { width: 64px; }
   .colShort { width: 56px; }
@@ -433,6 +434,21 @@
 .panelImgSingle .panelName { font-size: 22px; }
 .panelImgSingle .panelDl { margin-top: var(--space-6); padding-top: 0; }
 
+/* ── 제품 사양 + 슬랫 (내풍압 계열) ── 왼쪽 표 묶음 | 오른쪽 사진(표 높이만큼) */
+.specSlat { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-10); align-items: stretch; }
+.specSlatTables { display: flex; flex-direction: column; }
+.specSlatGroup { margin-top: var(--space-10); }
+.specSlatHead { display: flex; align-items: baseline; gap: var(--space-2); font-size: 18px; line-height: 28px; font-weight: 700; }
+.specSlatHead span { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
+.specSlatGroup .slatTable { margin-top: var(--space-4); }
+/* 위 사양표와 첫 열(항목명) 폭을 같게 → 두 표의 세로 구분선이 한 줄로 맞음 */
+.specSlatGroup .slatTable thead th:first-child, .specSlatGroup .slatTable tbody th { width: 140px; }
+.specSlatImgs { display: flex; flex-direction: column; gap: var(--space-4); }
+/* 사진은 왼쪽 표 묶음 높이만큼 늘어남. 사진 배경(연회색)과 같은 색을 깔아 contain 여백이 티 나지 않게 */
+.specSlatImg { flex: 1; min-height: 280px; border-radius: var(--radius-md); }
+.specSlatImg:has(img) { background: #dfe0e2; }
+.specSlatImg > img { object-fit: contain; }
+
 /* ── 슬랫 종류 (계열별 사진 + 비교표) ── */
 .slatGroups { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
 .slatGroup { display: flex; flex-direction: column; margin: 0; }
@@ -478,6 +494,9 @@
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .panelWrap { grid-template-columns: 1fr; }
   .slatGroups { grid-template-columns: 1fr; gap: var(--space-12); }
+  .specSlat { grid-template-columns: 1fr; gap: var(--space-8); }
+  .specSlatImgs { order: -1; } /* 좁은 화면: 사진을 먼저 */
+  .specSlatImg { flex: none; min-height: 0; aspect-ratio: 600 / 350; }
   .slatGroupsSingle .slatGroup { display: flex; align-items: stretch; } /* PC의 align-items: start가 남으면 세로 flex에서 사진 폭이 0이 됨 */
   .slatGroupsSingle .slatGroupHead { margin-top: var(--space-5); }
   .panelImgCards { grid-template-columns: 1fr 1fr; }

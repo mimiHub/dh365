@@ -564,17 +564,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       ) : (
         p.slatGroups ? (
           <>
-            {/* 슬랫 종류가 있는 제품(내풍압 계열): [제품 사양 | 슬랫 종류] 한 줄 → 주요 설치 장소는 따로 */}
-            <section className={cx('container', s.block, s.specWrap)} aria-label="제품 사양 · 슬랫 종류">
-              <div>
-                <BlockHead en="SPECIFICATION" title="제품 사양" id="spec-title" />
-                <SpecTable product={p} />
-              </div>
-              <div>
-                <BlockHead en="SLAT" title="슬랫 종류" id="slat-title" />
-                <SlatGroupList product={p} stacked />
-              </div>
-            </section>
+            {/* 슬랫 종류가 있는 제품(내풍압 계열): [사양표 + 슬랫 두께표 | 슬랫 사진] → 주요 설치 장소는 따로 */}
+            <SpecSlatBlock product={p} />
             {p.uses.length > 0 && (
               <section className={cx('container', s.block)} aria-labelledby="uses-title">
                 <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
@@ -1034,6 +1025,64 @@ function SlatGroupsBlock({ product: p }: { product: ProductDetail }) {
   );
 }
 
+/**
+ * 제품 사양 + 슬랫 — 왼쪽 열에 [사양표 → 슬랫 두께표]를 같은 폭으로 쌓고, 오른쪽에 슬랫 사진을 왼쪽 열 높이만큼 늘림.
+ * 표 두 개의 시작선·끝선이 맞고, 사진이 표 전체 높이를 채워 양쪽 끝선이 같아짐
+ */
+function SpecSlatBlock({ product: p }: { product: ProductDetail }) {
+  const imgs = SLAT_GROUP_IMAGES[p.slug] ?? [];
+  const groups = p.slatGroups!;
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="spec-title">
+      <BlockHead en="SPECIFICATION" title="제품 사양 · 슬랫" id="spec-title" />
+      <div className={s.specSlat}>
+        <div className={s.specSlatTables}>
+          <SpecTable product={p} />
+          {groups.map((g) => (
+            <div key={g.nameEn} className={s.specSlatGroup}>
+              <h4 className={s.specSlatHead}>
+                {g.name} <span>{g.nameEn}</span>
+              </h4>
+              <p className={s.slatGroupBody}>{g.body}</p>
+              <SlatTable group={g} />
+            </div>
+          ))}
+        </div>
+        <div className={s.specSlatImgs}>
+          {groups.map((g, i) => (
+            <Media key={g.nameEn} className={s.specSlatImg} src={imgs[i]} alt={`${g.name} 두께별 견본 ${g.rows.length}종`} label={`IMAGE — ${g.nameEn}`} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** 슬랫 두께별 비교표 (두께가 열로 나란함) */
+function SlatTable({ group: g }: { group: NonNullable<ProductDetail['slatGroups']>[number] }) {
+  return (
+    <table className={s.slatTable}>
+      <caption className="sr-only">{g.name} 두께별 전체두께·피치</caption>
+      <thead>
+        <tr>
+          <th scope="col">두께</th>
+          {g.rows.map((r) => <th key={r.thickness} scope="col">{r.thickness}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">전체두께</th>
+          {g.rows.map((r) => <td key={r.thickness}>{r.total}</td>)}
+        </tr>
+        <tr>
+          <th scope="row">피치</th>
+          {g.rows.map((r) => <td key={r.thickness}>{r.pitch}</td>)}
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
 /** 슬랫 계열 목록 — stacked: 옆 칸(제품 사양 옆)에 들어갈 때 계열이 하나여도 [사진 / 이름 / 표] 세로로 */
 function SlatGroupList({ product: p, stacked = false }: { product: ProductDetail; stacked?: boolean }) {
   const imgs = SLAT_GROUP_IMAGES[p.slug] ?? [];
@@ -1049,25 +1098,7 @@ function SlatGroupList({ product: p, stacked = false }: { product: ProductDetail
             <h4 className={s.panelName}>{g.name}</h4>
             <p className={s.slatGroupBody}>{g.body}</p>
           </figcaption>
-          <table className={s.slatTable}>
-            <caption className="sr-only">{g.name} 두께별 전체두께·피치</caption>
-            <thead>
-              <tr>
-                <th scope="col">두께</th>
-                {g.rows.map((r) => <th key={r.thickness} scope="col">{r.thickness}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">전체두께</th>
-                {g.rows.map((r) => <td key={r.thickness}>{r.total}</td>)}
-              </tr>
-              <tr>
-                <th scope="row">피치</th>
-                {g.rows.map((r) => <td key={r.thickness}>{r.pitch}</td>)}
-              </tr>
-            </tbody>
-          </table>
+          <SlatTable group={g} />
         </figure>
       ))}
     </div>
