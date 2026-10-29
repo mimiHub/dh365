@@ -334,6 +334,14 @@
 .componentWide .componentImg:has(img) { border-bottom: 0; border-right: 1px solid var(--line); }
 .componentWide .componentText { flex: none; width: 34%; align-self: center; padding: var(--space-8); }
 
+/* 구성품 4개 이상(알루미늄 셔터의 구성): 4열 작은 카드, 사진은 받은 비율 그대로 */
+.componentsFour { grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
+.componentsFour .componentImg { aspect-ratio: 356 / 256; }
+.componentsFour .componentImg > img { padding: var(--space-3); }
+.componentsFour .componentText { padding: var(--space-4) var(--space-5) var(--space-5); }
+.componentsFour .componentName { font-size: 17px; line-height: 26px; }
+.componentsFour .componentBody { font-size: 14px; line-height: 22px; }
+
 /* ── 단계별 동작 띠 (자동 복구) ── */
 .stepsBand { margin-top: var(--space-16); padding: var(--space-16) 0; background: var(--surface-alt); }
 .stepsImg { aspect-ratio: 16 / 5; border-radius: var(--radius-lg); }
@@ -454,6 +462,7 @@
 
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
+  .componentsFour { grid-template-columns: 1fr 1fr; }
   .panelWrap { grid-template-columns: 1fr; }
   .slatGroups { grid-template-columns: 1fr; gap: var(--space-12); }
   .panelImgCards { grid-template-columns: 1fr 1fr; }
@@ -463,6 +472,15 @@
 @media (max-width: 767px) {
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
   .openTypes { grid-template-columns: 1fr; gap: var(--space-3); }
+  /* 셔터의 구성 4개: 모바일은 2열 세로 카드 (가로형이면 사진이 너무 작아짐) */
+  .componentsFour { grid-template-columns: 1fr 1fr; }
+  .componentsFour .component { flex-direction: column; }
+  .componentsFour .componentImg { width: 100%; }
+  .componentsFour .componentImg:has(img) { border-right: 0; border-bottom: 1px solid var(--line); }
+  .componentsFour .componentText { align-self: stretch; padding: var(--space-3); }
+  .componentsFour .componentEn { font-size: 10px; letter-spacing: .06em; }
+  .componentsFour .componentName { font-size: 15px; line-height: 22px; }
+  .componentsFour .componentBody { font-size: 13px; line-height: 20px; }
   .openTypes .component { flex-direction: column; }
   .openTypes .componentImg { width: 100%; aspect-ratio: 2 / 1; }
   .openTypes .componentImg:has(img) { border-right: 0; border-bottom: 1px solid var(--line); }

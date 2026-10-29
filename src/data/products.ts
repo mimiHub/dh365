@@ -54,6 +54,8 @@ export interface ProductDetail {
   sharedSafety?: boolean; // true면 FIRE_SAFETY 공통 블록을 함께 노출
   /** 구성품 카드 (이미지는 ProductPage의 COMPONENT_IMAGES에서 같은 순서로) */
   components?: { name: string; nameEn: string; body: string }[];
+  /** 구성품 블록 제목 바꾸기 (기본: COMPONENTS / 구성품) */
+  componentsHead?: { en: string; title: string };
   /** 자동 복구 등 단계별 동작 설명 (이미지는 ProductPage의 STEP_IMAGES) */
   steps?: { title: string; heading: string; items: { title: string; body: string }[] };
   /** 선택 가능한 색상 — hex는 화면 표시용 근사색 */
@@ -363,6 +365,14 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     ],
     // 슬랫 2종: 카탈로그 p.14 「AL. 열관류율셔터」(28mm) + p.16 「AL. 압출(단열)셔터」(16mm)
     // p.16 도면의 슬랫 표기가 "AL 1.2T (이중압출, 우레탄 충진)"이라 단열셔터의 16mm형으로 묶음
+    // 셔터의 구성: 협업 업체 상세 페이지 「제품구성요소 > 셔터의 구성」
+    componentsHead: { en: 'SHUTTER PARTS', title: '셔터의 구성' },
+    components: [
+      { name: '가이드레일 + 슬랫 · 후면 부착', nameEn: 'REAR ATTACHMENT', body: '재질 SUS 1.2T / 1.5T, EGI 1.2T / 1.6T' },
+      { name: '가이드레일 + 슬랫 · 측면 부착', nameEn: 'SIDE ATTACHMENT', body: '재질 SUS 1.2T / 1.5T, EGI 1.2T / 1.6T' },
+      { name: '하단바 T 타입', nameEn: 'BOTTOM BAR · TYPE T', body: '슬랫 아래에 T자 받침과 고무 씰을 단 하단바입니다.' },
+      { name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: '슬랫 끝에 고무 씰을 바로 단 일자형 하단바입니다.' },
+    ],
     // 슬랫 종류: 협업 업체 상세 페이지 「SLAT의 종류」 — 이중압출 / 단열 두 계열 × 두께 4종
     slatGroups: [
       {
@@ -390,6 +400,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     ],
     certs: ['열관류율 1.233W/㎡K', '기밀성 1등급 시험성적서', '우레탄 시험성적서'],
     todo: [
+      '셔터의 구성: 하단바 T·I 타입 설명 문장은 그림을 보고 쓴 것(원자료는 "TYPE : T / I"만) → 확인',
       '슬랫 종류 표(협업 업체 자료): 전체두께 15mm — 카탈로그 p.16은 16mm, 두께 0.8/1.2T만 표기(1.6T·1.3T 없음) → 대한방화 기준 확인',
       '슬랫 종류 표에 카탈로그 p.14의 28mm(1.0T, 피치 80) 열관류율 슬랫이 없음 → 사양표에만 남김, 확인',
       '구조도 그림 표기가 카탈로그 p.16 도면과 다름(175 고강도 스프링·2T 철판·아연도금·무게임 옵션·가이드레일 0.5T 등) → 표기 확인·수정 필요',

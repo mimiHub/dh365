@@ -48,6 +48,10 @@ import openStandardImg from '../assets/opentype-standard.jpg';
 import alInsulatedDrawingImg from '../assets/drawing-al-insulated.jpg';
 import slatWind16Img from '../assets/slat-al-wind-16.jpg';
 import slatExtrudedSetImg from '../assets/slat-al-extruded-set.jpg';
+import partRailRearImg from '../assets/part-al-rail-rear.jpg';
+import partRailSideImg from '../assets/part-al-rail-side.jpg';
+import partBottomTImg from '../assets/part-al-bottom-t.jpg';
+import partBottomIImg from '../assets/part-al-bottom-i.jpg';
 import slatInsulatedSetImg from '../assets/slat-al-insulated-set.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
@@ -126,6 +130,7 @@ const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
 const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean } | undefined)[]>> = {
   'speed-door': [{ src: speedMotorImg }, { src: speedControlImg }, { src: speedGuideRailImg, wide: true }],
   'overhead-door': [{ src: overheadDriveImg }, { src: overheadSwitchImg }],
+  'al-insulated': [{ src: partRailRearImg }, { src: partRailSideImg }, { src: partBottomTImg }, { src: partBottomIImg }],
 };
 
 // 제품 특징을 '사진 배경 띠 + 원형 아이콘'으로 보여줄 제품 — 배경 사진이 있으면 카드 대신 이 레이아웃
@@ -491,7 +496,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
         </>
       )}
 
-      {p.components && <ComponentsBlock product={p} />}
+      {/* 슬랫 종류가 있는 제품(알루미늄)은 '셔터의 구성'을 슬랫 종류 바로 다음에 — 같은 '제품 구성요소' 묶음 */}
+      {p.components && !p.slatGroups && <ComponentsBlock product={p} />}
       {p.steps && <StepsBand product={p} />}
 
       {drawing ? (
@@ -521,6 +527,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
           </section>
           {p.panels && <PanelBlock product={p} />}
           {p.slatGroups && <SlatGroupsBlock product={p} />}
+          {p.slatGroups && p.components && <ComponentsBlock product={p} />}
           {(p.window || p.colors || p.sensors) && <OptionsBlock product={p} />}
           {p.openTypes && <OpenTypesBlock product={p} />}
           {p.uses.length > 0 && (
@@ -555,6 +562,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       {/* 도면 없는 제품도 슬랫 단면이 있으면 사양·설치장소 아래에 */}
       {!drawing && p.panels && <PanelBlock product={p} />}
       {!drawing && p.slatGroups && <SlatGroupsBlock product={p} />}
+      {!drawing && p.slatGroups && p.components && <ComponentsBlock product={p} />}
 
       {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
     </div>
@@ -790,8 +798,8 @@ function ComponentsBlock({ product: p }: { product: ProductDetail }) {
   const imgs = COMPONENT_IMAGES[p.slug] ?? [];
   return (
     <section className={cx('container', s.block)} aria-labelledby="components-title">
-      <BlockHead en="COMPONENTS" title="구성품" id="components-title" />
-      <ul className={s.components}>
+      <BlockHead en={p.componentsHead?.en ?? 'COMPONENTS'} title={p.componentsHead?.title ?? '구성품'} id="components-title" />
+      <ul className={cx(s.components, p.components!.length >= 4 && s.componentsFour)}>
         {p.components!.map((c, i) => (
           <li key={c.nameEn} className={cx(s.component, imgs[i]?.wide && s.componentWide)}>
             <Media className={s.componentImg} src={imgs[i]?.src} alt={`${p.name} ${c.name}`} label={`IMAGE — ${c.nameEn}`} />
