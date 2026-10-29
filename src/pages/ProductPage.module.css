@@ -183,7 +183,14 @@
 .pass { display: inline-block; padding: 0 8px; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent-text); font-size: 13px; font-weight: 700; white-space: nowrap; }
 /* 온도 박스: 내용(막대 2개)을 세로 가운데로 — 표가 더 길어도 위에 몰려 보이지 않게 */
 .heat { display: flex; flex-direction: column; justify-content: center; gap: var(--space-6); padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-md); }
-.heatTitle { font-size: 15px; font-weight: 700; }
+.heatHead { display: flex; align-items: center; gap: var(--space-4); padding-bottom: var(--space-5); border-bottom: 1px dashed var(--line-strong); }
+.heatHead > :last-child { margin-left: auto; align-self: flex-start; flex: none; }
+.heatIcon { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; color: #fff; background: linear-gradient(135deg, var(--accent), var(--brand)); box-shadow: 0 8px 20px -6px rgba(1, 99, 206, .5); }
+.heatIcon svg { width: 28px; height: 28px; }
+.heatHeadText { min-width: 0; }
+.heatEyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
+.heatTitle { margin-top: 2px; font-size: 20px; line-height: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+.heatSub { margin-top: 2px; font-size: 13px; line-height: 20px; color: var(--ink-subtle); }
 .donuts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
 .donut { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin: 0; text-align: center; }
 .donutChart { position: relative; width: 100%; max-width: 180px; aspect-ratio: 1; container-type: inline-size; } /* 컨테이너 쿼리 단위(cqi) 기준 — 도넛 크기에 맞춰 가운데 글자도 같이 줄어듦 */
@@ -248,4 +255,12 @@
   .reportMeta { grid-template-columns: 1fr; }
   .colItem { width: 64px; }
   .colShort { width: 56px; }
+}
+
+/* 모바일: 폭이 좁아 제목이 두 줄로 꺾이므로 아이콘·제목을 줄이고 아이콘을 위에 맞춤 */
+@media (max-width: 767px) {
+  .heatHead { align-items: flex-start; gap: var(--space-3); }
+  .heatIcon { width: 44px; height: 44px; border-radius: 12px; }
+  .heatIcon svg { width: 24px; height: 24px; }
+  .heatTitle { font-size: 17px; line-height: 24px; }
 }

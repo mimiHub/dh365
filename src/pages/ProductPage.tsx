@@ -548,7 +548,20 @@ function ReportBlock({ report: r }: { report: TestReport }) {
 
         {r.heat && (
           <div className={s.heat}>
-            <p className={s.heatTitle}>차열성 · 60분 시점 비가열면 온도</p>
+            {/* 머리: [온도계 아이콘 타일 | 영문 라벨 + 제목 + 설명 | 적합 배지] */}
+            <div className={s.heatHead}>
+              <span className={s.heatIcon} aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z" /><path d="M12 9v7" /><path d="M17 5h3M17 9h2" />
+                </svg>
+              </span>
+              <div className={s.heatHeadText}>
+                <p className={s.heatEyebrow}>HEAT INSULATION</p>
+                <p className={s.heatTitle}>차열성 · 비가열면 온도</p>
+                <p className={s.heatSub}>가열 60분 시점, 불이 닿지 않는 반대면의 온도</p>
+              </div>
+              <Badge tone="solid">적합</Badge>
+            </div>
             <div className={s.donuts}>
               <HeatDonut label="평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
               <HeatDonut label="최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
