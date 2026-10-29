@@ -157,6 +157,10 @@
 .drawingLink:hover { border-color: var(--line-strong); box-shadow: var(--shadow-card); }
 .drawingLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .drawingLink img { width: 100%; height: auto; }
+/* 구조도는 박스 안에서 여백을 두고 작게 — 박스 높이는 옆 사양표에 맞춰 늘어나므로 그림만 줄이면 위아래·좌우로 숨 쉴 공간이 생김 */
+.specDrawing .drawingLink { padding: var(--space-10); }
+.specDrawing .drawingLink img { width: 78%; max-width: 520px; }
+@media (max-width: 767px) { .specDrawing .drawingLink { padding: var(--space-6); } .specDrawing .drawingLink img { width: 92%; } }
 .drawingZoom { position: absolute; right: var(--space-3); top: var(--space-3); padding: 4px 10px; border-radius: var(--radius-pill); background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 600; opacity: 0; transition: opacity .2s ease; }
 .drawingLink:hover .drawingZoom, .drawingLink:focus-visible .drawingZoom { opacity: 1; }
 .drawingNote { margin-top: var(--space-3); font-size: 14px; color: var(--ink-subtle); }
