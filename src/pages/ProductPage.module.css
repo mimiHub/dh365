@@ -319,28 +319,21 @@
 /* ── 형태 · 용도 (에디토리얼) ── */
 .edEyebrow { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-8); font-size: 13px; font-weight: 700; letter-spacing: .14em; color: var(--ink); }
 .edEyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--fire, #e8482c); } /* 레드는 포인트 점 하나만 */
-/* 12칸 그리드: 1행 [라벨 | 큰 사진], 2행 [사진에 걸친 큰 제목 | 설명] */
+/* 한 열로 나열: [라벨] → [사진 전체 폭] → [사진에 걸친 큰 제목 | 설명]. 모든 형태가 같은 배치 */
 .typeRow { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-6); }
-.typeRow + .typeRow { margin-top: var(--space-20, 160px); }
-.typeLabel { grid-column: 1 / 3; grid-row: 1; align-self: start; font-size: 12px; line-height: 20px; font-weight: 700; letter-spacing: .12em; color: var(--ink-subtle); }
-.typeMedia { position: relative; grid-column: 3 / -1; grid-row: 1; aspect-ratio: 16 / 7; overflow: hidden; background: var(--surface-alt); }
+.typeRow + .typeRow { margin-top: var(--space-16); }
+.typeLabel { grid-column: 1 / -1; grid-row: 1; margin-bottom: var(--space-4); font-size: 12px; line-height: 20px; font-weight: 700; letter-spacing: .12em; color: var(--ink-subtle); }
+.typeMedia { position: relative; grid-column: 1 / -1; grid-row: 2; aspect-ratio: 21 / 8; overflow: hidden; background: var(--surface-alt); }
 .typeMedia > img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.22,1,.36,1); }
 .typeRow:hover .typeMedia > img { transform: scale(1.03); }
 .typeMediaEmpty { width: 100%; height: 100%; }
-/* 사진 2장(닫힘 → 열림): 반반 + 가운데 화살표 */
-.typeMediaPair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-.typePairArrow { position: absolute; left: 50%; top: 50%; display: grid; place-items: center; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: #fff; color: var(--ink); box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
 /* 큰 제목 — 위로 끌어올려 사진 아래 끝에 걸치게 */
-.typeHead { position: relative; z-index: 1; grid-column: 1 / 9; grid-row: 2; display: flex; align-items: center; gap: var(--space-6); margin-top: -0.62em; font-size: clamp(44px, 6.2vw, 96px); line-height: 1.1; font-weight: 800; letter-spacing: -0.04em; color: var(--ink); }
+.typeHead { position: relative; z-index: 1; grid-column: 1 / 9; grid-row: 3; display: flex; align-items: center; gap: var(--space-6); margin-top: -0.62em; padding-left: var(--space-8); font-size: clamp(44px, 6.2vw, 96px); line-height: 1.1; font-weight: 800; letter-spacing: -0.04em; color: var(--ink); }
 .typeHeadArrow { width: 0.5em; height: auto; flex: none; transition: transform .4s cubic-bezier(.22,1,.36,1); }
 .typeRow:hover .typeHeadArrow { transform: translateX(8px); }
-.typeDesc { grid-column: 9 / -1; grid-row: 2; align-self: end; max-width: 340px; padding-bottom: 0.6em; font-size: 14px; line-height: 24px; color: var(--ink-muted); }
-/* 짝수 줄: 좌우 반전 */
-.typeRowAlt .typeLabel { grid-column: 11 / -1; text-align: right; }
-.typeRowAlt .typeMedia { grid-column: 1 / 11; aspect-ratio: 2170 / 725; } /* 닫힘|열림 한 장 이미지 비율 그대로 */
-.typeMediaPair { aspect-ratio: 3 / 1; } /* 3:2 사진 2장을 나란히 → 전체 3:1, 잘리지 않음 */
-.typeRowAlt .typeHead { grid-column: 5 / -1; justify-self: end; }
-.typeRowAlt .typeDesc { grid-column: 1 / 5; justify-self: start; align-self: start; padding: var(--space-5) 0 0; }
+.typeDesc { grid-column: 9 / -1; grid-row: 3; align-self: end; justify-self: end; max-width: 360px; padding-bottom: 0.6em; font-size: 14px; line-height: 24px; color: var(--ink-muted); }
+/* 닫힘|열림 한 장 이미지는 그 비율대로 (잘리지 않게) */
+.typeRowAlt .typeMedia { aspect-ratio: 2170 / 725; }
 
 /* 용도 — [제목 + 슬랫 그림 | 큰 두께 숫자 줄] */
 .usageEd { display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-10); margin-top: var(--space-20, 160px); padding-top: var(--space-8); border-top: 2px solid var(--ink); }
@@ -561,18 +554,12 @@
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
   .openTypes { grid-template-columns: 1fr; gap: var(--space-3); }
   .production { gap: var(--space-2); }
-  /* 형태: 라벨 → 사진(전체 폭) → 사진에 걸친 제목 → 설명, 반전 없이 */
-  .typeRow, .typeRowAlt { grid-template-columns: 1fr; row-gap: var(--space-3); }
-  .typeRow + .typeRow { margin-top: var(--space-16); }
-  .typeRow .typeLabel, .typeRowAlt .typeLabel { grid-column: 1; grid-row: 1; text-align: left; }
-  .typeRowAlt .typeMedia { aspect-ratio: 2170 / 725 !important; }
-  .typeRow .typeMedia, .typeRowAlt .typeMedia { grid-column: 1; grid-row: 2; aspect-ratio: 4 / 3; margin: 0 calc(var(--gutter) * -1); } /* 사진은 화면 끝까지 */
-  .typeRow .typeHead, .typeRowAlt .typeHead { grid-column: 1; grid-row: 3; justify-self: start; font-size: 40px; margin-top: -0.6em; padding-left: 0; }
-  .typeRow .typeDesc, .typeRowAlt .typeDesc { grid-column: 1; grid-row: 4; align-self: start; justify-self: start; text-align: left; padding-bottom: 0; }
-  /* 사진 2장은 위아래로 (닫힘 ↓ 열림), 화살표도 아래로 */
-  .typeRow .typeMediaPair, .typeRowAlt .typeMediaPair { grid-template-columns: 1fr; aspect-ratio: auto; }
-  .typeMediaPair > img { aspect-ratio: 3 / 2; }
-  .typePairArrow { width: 40px; height: 40px; margin: -20px 0 0 -20px; transform: rotate(90deg); }
+  /* 형태: 사진은 화면 끝까지, 제목·설명은 아래로 */
+  .typeRow { grid-template-columns: 1fr; }
+  .typeMedia { margin: 0 calc(var(--gutter) * -1); aspect-ratio: 4 / 3; }
+  .typeRowAlt .typeMedia { aspect-ratio: 2170 / 725; }
+  .typeHead { grid-column: 1; font-size: 40px; padding-left: 0; }
+  .typeDesc { grid-column: 1; grid-row: 4; justify-self: start; padding-bottom: 0; margin-top: var(--space-2); }
   .usageEd { margin-top: var(--space-16); }
   .usageEdTitle { font-size: 26px; line-height: 34px; }
   .usageEdRow { gap: var(--space-4); padding: var(--space-6) 0; }
