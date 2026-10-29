@@ -564,7 +564,7 @@ function ReportBlock({ report: r }: { report: TestReport }) {
             </div>
             <div className={s.donuts}>
               <HeatDonut label="평균 온도" value={r.heat.avg} limit={r.heat.avgLimit} />
-              <HeatDonut label="최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} />
+              <HeatDonut label="최고 측정점" value={r.heat.max} limit={r.heat.maxLimit} delay={200} />
             </div>
           </div>
         )}
@@ -573,16 +573,60 @@ function ReportBlock({ report: r }: { report: TestReport }) {
   );
 }
 
+/** 화면에 들어왔는지 — 한 번 보이면 true로 고정 (차트 애니메이션 시작 신호) */
+function useInView<T extends Element>(threshold = 0.4) {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); io.disconnect(); }
+    }, { threshold });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [threshold]);
+  return [ref, inView] as const;
+}
+
+/**
+ * 숫자 카운트업 — run이 true가 되면 0 → target까지 duration 동안 올라감
+ * requestAnimationFrame: 브라우저가 화면을 그릴 때마다(보통 1초 60번) 콜백을 불러 줌 → setInterval보다 부드럽고, 탭이 안 보이면 자동으로 쉼
+ * 동작 줄이기 설정이면 바로 최종값
+ */
+function useCountUp(target: number, run: boolean, duration = 1400, delay = 0) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    if (!run) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setV(target); return; }
+    let raf = 0;
+    let start = 0;
+    const tick = (now: number) => {
+      if (!start) start = now + delay;
+      const p = Math.min(1, Math.max(0, (now - start) / duration));
+      setV(target * (1 - Math.pow(1 - p, 3))); // easeOutCubic — 처음엔 빠르고 끝에서 천천히 멈춤
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, run, duration, delay]);
+  return v;
+}
+
 /**
  * 측정값이 기준 대비 어디쯤인지 도넛으로 — 숫자만 보는 것보다 '여유'가 한눈에 보임
  * SVG 원의 테두리(stroke)를 점선처럼 끊어 호를 그림: pathLength=100으로 두면 원 둘레가 100이 되어
  * stroke-dasharray="pct 100" = '앞 pct만큼 그리고 나머지는 빈칸' → 퍼센트를 그대로 넣으면 됨
+ * 애니메이션: 화면에 들어오면 호가 0→pct로 그려지고(CSS transition), 가운데 숫자·%가 같은 속도로 카운트업(JS)
  */
-function HeatDonut({ label, value, limit }: { label: string; value: number; limit: number }) {
+function HeatDonut({ label, value, limit, delay = 0 }: { label: string; value: number; limit: number; delay?: number }) {
   const pct = Math.min(100, (value / limit) * 100);
   const gid = useId(); // 그라데이션 id — 도넛이 2개라 겹치지 않게
+  const [ref, inView] = useInView<HTMLElement>();
+  const shownValue = useCountUp(value, inView, 1400, delay);
+  const shownPct = useCountUp(pct, inView, 1400, delay);
   return (
-    <figure className={s.donut}>
+    <figure ref={ref} className={s.donut} data-in={inView || undefined} style={{ '--delay': `${delay}ms` } as CSSProperties}>
       <div className={s.donutChart} role="img" aria-label={`${label} ${value}℃, 기준 ${limit}℃의 ${Math.round(pct)}%`}>
         <svg viewBox="0 0 120 120" aria-hidden="true">
           <defs>
@@ -592,17 +636,20 @@ function HeatDonut({ label, value, limit }: { label: string; value: number; limi
             </linearGradient>
           </defs>
           <circle className={s.donutTrack} cx="60" cy="60" r="50" pathLength={100} />
+          {/* 기준선(100%) 바깥 눈금 — 링 둘레에 10% 간격 */}
+          <circle className={s.donutTicks} cx="60" cy="60" r="58" pathLength={100} />
           {/* -90° 회전: SVG 원은 3시 방향에서 시작하므로 12시에서 시작하게 */}
           <circle
             className={s.donutFill}
             cx="60" cy="60" r="50" pathLength={100}
             stroke={`url(#${gid})`}
-            style={{ '--pct': pct } as CSSProperties}
+            style={{ '--pct': inView ? pct : 0 } as CSSProperties}
           />
         </svg>
-        <div className={s.donutCenter}>
-          <strong>{value}<small>℃</small></strong>
-          <span>기준의 {Math.round(pct)}%</span>
+        {/* 눈으로 보는 숫자는 카운트업, 스크린리더는 위 aria-label의 최종값을 읽음 */}
+        <div className={s.donutCenter} aria-hidden="true">
+          <strong>{shownValue.toFixed(1)}<small>℃</small></strong>
+          <span>기준의 {Math.round(shownPct)}%</span>
         </div>
       </div>
       <figcaption className={s.donutCap}>

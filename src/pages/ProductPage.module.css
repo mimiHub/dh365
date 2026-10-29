@@ -198,9 +198,20 @@
 .donutTrack, .donutFill { fill: none; stroke-width: 12; }
 .donutTrack { stroke: var(--line); }
 /* 끝을 둥글게 + 0에서 pct까지 그려지는 애니메이션 */
-.donutFill { stroke-linecap: round; stroke-dasharray: calc(var(--pct) * 1) 100; animation: donutDraw 1.2s cubic-bezier(.22,1,.36,1) both; }
-@keyframes donutDraw { from { stroke-dasharray: 0 100; } }
-@media (prefers-reduced-motion: reduce) { .donutFill { animation: none; } }
+.donutFill { stroke-linecap: round; stroke-dasharray: calc(var(--pct) * 1) 100; transition: stroke-dasharray 1.4s cubic-bezier(.33,1,.68,1) var(--delay, 0ms); } /* --pct가 0→값으로 바뀌면 호가 그려짐 (카운트업과 같은 easeOutCubic 곡선·시간) */
+.donutTicks { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-dasharray: 0.4 9.6; opacity: 0; transition: opacity .6s ease var(--delay, 0ms); }
+.donutCenter, .donutCap { opacity: 0; transform: translateY(8px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1); }
+.donutCap { transition-delay: calc(var(--delay, 0ms) + .5s); }
+.donutCenter { transition-delay: var(--delay, 0ms); }
+.donut[data-in] .donutTicks { opacity: 1; }
+.donut[data-in] .donutCenter, .donut[data-in] .donutCap { opacity: 1; transform: none; }
+/* 다 그려진 뒤 링이 한 번 은은하게 빛남 */
+.donut[data-in] .donutChart::after { content: ""; position: absolute; inset: 4%; border-radius: 50%; pointer-events: none; animation: donutGlow 1.2s ease-out calc(var(--delay, 0ms) + 1.3s) both; }
+@keyframes donutGlow { 0% { box-shadow: 0 0 0 0 rgba(1, 99, 206, .35); } 100% { box-shadow: 0 0 0 18px rgba(1, 99, 206, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .donutFill, .donutTicks, .donutCenter, .donutCap { transition: none; }
+  .donut[data-in] .donutChart::after { animation: none; }
+}
 .donutCenter { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .donutCenter strong { font-size: 16cqi; line-height: 1.1; font-weight: 800; color: var(--brand); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .donutCenter small { font-size: 8cqi; font-weight: 700; margin-left: 1px; }
