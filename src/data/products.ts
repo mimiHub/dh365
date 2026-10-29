@@ -566,6 +566,11 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '열관류율', value: '50T 0.785W/㎡K · 80T 0.605W/㎡K' },
       { label: '내풍압', value: '45m/s 풍압에 견디는 구조 (내풍압 시험성적서 보유)' },
     ],
+    // 구성품 사진: 카탈로그 p.24 하단 (구동부 · 조작 스위치)
+    components: [
+      { name: '구동부', nameEn: 'DRIVE UNIT', body: '카운터 밸런스 시스템으로 작동이 원활하며, 수동 체인으로도 열고 닫을 수 있습니다.' },
+      { name: '조작 스위치', nameEn: 'PUSH BUTTON SWITCH', body: '열림(OPEN) · 정지(STOP) · 닫힘(CLOSE) 버튼으로 간단하게 조작합니다.' },
+    ],
     panels: [
       { name: '우레탄', nameEn: 'URETHANE', thickness: '50T', pitch: '480 / 530mm' },
       { name: '우레탄', nameEn: 'URETHANE', thickness: '80T', pitch: '480 / 530mm' },

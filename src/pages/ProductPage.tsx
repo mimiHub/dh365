@@ -36,6 +36,9 @@ import steelReportImg from '../assets/report-steel-kict.jpg';
 import speedMotorImg from '../assets/component-speed-motor.jpg';
 import speedDrawingImg from '../assets/drawing-speed-door.jpg';
 import speedRepairImg from '../assets/steps-speed-door-repair.jpg';
+import overheadBandImg from '../assets/band-overhead-warehouse.jpg';
+import overheadDriveImg from '../assets/component-overhead-drive.jpg';
+import overheadSwitchImg from '../assets/component-overhead-switch.jpg';
 import speedControlImg from '../assets/component-speed-control.jpg';
 import speedGuideRailImg from '../assets/component-speed-guiderail.jpg';
 import s from './ProductPage.module.css';
@@ -85,6 +88,12 @@ const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {};
 // wide: 가로로 긴 사진(단면도+입체도 등) → 카드가 한 줄 전체를 차지
 const COMPONENT_IMAGES: Partial<Record<string, ({ src: string; wide?: boolean } | undefined)[]>> = {
   'speed-door': [{ src: speedMotorImg }, { src: speedControlImg }, { src: speedGuideRailImg, wide: true }],
+  'overhead-door': [{ src: overheadDriveImg }, { src: overheadSwitchImg }],
+};
+
+// 제품 특징을 '사진 배경 띠 + 원형 아이콘'으로 보여줄 제품 — 배경 사진이 있으면 카드 대신 이 레이아웃
+const FEATURE_BG: Partial<Record<string, string>> = {
+  'overhead-door': overheadBandImg,
 };
 // 단계별 동작 그림(자동 복구 등) — 한 장짜리 일러스트
 const STEP_IMAGES: Partial<Record<string, string>> = {
@@ -371,7 +380,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
         </div>
       </section>
 
-      {p.features.length > 0 && (
+      {p.features.length > 0 && FEATURE_BG[p.slug] && !detail && <FeatureBand product={p} bg={FEATURE_BG[p.slug]!} />}
+      {p.features.length > 0 && !(FEATURE_BG[p.slug] && !detail) && (
         <section className={cx('container', s.block)} aria-labelledby="features-title">
           <BlockHead en="FEATURES" title="제품 특징" id="features-title" />
           {detail ? (
@@ -701,6 +711,36 @@ function HeatDonut({ label, value, limit, delay = 0 }: { label: string; value: n
         <span><em>여유 {(limit - value).toFixed(1)}℃</em></span>
       </figcaption>
     </figure>
+  );
+}
+
+/**
+ * 제품 특징 — 사진 배경 띠 + 원형 아이콘 (카탈로그의 동그란 아이콘 배지를 키운 형태)
+ * 사진 위에 네이비 그라데이션을 덮어 글자가 읽히게 하고, 아이콘은 반투명 유리 원 + 바깥 링
+ */
+function FeatureBand({ product: p, bg }: { product: ProductDetail; bg: string }) {
+  return (
+    <section className={s.featureBand} aria-labelledby="features-title">
+      <img className={s.featureBandBg} src={bg} alt="" aria-hidden="true" loading="lazy" />
+      <div className={cx('container', s.featureBandInner)}>
+        <div className={s.featureBandHead}>
+          <p className={s.featureBandEn}>FEATURES</p>
+          <h3 id="features-title" className={s.featureBandTitle}>제품 특징</h3>
+        </div>
+        <ol className={s.featureIcons}>
+          {p.features.map((f, i) => (
+            <li key={f.title} className={s.featureIconItem}>
+              <span className={s.featureCircle} aria-hidden="true">
+                <FeatureIcon title={f.title} />
+              </span>
+              <span className={s.featureIconNo}>{pad(i + 1)}</span>
+              <h4 className={s.featureIconTitle}>{f.title}</h4>
+              <p className={s.featureIconBody}>{f.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 

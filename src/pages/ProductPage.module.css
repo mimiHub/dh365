@@ -282,6 +282,39 @@
   .heatTitle { font-size: 17px; line-height: 24px; }
 }
 
+/* ── 제품 특징: 사진 배경 띠 + 원형 아이콘 ── */
+.featureBand { position: relative; margin-top: var(--space-16); padding: var(--space-16) 0; overflow: hidden; color: #ffffff; background: #071a3f; }
+.featureBandBg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+/* 사진 위 네이비 막: 위·아래는 진하게(제목·글 영역), 가운데는 살짝 비쳐 창고 사진이 보이게 */
+.featureBand::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 18, 46, .92) 0%, rgba(7, 26, 63, .72) 45%, rgba(5, 18, 46, .94) 100%); }
+.featureBandInner { position: relative; z-index: 1; }
+.featureBandHead { text-align: center; }
+.featureBandEn { font-size: 14px; font-weight: 700; letter-spacing: .16em; color: #8fc2ff; }
+.featureBandTitle { margin-top: var(--space-2); font-size: 36px; line-height: 48px; font-weight: 800; letter-spacing: -0.02em; }
+.featureIcons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-8) var(--space-6); margin-top: var(--space-12); }
+.featureIconItem { display: flex; flex-direction: column; align-items: center; text-align: center; }
+/* 원형 아이콘: 반투명 유리 + 바깥 링(::before) — hover 시 브랜드 파랑으로 채워지고 링이 퍼짐 */
+.featureCircle { position: relative; display: grid; place-items: center; width: 108px; height: 108px; border-radius: 50%; color: #ffffff; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .35); backdrop-filter: blur(6px); box-shadow: inset 0 0 24px rgba(143, 194, 255, .18); transition: background .3s, border-color .3s, transform .3s; }
+.featureCircle::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1px dashed rgba(143, 194, 255, .4); transition: inset .3s, border-color .3s; }
+.featureCircle svg { width: 44px; height: 44px; stroke-width: 1.5; }
+.featureIconItem:hover .featureCircle { background: linear-gradient(135deg, var(--accent), #0a2a66); border-color: transparent; transform: translateY(-4px); }
+.featureIconItem:hover .featureCircle::before { inset: -14px; border-color: rgba(143, 194, 255, .8); }
+.featureIconNo { margin-top: var(--space-6); font-size: 12px; font-weight: 700; letter-spacing: .12em; color: #8fc2ff; }
+.featureIconTitle { margin-top: var(--space-1); font-size: 20px; line-height: 30px; font-weight: 700; }
+.featureIconBody { margin-top: var(--space-2); max-width: 240px; font-size: 14px; line-height: 22px; color: rgba(255, 255, 255, .72); }
+@media (max-width: 767px) {
+  .featureBand { padding: var(--space-12) 0; }
+  .featureBandTitle { font-size: 28px; line-height: 38px; }
+  .featureIcons { grid-template-columns: 1fr 1fr; gap: var(--space-8) var(--space-4); margin-top: var(--space-8); }
+  .featureIconItem:last-child:nth-child(odd) { grid-column: 1 / -1; } /* 홀수 개면 마지막은 가운데 한 줄 */
+  .featureCircle { width: 80px; height: 80px; }
+  .featureCircle svg { width: 34px; height: 34px; }
+  .featureIconNo { margin-top: var(--space-4); }
+  .featureIconTitle { font-size: 17px; line-height: 26px; }
+  .featureIconBody { font-size: 13px; line-height: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .featureCircle, .featureCircle::before { transition: none; } .featureIconItem:hover .featureCircle { transform: none; } }
+
 /* ── 구성품 카드 ── */
 .components { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
 .component { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); transition: box-shadow .25s, transform .25s; }
