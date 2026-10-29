@@ -316,6 +316,35 @@
 }
 @media (prefers-reduced-motion: reduce) { .featureCircle, .featureCircle::before { transition: none; } .featureIconItem:hover .featureCircle { transform: none; } }
 
+/* ── 형태 · 용도 ── */
+.types { display: grid; grid-template-columns: 2fr 3fr; gap: var(--space-6); }
+.typeCard { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+.typeImgs { display: flex; align-items: center; justify-content: center; gap: var(--space-3); height: 300px; padding: var(--space-5); background: var(--surface-alt); }
+/* 사진은 칸 높이 안에서 원래 비율 그대로 (height:auto + max-height) — 폭이 좁아지면 높이도 같이 줄어 여백 상자가 안 생김 */
+.typeImg { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; border-radius: var(--radius-sm); box-shadow: 0 10px 24px -12px rgba(10, 42, 102, .4); }
+.typeImgs:has(.typeArrow) .typeImg { max-width: calc(50% - 30px); } /* 2장 + 화살표: 한 장은 절반에서 화살표 몫을 뺀 폭까지 */
+.typeArrow { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; }
+.typeText { padding: var(--space-5) var(--space-6) var(--space-6); }
+.usages { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-top: var(--space-6); }
+.usage { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "icon main spec" "items items items"; align-items: center; column-gap: var(--space-4); row-gap: var(--space-5); padding: var(--space-6); border-radius: var(--radius-md); color: #fff; background: linear-gradient(135deg, #0a2a66, #163f8a); }
+.usageFire { background: linear-gradient(135deg, #0a2a66 0%, #0163ce 100%); }
+.usageIcon { grid-area: icon; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .25); }
+.usageIcon svg { width: 28px; height: 28px; }
+.usageFire .usageIcon { color: #ffb38a; }
+.usageMain { grid-area: main; }
+.usageEn { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #8fc2ff; }
+.usageName { margin-top: 2px; font-size: 22px; line-height: 30px; font-weight: 800; }
+.usageSpec { grid-area: spec; margin: 0; text-align: right; }
+.usageSpec dt { font-size: 12px; color: rgba(255, 255, 255, .65); }
+.usageSpec dd { margin: 0; font-size: 26px; line-height: 32px; font-weight: 800; letter-spacing: -0.01em; }
+.usageItems { grid-area: items; display: flex; flex-wrap: wrap; gap: var(--space-2); padding-top: var(--space-5); border-top: 1px solid rgba(255, 255, 255, .18); }
+.usageItems li { padding: 6px 14px; border-radius: var(--radius-pill); background: rgba(255, 255, 255, .1); font-size: 14px; font-weight: 500; }
+
+/* ── 생산 설비 ── */
+.productionBody { margin-top: calc(var(--space-4) * -1); margin-bottom: var(--space-6); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
+.production { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+.production img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-md); }
+
 /* ── 구성품 카드 ── */
 .components { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
 .component { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); transition: box-shadow .25s, transform .25s; }
@@ -491,6 +520,8 @@
 
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
+  .types, .usages { grid-template-columns: 1fr; }
+  .production { grid-template-columns: 1fr 1fr; }
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .panelWrap { grid-template-columns: 1fr; }
   .slatGroups { grid-template-columns: 1fr; gap: var(--space-12); }
@@ -506,6 +537,12 @@
 @media (max-width: 767px) {
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
   .openTypes { grid-template-columns: 1fr; gap: var(--space-3); }
+  .typeImgs { height: 240px; padding: var(--space-4); }
+  .typeArrow { width: 28px; height: 28px; }
+  .usage { padding: var(--space-5); }
+  .usageName { font-size: 19px; }
+  .usageSpec dd { font-size: 21px; }
+  .production { gap: var(--space-2); }
   /* 셔터의 구성 4개: 모바일은 2열 세로 카드 (가로형이면 사진이 너무 작아짐) */
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .componentsFour .component { flex-direction: column; }

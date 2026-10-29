@@ -69,6 +69,12 @@ export interface ProductDetail {
   panels?: { name: string; nameEn: string; thickness: string; pitch: string }[];
   /** 패널 블록 제목·라벨 바꾸기 (기본: PANEL / 패널 종류 / 전체 두께) — 알루미늄은 '슬랫 종류' */
   panelsHead?: { en: string; title: string; sizeLabel: string };
+  /** 형태(일반형·비상문 일체형 등) — 사진은 ProductPage의 TYPE_IMAGES (형태마다 여러 장이면 → 화살표로 이어 붙임) */
+  types?: { name: string; nameEn: string; body: string }[];
+  /** 용도별 사양·작동 (방화용/방범용 등) — icon: fire | security */
+  usages?: { name: string; nameEn: string; icon: 'fire' | 'security'; spec: string; specLabel: string; items: string[] }[];
+  /** 생산 설비 소개 — 사진은 ProductPage의 PRODUCTION_IMAGES */
+  production?: { title: string; body: string };
   /** 슬랫 계열별 두께 비교표 — 계열마다 [사진 + 두께별 전체두께·피치 표] (사진은 ProductPage의 SLAT_GROUP_IMAGES, 같은 순서) */
   slatGroups?: { name: string; nameEn: string; body: string; rows: { thickness: string; total: string; pitch: string }[] }[];
   /** 개폐 방식 — 헤드룸(천장 여유 공간)에 따라 고르는 타입 (그림은 OPEN_TYPE_IMAGES, 같은 순서) */
@@ -246,6 +252,16 @@ const WIND_SHUTTER_PARTS: ProductDetail['components'] = [
     { group: '가이드레일 · 하단바', name: '하단바 I 타입', nameEn: 'BOTTOM BAR · TYPE I', body: 'TYPE I' },
 ];
 
+/** 철재방화셔터·철재단열방화셔터 공통 — 구조가 같고 슬랫 속 충전재만 다름 */
+const STEEL_TYPES: ProductDetail['types'] = [
+  { name: '일반형', nameEn: 'STANDARD', body: '개구부 전체를 슬랫으로 막는 일반적인 철재방화셔터입니다.' },
+  { name: '비상문 일체형', nameEn: 'WITH EMERGENCY DOOR', body: '셔터 안에 여닫이 비상문을 넣어, 셔터가 내려온 상태에서도 사람이 대피할 수 있습니다.' },
+];
+const STEEL_PRODUCTION: ProductDetail['production'] = {
+  title: '최신 포밍기 보유로 슬랫 품질이 우수합니다',
+  body: '강판 코일을 직접 들여와 자체 포밍 라인에서 슬랫을 성형합니다.',
+};
+
 export const PRODUCT_DETAILS: ProductDetail[] = [
   // ─────────────────────────── ⑴ 스크린방화셔터 · ⑵ 철재방화셔터 ───────────────────────────
   {
@@ -293,7 +309,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     nameEn: 'Steel Fire Shutter',
     summary: '밀폐성과 내구성이 뛰어난 강판 슬랫 방화셔터',
     intro:
-      '전기아연도금 강판을 슬래팅·포밍한 슬랫으로 만든 방화셔터입니다. 화재 시 불길을 차단해 대피 시간을 벌고 확산을 막아, 공장·물류창고·차고·주차장처럼 위험도가 높거나 가연성 물질이 있는 곳에 주로 설치합니다.',
+      '전기아연도금 강판을 슬래팅·포밍한 슬랫으로 만든, 가장 널리 쓰이는 방화셔터입니다. 화재 시 불길을 차단해 대피 시간을 벌고 확산을 막아 인명과 재산을 보호하고 화재 진압을 돕습니다. 방화용·방범용으로 용도에 맞게 쓸 수 있습니다.',
     maxSize: { width: 8000, height: 4000 },
     features: [
       { title: '밀폐성능과 내구성', body: '견고한 강판 슬랫으로 방화 구획을 확실하게 나눕니다.' },
@@ -301,7 +317,7 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { title: '좁은 곳에도 설치', body: '좁은 통로, 비상계단, 백화점 에스컬레이터 주변에도 효과적으로 설치합니다.' },
       { title: '비차열 60분 인정제품', body: '경동기업 비차열 60분 방화셔터 자재를 사용합니다.' },
     ],
-    uses: ['공장', '물류창고', '차고·주차장', '비상계단·좁은 통로', '백화점 에스컬레이터 주변'],
+    uses: ['공장', '물류창고·창고', '발전소', '주차램프·차고·주차장', '상업시설', '비상계단·좁은 통로', '백화점 에스컬레이터 주변'],
     specs: [
       { label: '케이스', value: 'EGI 1.55mm' },
       { label: '조인트바', value: 'EGI 1.55mm' },
@@ -309,9 +325,16 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '베어링부', value: 'KD-브라켓트' },
       { label: '앵글', value: '50 × 50 × 4mm' },
       { label: '가이드레일', value: 'EGI 1.55mm + 마감재 SUS 1.2 / EGI 1.15mm' },
-      { label: '슬랫', value: 'EGI 1.55mm' },
+      { label: '슬랫', value: 'EGI 1.6T (방화용) · EGI 1.2T (방범용)' },
       { label: '하단마감재', value: 'SUS / EGI 1.55mm' },
     ],
+    // 형태·용도·생산: 철재방화셔터 소개 자료(「소방법 기준에 적합한 정품 자재만을 고집합니다」 페이지)
+    types: STEEL_TYPES,
+    usages: [
+      { name: '방화용', nameEn: 'FIRE', icon: 'fire', specLabel: '슬랫', spec: 'EGI 1.6T', items: ['1차 연기감지 + 2차 열감지 2단 강하', '연동제어기 사용'] },
+      { name: '방범용', nameEn: 'SECURITY', icon: 'security', specLabel: '슬랫', spec: 'EGI 1.2T', items: ['UP / DOWN 스위치 장착'] },
+    ],
+    production: STEEL_PRODUCTION,
     // 출처: 한국건설기술연구원 시험성적서 2020TSE0051-1-1 (첨부 이미지 3페이지)
     reports: [
       {
@@ -336,12 +359,16 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
         note: '위 시험결과는 의뢰자가 제시한 시편에 한하며 용도 이외의 사용을 금합니다. (성적서 원문)',
       },
     ],
+    certs: ['국토교통부 고시 제2016-193호 「자동방화셔터 및 방화문의 기준」'],
     sharedSafety: true,
     todo: [
+      '형태·용도·포밍 사진: 받은 소개 자료 캡처에서 잘라 쓴 저해상도 사진 → 원본 요청, 자료 출처(타사 사이트 여부) 확인',
+      '국토교통부 고시 제2016-193호는 이후 개정됨 → 현행 고시 번호로 표기할지 확인',
+      '중량물이라 일정 크기를 넘으면 설치가 어려울 수 있음(자료 원문) → 최대 크기 8,000 × 4,000과 함께 안내 문구 넣을지 확인',
       '안전장치 3종(음성안내·낙하 방지·비상 올림): 카탈로그 p.3에 "특허 받은"과 "특허 출원"이 함께 적혀 있음 → 현재 "특허 출원"으로 표기. 등록 특허라면 특허번호 받아서 표기 변경',
       '시험성적서: 의뢰자가 (주)동도산업이고 "용도 이외 사용 금지 / 설계사무소 참고용"으로 발급됨 → 대한방화 사이트 게시 가능 여부·동도산업과의 관계(제조사 등) 클라이언트 확인',
       '도면 하단 치수: 다시 그린 도면은 30 / 2,740 / 30(합 2,800) — 성적서·카탈로그 원본은 130 / 2,740 / 130(합 3,000). 도면 수정 필요',
-      '강판 두께: 소개문 1.6T / 도면 슬랫 EGI 1.55mm — 표기 통일 필요',
+      '강판 두께: 소개 자료 1.6T(방화용)·1.2T(방범용) / 도면 슬랫 EGI 1.55mm — 도면 표기 통일 필요',
       '인사말의 "폭 8,000·높이 4,000 초과 대형사이즈 가능"과 최대 8,000 × 4,000 표기가 충돌 — 확인',
     ],
   },
@@ -372,6 +399,8 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
       { label: '슬랫', value: 'EGI 1.55mm (내부 단열재 충진)' },
       { label: '하단마감재', value: 'SUS / EGI 1.55mm' },
     ],
+    types: STEEL_TYPES,
+    production: STEEL_PRODUCTION,
     sharedSafety: true,
     todo: [
       '철재방화셔터와 충전재만 다르다는 전제로 사양·도면·최대 크기·특징·안전장치를 같은 값으로 채움 → 충전재 종류(우레탄·글라스울 등)와 두께 확인',

@@ -34,6 +34,13 @@ import steelDrawingImg from '../assets/drawing-steel-shutter.png';
 import screenDrawingImg from '../assets/drawing-screen-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
 import speedMotorImg from '../assets/component-speed-motor.jpg';
+import steelTypeNormalImg from '../assets/steel-type-normal.jpg';
+import steelTypeDoorClosedImg from '../assets/steel-type-door-closed.jpg';
+import steelTypeDoorOpenImg from '../assets/steel-type-door-open.jpg';
+import steelForming1Img from '../assets/steel-forming-1.jpg';
+import steelForming2Img from '../assets/steel-forming-2.jpg';
+import steelForming3Img from '../assets/steel-forming-3.jpg';
+import steelForming4Img from '../assets/steel-forming-4.jpg';
 import speedDrawingImg from '../assets/drawing-speed-door.jpg';
 import speedRepairImg from '../assets/steps-speed-door-repair.jpg';
 import overheadBandImg from '../assets/band-overhead-warehouse.jpg';
@@ -137,6 +144,18 @@ const COLOR_IMAGES: Partial<Record<string, string[]>> = {
 };
 const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
   'overhead-door': [openStandardImg, openHiliftImg, openFullVerticalImg],
+};
+
+// 형태 사진 — types와 같은 순서, 형태마다 여러 장이면 [닫힘 → 열림]처럼 화살표로 이어 보여줌
+const STEEL_TYPE_IMAGES = [[steelTypeNormalImg], [steelTypeDoorClosedImg, steelTypeDoorOpenImg]];
+const TYPE_IMAGES: Partial<Record<string, string[][]>> = {
+  steel: STEEL_TYPE_IMAGES,
+  'steel-insulated': STEEL_TYPE_IMAGES,
+};
+const STEEL_PRODUCTION_IMAGES = [steelForming1Img, steelForming2Img, steelForming3Img, steelForming4Img];
+const PRODUCTION_IMAGES: Partial<Record<string, string[]>> = {
+  steel: STEEL_PRODUCTION_IMAGES,
+  'steel-insulated': STEEL_PRODUCTION_IMAGES,
 };
 
 // 내풍압 계열 공통 '셔터의 구성' 사진 (products.ts의 WIND_SHUTTER_PARTS 순서)
@@ -520,6 +539,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
         </>
       )}
 
+      {(p.types || p.usages) && <TypesBlock product={p} />}
+
       {/* 슬랫 종류가 있는 제품(알루미늄)은 '셔터의 구성'을 슬랫 종류 바로 다음에 — 같은 '제품 구성요소' 묶음 */}
       {p.components && !p.slatGroups && <ComponentsBlock product={p} />}
       {p.steps && <StepsBand product={p} />}
@@ -584,6 +605,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       {!drawing && p.panels && <PanelBlock product={p} />}
       {!drawing && p.slatGroups && p.components && <ComponentsBlock product={p} />}
 
+      {p.production && <ProductionBlock product={p} />}
       {p.reports?.map((r) => <ReportBlock key={r.reportNo} report={r} />)}
 
       {/* 주요 설치 장소 — 상세 맨 아래(상담 바로 위). 도면·슬랫이 없는 제품은 위에서 사양표 옆에 붙어 나옴 */}
@@ -819,6 +841,95 @@ function FeatureBand({ product: p, bg }: { product: ProductDetail; bg: string })
           ))}
         </ol>
       </div>
+    </section>
+  );
+}
+
+/**
+ * 형태 + 용도 — [형태 카드(사진)] 다음 줄에 [용도 카드(아이콘 + 큰 사양 숫자 + 작동 방식)]
+ * 비상문 일체형처럼 사진이 2장이면 [닫힘 → 열림] 사이에 화살표
+ */
+function TypesBlock({ product: p }: { product: ProductDetail }) {
+  const imgs = TYPE_IMAGES[p.slug] ?? [];
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="types-title">
+      <BlockHead en="TYPE & USAGE" title="형태 · 용도" id="types-title" />
+      {p.types && (
+        <ul className={s.types}>
+          {p.types.map((x, i) => {
+            const set = imgs[i] ?? [];
+            return (
+              <li key={x.nameEn} className={s.typeCard}>
+                <div className={s.typeImgs}>
+                  {set.length === 0 && <Media className={s.typeImg} label={`IMAGE — ${x.nameEn}`} />}
+                  {set.map((src, j) => (
+                    <Fragment key={src}>
+                      {j > 0 && (
+                        <span className={s.typeArrow} aria-hidden="true">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h11M11 5.5 15.5 10 11 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        </span>
+                      )}
+                      <img className={s.typeImg} src={src} alt={`${p.name} ${x.name}${set.length > 1 ? (j === 0 ? ' — 닫힌 모습' : ' — 비상문을 연 모습') : ''}`} loading="lazy" />
+                    </Fragment>
+                  ))}
+                </div>
+                <div className={s.typeText}>
+                  <p className={s.componentEn}>{x.nameEn}</p>
+                  <h4 className={s.componentName}>{x.name}</h4>
+                  <p className={s.componentBody}>{x.body}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {p.usages && (
+        <ul className={s.usages}>
+          {p.usages.map((u) => (
+            <li key={u.nameEn} className={cx(s.usage, u.icon === 'fire' && s.usageFire)}>
+              <span className={s.usageIcon} aria-hidden="true">{USAGE_ICONS[u.icon]}</span>
+              <div className={s.usageMain}>
+                <p className={s.usageEn}>{u.nameEn}</p>
+                <h4 className={s.usageName}>{u.name}</h4>
+              </div>
+              <dl className={s.usageSpec}>
+                <dt>{u.specLabel}</dt>
+                <dd>{u.spec}</dd>
+              </dl>
+              <ul className={s.usageItems}>
+                {u.items.map((it) => <li key={it}>{it}</li>)}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+const usageSvg = (children: ReactNode) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
+);
+const USAGE_ICONS: Record<'fire' | 'security', ReactNode> = {
+  fire: usageSvg(<path d="M12 21c-3.9 0-7-2.8-7-6.5 0-2.6 1.6-4.4 3-6 .4 1.6 1.4 2.5 2.2 2.8C10 8.6 11 5.5 14 3c.2 3 1.7 4.6 3 6.2 1.2 1.5 2 3.1 2 5.3 0 3.7-3.1 6.5-7 6.5Z" />),
+  security: usageSvg(<><path d="M12 3 5 6v5.5c0 4.2 2.9 7.9 7 9.5 4.1-1.6 7-5.3 7-9.5V6l-7-3Z" /><rect x="9" y="11" width="6" height="5" rx="1" /><path d="M10.2 11V9.6a1.8 1.8 0 0 1 3.6 0V11" /></>),
+};
+
+/** 생산 설비 — 제목 띠 + 사진 4장 그리드 */
+function ProductionBlock({ product: p }: { product: ProductDetail }) {
+  const imgs = PRODUCTION_IMAGES[p.slug] ?? [];
+  const pr = p.production!;
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="production-title">
+      <BlockHead en="PRODUCTION" title={pr.title} id="production-title" />
+      <p className={s.productionBody}>{pr.body}</p>
+      <ul className={s.production}>
+        {imgs.map((src, i) => (
+          <li key={src}>
+            <img src={src} alt={`${p.name} 슬랫 포밍 라인 ${i + 1}`} loading="lazy" />
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
