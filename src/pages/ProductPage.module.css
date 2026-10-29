@@ -316,27 +316,36 @@
 }
 @media (prefers-reduced-motion: reduce) { .featureCircle, .featureCircle::before { transition: none; } .featureIconItem:hover .featureCircle { transform: none; } }
 
-/* ── 형태 · 용도 (에디토리얼) ── */
-.edEyebrow { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-8); font-size: 13px; font-weight: 700; letter-spacing: .14em; color: var(--ink); }
-.edEyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--fire, #e8482c); } /* 레드는 포인트 점 하나만 */
-/* 한 열로 나열: [라벨] → [사진 전체 폭] → [사진에 걸친 큰 제목 | 설명]. 모든 형태가 같은 배치 */
-.typeRow { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-6); }
-.typeRow + .typeRow { margin-top: var(--space-16); }
-.typeLabel { grid-column: 1 / -1; grid-row: 1; margin-bottom: var(--space-4); font-size: 12px; line-height: 20px; font-weight: 700; letter-spacing: .12em; color: var(--ink-subtle); }
-.typeMedia { position: relative; grid-column: 1 / -1; grid-row: 2; aspect-ratio: 21 / 8; overflow: hidden; background: var(--surface-alt); }
-.typeMedia > img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.22,1,.36,1); }
-.typeRow:hover .typeMedia > img { transform: scale(1.03); }
+/* ── 형태 · 용도 ── 레퍼런스: 큰 영문 제목 + 오른쪽 설명 / 작은 괄호 라벨 / 사진 카드 줄 + 뒤에 깔린 색 블록 */
+.typeIntro { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: end; }
+.typeIntroTitle { position: relative; padding-left: var(--space-6); font-size: clamp(44px, 5.4vw, 80px); line-height: 1.02; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
+.typeIntroDot { position: absolute; left: 0; top: 0.18em; width: 10px; height: 10px; border-radius: 50%; background: var(--fire); } /* 레드는 이 점 하나만 */
+.typeIntroDesc { max-width: 440px; justify-self: end; padding-bottom: var(--space-2); font-size: 14px; line-height: 24px; color: var(--ink-muted); }
+.typeCardsLabel { margin-top: var(--space-12); font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--ink); }
+.typesSection { overflow-x: clip; overflow-y: visible; } /* 색 블록이 화면 밖으로 나가도 가로 스크롤 안 생기게 */
+.typeCardsWrap { position: relative; margin-top: var(--space-5); }
+.typeCards { position: relative; display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-8); align-items: start; }
+/* 두 번째 카드 뒤 색 블록: 카드보다 위·왼쪽으로 조금 넓게, 오른쪽은 화면 끝까지 */
+.typeCardWide { position: relative; z-index: 0; }
+.typeCardWide::before { content: ""; position: absolute; z-index: -1; top: -56px; bottom: -56px; left: -40px; right: -100vw; background: linear-gradient(135deg, var(--accent), var(--brand)); }
+.typeCard2 { display: flex; flex-direction: column; }
+.typeCardImg { overflow: hidden; aspect-ratio: 1 / 1; background: var(--surface-alt); }
+.typeCardWide { margin-top: 160px; } /* 계단식: 두 번째 카드를 아래로 */
+.typeCardWide .typeCardImg { aspect-ratio: 2170 / 725; } /* 비상문 이미지(가로로 긴 한 장)는 비율 그대로 */
+.typeCardImg img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(.22,1,.36,1); }
+.typeCard2:hover .typeCardImg img { transform: scale(1.04); }
+.typeCardEn { margin-top: var(--space-4); font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--ink-subtle); }
+.typeCardName { margin-top: var(--space-1); font-size: 20px; line-height: 30px; font-weight: 700; color: var(--ink); }
+.typeCardBody { margin-top: var(--space-1); max-width: 420px; font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+/* 색 블록 위에 올라간 카드 글자는 흰색으로 */
+.typeCardWide .typeCardEn { color: rgba(255, 255, 255, .75); }
+.typeCardWide .typeCardName { color: #fff; }
+.typeCardWide .typeCardBody { color: rgba(255, 255, 255, .85); }
 .typeMediaEmpty { width: 100%; height: 100%; }
-/* 큰 제목 — 위로 끌어올려 사진 아래 끝에 걸치게 */
-.typeHead { position: relative; z-index: 1; grid-column: 1 / 9; grid-row: 3; display: flex; align-items: center; gap: var(--space-6); margin-top: -0.62em; padding-left: var(--space-8); font-size: clamp(44px, 6.2vw, 96px); line-height: 1.1; font-weight: 800; letter-spacing: -0.04em; color: var(--ink); }
-.typeHeadArrow { width: 0.5em; height: auto; flex: none; transition: transform .4s cubic-bezier(.22,1,.36,1); }
-.typeRow:hover .typeHeadArrow { transform: translateX(8px); }
-.typeDesc { grid-column: 9 / -1; grid-row: 3; align-self: end; justify-self: end; max-width: 360px; padding-bottom: 0.6em; font-size: 14px; line-height: 24px; color: var(--ink-muted); }
-/* 닫힘|열림 한 장 이미지는 그 비율대로 (잘리지 않게) */
-.typeRowAlt .typeMedia { aspect-ratio: 2170 / 725; }
 
 /* 용도 — [제목 + 슬랫 그림 | 큰 두께 숫자 줄] */
-.usageEd { display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-10); margin-top: var(--space-20, 160px); padding-top: var(--space-8); border-top: 2px solid var(--ink); }
+.typeLabel { font-size: 12px; line-height: 20px; font-weight: 700; letter-spacing: .12em; color: var(--ink-subtle); }
+.usageEd { display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-10); margin-top: var(--space-16); padding-top: var(--space-8); border-top: 2px solid var(--ink); }
 .usageEdTitle { margin-top: var(--space-3); font-size: 32px; line-height: 42px; font-weight: 800; letter-spacing: -0.03em; }
 .usageEdImg { display: block; width: 46%; max-width: 180px; margin-top: var(--space-8); }
 .usageEdList { display: flex; flex-direction: column; }
@@ -554,12 +563,15 @@
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
   .openTypes { grid-template-columns: 1fr; gap: var(--space-3); }
   .production { gap: var(--space-2); }
-  /* 형태: 사진은 화면 끝까지, 제목·설명은 아래로 */
-  .typeRow { grid-template-columns: 1fr; }
-  .typeMedia { margin: 0 calc(var(--gutter) * -1); aspect-ratio: 4 / 3; }
-  .typeRowAlt .typeMedia { aspect-ratio: 2170 / 725; }
-  .typeHead { grid-column: 1; font-size: 40px; padding-left: 0; }
-  .typeDesc { grid-column: 1; grid-row: 4; justify-self: start; padding-bottom: 0; margin-top: var(--space-2); }
+  /* 형태: 제목·설명 위아래, 카드 한 줄씩 (색 블록은 두 번째 카드 뒤로) */
+  .typeIntro { grid-template-columns: 1fr; gap: var(--space-4); }
+  .typeIntroTitle { font-size: 44px; padding-left: var(--space-5); }
+  .typeIntroDesc { justify-self: start; }
+  .typeCardsLabel { margin-top: var(--space-8); }
+  .typeCards { grid-template-columns: 1fr; gap: var(--space-10); }
+  .typeCardImg { aspect-ratio: 4 / 3; }
+  .typeCardWide { margin-top: var(--space-6); }
+  .typeCardWide::before { top: -32px; bottom: -40px; left: -100vw; }
   .usageEd { margin-top: var(--space-16); }
   .usageEdTitle { font-size: 26px; line-height: 34px; }
   .usageEdRow { gap: var(--space-4); padding: var(--space-6) 0; }

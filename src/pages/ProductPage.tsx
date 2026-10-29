@@ -859,37 +859,39 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
   const imgs = TYPE_IMAGES[p.slug] ?? [];
   const slatImg = USAGE_IMAGES[p.slug];
   return (
-    <section className={cx('container', s.block)} aria-labelledby="types-title">
-      <p className={s.edEyebrow}>TYPE &amp; USAGE</p>
-      <h3 id="types-title" className="sr-only">형태 · 용도</h3>
-      {p.types?.map((x, i) => {
-        const set = imgs[i] ?? [];
-        return (
-          <article key={x.nameEn} className={cx(s.typeRow, i % 2 === 1 && s.typeRowAlt)}>
-            <p className={s.typeLabel}>
-              TYPE {pad(i + 1)}
-              <br />
-              {x.nameEn}
-            </p>
-            <div className={cx(s.typeMedia, set.length > 1 && s.typeMediaPair)}>
-              {set.length === 0 && <Media className={s.typeMediaEmpty} label={`IMAGE — ${x.nameEn}`} />}
-              {set.map((src, j) => (
-                <img key={src} src={src} alt={`${p.name} ${x.name}${x.nameEn.includes('DOOR') ? ' — 닫힌 모습과 비상문을 열고 나가는 모습' : ''}${set.length > 1 ? ` ${j + 1}` : ''}`} loading="lazy" />
-              ))}
-              {set.length > 1 && (
-                <span className={s.typePairArrow} aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M4 10h11M11 5.5 15.5 10 11 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </span>
-              )}
-            </div>
-            <h4 className={s.typeHead}>
-              {x.name}
-              <svg className={s.typeHeadArrow} viewBox="0 0 40 24" fill="none" aria-hidden="true"><path d="M2 12h34M26 3l10 9-10 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </h4>
-            <p className={s.typeDesc}>{x.body}</p>
-          </article>
-        );
-      })}
+    <section className={cx('container', s.block, s.typesSection)} aria-labelledby="types-title">
+      {/* 머리: [빨간 점 + 큰 영문 제목 | 오른쪽 설명] */}
+      <div className={s.typeIntro}>
+        <h3 id="types-title" className={s.typeIntroTitle}>
+          <span className={s.typeIntroDot} aria-hidden="true" />
+          SHUTTER
+          <br />
+          TYPES
+          <span className="sr-only"> — 형태 · 용도</span>
+        </h3>
+        <p className={s.typeIntroDesc}>
+          {p.name}는 개구부를 막는 방식에 따라 일반형과 비상문 일체형으로 나뉩니다. 현장의 대피 동선에 맞춰 형태를 고르고, 용도(방화·방범)에 따라 슬랫 두께를 정합니다.
+        </p>
+      </div>
+      <p className={s.typeCardsLabel}>(SHUTTER TYPES)</p>
+      {/* 카드 줄 — 두 번째 카드 뒤에 브랜드 색 블록(::before)이 화면 오른쪽 끝까지 깔림 */}
+      <div className={s.typeCardsWrap}>
+        <ul className={s.typeCards}>
+          {p.types?.map((x, i) => {
+            const src = (imgs[i] ?? [])[0];
+            return (
+              <li key={x.nameEn} className={cx(s.typeCard2, i === 1 && s.typeCardWide)}>
+                <div className={s.typeCardImg}>
+                  {src ? <img src={src} alt={`${p.name} ${x.name}${x.nameEn.includes('DOOR') ? ' — 닫힌 모습과 비상문을 열고 나가는 모습' : ''}`} loading="lazy" /> : <Media className={s.typeMediaEmpty} label={`IMAGE — ${x.nameEn}`} />}
+                </div>
+                <p className={s.typeCardEn}>{`Type ${pad(i + 1)} · ${x.nameEn}`}</p>
+                <h4 className={s.typeCardName}>{x.name}</h4>
+                <p className={s.typeCardBody}>{x.body}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
       {p.usages && (
         <div className={s.usageEd}>
           <div className={s.usageEdHead}>
