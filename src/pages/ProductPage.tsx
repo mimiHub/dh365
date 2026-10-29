@@ -35,8 +35,7 @@ import screenDrawingImg from '../assets/drawing-screen-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
 import speedMotorImg from '../assets/component-speed-motor.jpg';
 import steelTypeNormalImg from '../assets/steel-type-normal.jpg';
-import steelTypeDoorClosedImg from '../assets/steel-type-door-closed.jpg';
-import steelTypeDoorOpenImg from '../assets/steel-type-door-open.jpg';
+import steelTypeDoorImg from '../assets/steel-type-door.jpg';
 import steelForming1Img from '../assets/steel-forming-1.jpg';
 import steelSlatImg from '../assets/slat-steel.jpg';
 import steelForming2Img from '../assets/steel-forming-2.jpg';
@@ -148,7 +147,8 @@ const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
 };
 
 // 형태 사진 — types와 같은 순서, 형태마다 여러 장이면 [닫힘 → 열림]처럼 화살표로 이어 보여줌
-const STEEL_TYPE_IMAGES = [[steelTypeNormalImg], [steelTypeDoorClosedImg, steelTypeDoorOpenImg]];
+// 비상문 일체형은 [닫힘 | 열림]이 한 장에 그려진 이미지 → 나누지 않고 한 장으로
+const STEEL_TYPE_IMAGES = [[steelTypeNormalImg], [steelTypeDoorImg]];
 const TYPE_IMAGES: Partial<Record<string, string[][]>> = {
   steel: STEEL_TYPE_IMAGES,
   'steel-insulated': STEEL_TYPE_IMAGES,
@@ -874,7 +874,7 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
             <div className={cx(s.typeMedia, set.length > 1 && s.typeMediaPair)}>
               {set.length === 0 && <Media className={s.typeMediaEmpty} label={`IMAGE — ${x.nameEn}`} />}
               {set.map((src, j) => (
-                <img key={src} src={src} alt={`${p.name} ${x.name}${set.length > 1 ? (j === 0 ? ' — 닫힌 모습' : ' — 비상문을 연 모습') : ''}`} loading="lazy" />
+                <img key={src} src={src} alt={`${p.name} ${x.name}${x.nameEn.includes('DOOR') ? ' — 닫힌 모습과 비상문을 열고 나가는 모습' : ''}${set.length > 1 ? ` ${j + 1}` : ''}`} loading="lazy" />
               ))}
               {set.length > 1 && (
                 <span className={s.typePairArrow} aria-hidden="true">
