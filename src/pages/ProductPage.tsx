@@ -43,6 +43,7 @@ import overheadPanelImg from '../assets/panel-overhead.jpg';
 import overheadWindowImg from '../assets/window-overhead.jpg';
 import overheadWhiteImg from '../assets/color-overhead-white.jpg';
 import overheadGrayImg from '../assets/color-overhead-gray.jpg';
+import overheadDrawingImg from '../assets/drawing-overhead-door.jpg';
 import openStandardImg from '../assets/opentype-standard.jpg';
 import openHiliftImg from '../assets/opentype-hilift.jpg';
 import openFullVerticalImg from '../assets/opentype-fullvertical.jpg';
@@ -81,6 +82,7 @@ const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: 
     alt: '스피드도어 구성도 — 모터, 샤프트, 도어 시트, 비전 시트, 가이드레일, 컨트롤 박스, 포토센서, 하단바 위치',
   },
   'overhead-door': {
+    src: overheadDrawingImg, // wide 없음 → 박스 안 78%(최대 520px) + 여백
     caption: '구성도 · 개구부 폭·높이는 현장에 맞춰 제작 (OPEN WIDTH / HEIGHT = VAR.)',
     title: '구성도 · 제품 사양',
     alt: '오버헤드도어 구성도 — 드럼, 스프링, 샤프트, 모터, 수동 체인, 패널, 힌지·롤러, 채광창, 하부 실, 컨트롤 위치',
