@@ -70,7 +70,16 @@ const DRAWINGS: Partial<Record<string, { src?: string; caption: string; title?: 
     title: '구성도 · 제품 사양',
     alt: '스피드도어 구성도 — 모터, 샤프트, 도어 시트, 비전 시트, 가이드레일, 컨트롤 박스, 포토센서, 하단바 위치',
   },
+  'overhead-door': {
+    caption: '구성도 · 개구부 폭·높이는 현장에 맞춰 제작 (OPEN WIDTH / HEIGHT = VAR.)',
+    title: '구성도 · 제품 사양',
+    alt: '오버헤드도어 구성도 — 드럼, 스프링, 샤프트, 모터, 수동 체인, 패널, 힌지·롤러, 채광창, 하부 실, 컨트롤 위치',
+  },
 };
+
+// 패널 종류 사진 (한 장) · 개폐 방식 그림 (openTypes와 같은 순서)
+const PANEL_IMAGES: Partial<Record<string, string>> = {};
+const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {};
 
 // 구성품 사진 — products.ts의 components와 같은 순서. 비어 있으면 이미지 자리로 표시
 // wide: 가로로 긴 사진(단면도+입체도 등) → 카드가 한 줄 전체를 차지
@@ -464,6 +473,8 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
             </p>
           </section>
           {(p.colors || p.sensors) && <OptionsBlock product={p} />}
+          {p.panels && <PanelBlock product={p} />}
+          {p.openTypes && <OpenTypesBlock product={p} />}
           {p.uses.length > 0 && (
             <section className={cx('container', s.block)} aria-labelledby="uses-title">
               <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
@@ -780,6 +791,55 @@ function OptionsBlock({ product: p }: { product: ProductDetail }) {
           </ul>
         </div>
       )}
+    </section>
+  );
+}
+
+/** 패널 종류 — [패널 사진 | 두께·피치 비교표]. 표는 패널이 열(가로)로 나란한 비교형 */
+function PanelBlock({ product: p }: { product: ProductDetail }) {
+  const panels = p.panels!;
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="panel-title">
+      <BlockHead en="PANEL" title="패널 종류" id="panel-title" />
+      <div className={s.panelWrap}>
+        <Media className={s.panelImg} src={PANEL_IMAGES[p.slug]} alt={`${p.name} 패널 단면 — ${panels.map((x) => x.nameEn).join(', ')}`} label="IMAGE — PANEL" />
+        <ul className={s.panelCards}>
+          {panels.map((x) => (
+            <li key={x.nameEn + x.thickness} className={s.panelCard}>
+              <p className={s.panelEn}>{x.nameEn}</p>
+              <h4 className={s.panelName}>{x.name}</h4>
+              <dl className={s.panelDl}>
+                <div><dt>전체 두께</dt><dd>{x.thickness}</dd></div>
+                <div><dt>피치</dt><dd>{x.pitch}</dd></div>
+              </dl>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/** 개폐 방식 — 타입별 그림 카드 3장 (헤드룸 조건을 배지로 강조) */
+function OpenTypesBlock({ product: p }: { product: ProductDetail }) {
+  const imgs = OPEN_TYPE_IMAGES[p.slug] ?? [];
+  return (
+    <section className={cx('container', s.block)} aria-labelledby="opentype-title">
+      <BlockHead en="DOOR OPEN TYPE" title="개폐 방식" id="opentype-title" />
+      <p className={s.openLead}>천장까지 남는 공간(헤드룸)에 맞춰 도어가 열리는 방식을 고릅니다.</p>
+      <ol className={s.openTypes}>
+        {p.openTypes!.map((x, i) => (
+          <li key={x.nameEn} className={s.component}>
+            <Media className={s.componentImg} src={imgs[i]} alt={`${p.name} ${x.name} 개폐 방식 — ${x.headroom}`} label={`IMAGE — ${x.nameEn}`} />
+            <div className={s.componentText}>
+              <p className={s.componentEn}>{pad(i + 1)} · {x.nameEn}</p>
+              <h4 className={s.componentName}>{x.name}</h4>
+              <p className={s.headroom}>{x.headroom}</p>
+              <p className={s.componentBody}>{x.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

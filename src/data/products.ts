@@ -60,6 +60,10 @@ export interface ProductDetail {
   colors?: { name: string; nameEn: string; hex: string; vision?: boolean }[];
   /** 부착 가능한 센서·조작 장치 */
   sensors?: { name: string; nameEn: string; body: string }[];
+  /** 패널 종류 — 두께·피치 비교표 (이미지는 ProductPage의 PANEL_IMAGES) */
+  panels?: { name: string; nameEn: string; thickness: string; pitch: string }[];
+  /** 개폐 방식 — 헤드룸(천장 여유 공간)에 따라 고르는 타입 (그림은 OPEN_TYPE_IMAGES, 같은 순서) */
+  openTypes?: { name: string; nameEn: string; headroom: string; body: string }[];
   todo?: string[];
 }
 
@@ -541,28 +545,40 @@ export const PRODUCT_DETAILS: ProductDetail[] = [
     nameEn: 'Overhead Door',
     model: 'DOORS-2000',
     summary: '단열·방음·내풍압을 갖춘 패널형 산업용 도어',
+    // 출처: 카탈로그 p.24(소개·SPECIFICATION·아이콘 5종 = 특징 5개) · p.25(용도·도어의 우수성·보안과 디자인) · p.26(구성도·PANEL·DOOR OPEN TYPE)
     intro:
-      '우레탄을 충진한 패널을 천장 쪽 레일로 올려 여는 산업용 도어입니다. 단열성과 강도가 좋고 외관이 깔끔해 물류창고와 격납고, 저온 저장시설에 많이 씁니다.',
+      '강도와 단열성이 우수하고 외관이 깔끔하며, 내식성과 내구성이 뛰어나 물류창고와 격납고 등에 많이 쓰이는 산업용 도어입니다. 용도에 따라 다양한 패널을 고를 수 있고, 카운터 밸런스 시스템으로 작동이 원활하고 조작이 편리합니다. 견고한 보안을 갖추면서 원하는 디자인에 맞춰 설계·제작할 수 있습니다.',
     features: [
-      { title: '단열·기밀', body: '고밀도 폴리우레탄 또는 준불연 우레탄 패널로 외부 찬 공기와 먼지를 막습니다. 80T 열관류율 0.605W/㎡K.' },
-      { title: '45m/s 내풍압', body: '풍압바 일체형 패널로 45m/s 풍압을 견딥니다(내풍압 시험성적서 보유).' },
-      { title: '편리한 작동·정비', body: '카운터 밸런스 시스템으로 부드럽게 열리고, 수동 작동도 가능해 고장 시 수리가 간단합니다.' },
-      { title: '추락 방지·채광', body: '도어 추락 방지기를 갖췄고, 투시창으로 채광과 보안을 함께 챙깁니다.' },
-      { title: '유럽 OEM 생산 품질', body: '저소음 구조에 현장 셋팅이 편리합니다.' },
+      { title: '단열', body: '고밀도 폴리우레탄 또는 난연 2급 준불연 우레탄 패널로 외부의 찬 공기와 먼지를 막아 실내 작업 환경을 지킵니다.' },
+      { title: '에너지 절감', body: '투시창으로 채광이 좋아 에너지 효율을 높일 수 있습니다.' },
+      { title: '방음', body: '외부로부터 소음 전달을 줄입니다.' },
+      { title: '정비 용이', body: '수동 작동도 가능하며 고장이 적고 수리가 간단합니다. 유지보수가 거의 필요 없습니다.' },
+      { title: '안전', body: '도어 추락 방지기로 도어 추락에 의한 사고를 미리 막습니다.' },
     ],
     uses: ['물류창고·격납고', '소방서·발전소', '식음료·유제품·빙과류 제조·보관시설', '농수축산물 저온 저장시설', '과일 후숙시설', '해안가 등 강풍 노출 장소'],
     specs: [
       { label: '패널', value: '내·외부 0.5mm 아연도 강판 또는 0.5mm AL 강판, 엠보스 가공 / 폴리우레탄 충진(50·80T), FIBER GLASS(50·60T), FULL VISION(50T)' },
-      { label: '단열재', value: '폴리우레탄(50·80T), 난연 2급(준불연 2급 우레탄 50·80T)' },
-      { label: '패널 피치', value: '우레탄 480 / 530mm · FIBER GLASS 550mm · FULL VISION 주문 가능' },
+      { label: '단열재', value: '폴리우레탄(50·80T), 난연 2급(준불연 2급 우레탄 50·80T) — 시험성적서 보유' },
       { label: '트랙', value: '고내구성 아연도 철판' },
       { label: '웨더 실', value: '상부, 하부, 양측면' },
       { label: '채광창', value: '이중 아크릴 630 × 330 × 3T' },
       { label: '색상', value: 'WHITE, GRAY 외 다양한 색상' },
       { label: '열관류율', value: '50T 0.785W/㎡K · 80T 0.605W/㎡K' },
-      { label: '개폐 방식', value: 'STANDARD(헤드룸 600mm) · HI-LIFT(헤드룸 600mm 이상) · FULL VERTICAL(헤드룸 = 개구 높이 + 500mm)' },
+      { label: '내풍압', value: '45m/s 풍압에 견디는 구조 (내풍압 시험성적서 보유)' },
+    ],
+    panels: [
+      { name: '우레탄', nameEn: 'URETHANE', thickness: '50T', pitch: '480 / 530mm' },
+      { name: '우레탄', nameEn: 'URETHANE', thickness: '80T', pitch: '480 / 530mm' },
+      { name: '풀비전', nameEn: 'FULL VISION', thickness: '50T', pitch: '주문 가능' },
+      { name: '파이버글라스', nameEn: 'FIBER GLASS', thickness: '50 · 60T', pitch: '550mm' },
+    ],
+    openTypes: [
+      { name: '스탠다드', nameEn: 'STANDARD TYPE', headroom: '헤드룸 600mm', body: '가장 일반적인 방식으로 개폐되는 타입입니다.' },
+      { name: '하이리프트', nameEn: 'HI-LIFT TYPE', headroom: '헤드룸 600mm 이상', body: '개구부 높이보다 적은 공간에 적용하는 타입입니다.' },
+      { name: '풀버티컬', nameEn: 'FULL VERTICAL TYPE', headroom: '헤드룸 = 개구부 높이 + 500mm', body: '도어가 열릴 때 수직으로 올라가는 타입입니다.' },
     ],
     certs: ['내풍압 시험성적서(45m/s)', '단열재 시험성적서'],
+    todo: ['DOOR OPEN TYPE 설명 문구가 "HEAD ROOM이 OPEN HEIGHT + 600MM"로 그림 표기(HEAD ROOM : 600MM)와 다름 → 그림 기준으로 정리, 확인 필요'],
   },
 ];
 

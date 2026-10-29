@@ -351,14 +351,41 @@
 .sensorName span { margin-left: var(--space-2); font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--ink-subtle); }
 .sensorBody { font-size: 14px; line-height: 22px; color: var(--ink-muted); }
 
+/* ── 패널 종류 ── */
+.panelWrap { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-8); align-items: stretch; }
+.panelImg { min-height: 320px; border-radius: var(--radius-md); }
+.panelImg:has(img) { background: #ffffff; border: 1px solid var(--line); }
+.panelImg > img { object-fit: contain; padding: var(--space-6); mix-blend-mode: multiply; }
+.panelCards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+.panelCard { display: flex; flex-direction: column; padding: var(--space-5) var(--space-6); border-radius: var(--radius-md); background: var(--surface-alt); border-top: 3px solid var(--accent); }
+.panelEn { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent-text); }
+.panelName { margin-top: 2px; font-size: 18px; line-height: 28px; font-weight: 700; }
+.panelDl { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); }
+.panelDl dt { font-size: 12px; color: var(--ink-subtle); }
+.panelDl dd { margin: 2px 0 0; font-size: 20px; line-height: 28px; font-weight: 800; color: var(--brand); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+[data-theme="dark"] .panelDl dd { color: var(--ink); }
+
+/* ── 개폐 방식 ── (카드 모양은 구성품 카드 .component 재사용) */
+.openLead { margin-top: calc(var(--space-4) * -1); margin-bottom: var(--space-6); font-size: 15px; line-height: 25px; color: var(--ink-muted); }
+.openTypes { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+.headroom { display: inline-block; margin-top: var(--space-2); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; color: var(--accent-text); background: var(--accent-soft); }
+
 /* 도면 이미지가 아직 없을 때의 자리 — 사양표 높이에 맞춰 늘어남 */
 .drawingEmpty { flex: 1; min-height: 360px; border-radius: var(--radius-md); }
 
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
+  .panelWrap { grid-template-columns: 1fr; }
+  .panelImg { min-height: 0; aspect-ratio: 16 / 9; }
+  .openTypes { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 767px) {
   .components { grid-template-columns: 1fr; gap: var(--space-3); }
+  .openTypes { grid-template-columns: 1fr; gap: var(--space-3); }
+  .panelCards { gap: var(--space-3); }
+  .panelCard { padding: var(--space-4); }
+  .panelDl { grid-template-columns: 1fr; gap: var(--space-2); } /* 폭이 좁아 두께·피치를 위아래로 */
+  .panelDl dd { font-size: 17px; white-space: nowrap; }
   /* 모바일: 카드를 가로형으로 [사진 | 글] — 세로로 쌓으면 사진 3장이 화면을 너무 길게 차지 */
   .component { flex-direction: row; }
   .componentWide { flex-direction: column; }
