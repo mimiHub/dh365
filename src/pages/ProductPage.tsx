@@ -35,7 +35,8 @@ import screenDrawingImg from '../assets/drawing-screen-shutter.png';
 import steelReportImg from '../assets/report-steel-kict.jpg';
 import speedMotorImg from '../assets/component-speed-motor.jpg';
 import steelTypeNormalImg from '../assets/steel-type-normal.jpg';
-import steelTypeDoorImg from '../assets/steel-type-door.jpg';
+import steelTypeDoorClosedImg from '../assets/steel-type-door-closed.jpg';
+import steelTypeDoorOpenImg from '../assets/steel-type-door-open.jpg';
 import steelForming1Img from '../assets/steel-forming-1.jpg';
 import steelSlatImg from '../assets/slat-steel.jpg';
 import steelForming2Img from '../assets/steel-forming-2.jpg';
@@ -147,9 +148,15 @@ const OPEN_TYPE_IMAGES: Partial<Record<string, (string | undefined)[]>> = {
 };
 
 // 형태 사진 — types와 같은 순서, 형태마다 여러 장이면 [닫힘 → 열림]처럼 화살표로 이어 보여줌
-// 비상문 일체형은 [닫힘 | 열림]이 한 장에 그려진 이미지 → 나누지 않고 한 장으로
-const STEEL_TYPE_IMAGES = [[steelTypeNormalImg], [steelTypeDoorImg]];
-const TYPE_IMAGES: Partial<Record<string, string[][]>> = {
+// 형태별 사진 — 한 형태에 여러 장이면 장마다 카드 한 장 (비상문 일체형: 닫힘 / 열림 → 카드 2장, 총 3장 같은 크기)
+const STEEL_TYPE_IMAGES = [
+  [{ src: steelTypeNormalImg }],
+  [
+    { src: steelTypeDoorClosedImg, caption: '평소 — 셔터와 한 면으로 닫혀 있습니다.' },
+    { src: steelTypeDoorOpenImg, caption: '비상 시 — 셔터가 내려온 상태에서도 비상문을 열고 대피합니다.' },
+  ],
+];
+const TYPE_IMAGES: Partial<Record<string, { src: string; caption?: string }[][]>> = {
   steel: STEEL_TYPE_IMAGES,
   'steel-insulated': STEEL_TYPE_IMAGES,
 };
@@ -877,18 +884,18 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
       {/* 카드 줄 — 두 번째 카드 뒤에 브랜드 색 블록(::before)이 화면 오른쪽 끝까지 깔림 */}
       <div className={s.typeCardsWrap}>
         <ul className={s.typeCards}>
-          {p.types?.map((x, i) => {
-            const src = (imgs[i] ?? [])[0];
-            return (
-              <li key={x.nameEn} className={cx(s.typeCard2, i === 1 && s.typeCardWide)}>
+          {p.types?.flatMap((x, i) => {
+            const set = imgs[i]?.length ? imgs[i] : [undefined];
+            return set.map((img, j) => (
+              <li key={`${x.nameEn}-${j}`} className={s.typeCard2}>
                 <div className={s.typeCardImg}>
-                  {src ? <img src={src} alt={`${p.name} ${x.name}${x.nameEn.includes('DOOR') ? ' — 닫힌 모습과 비상문을 열고 나가는 모습' : ''}`} loading="lazy" /> : <Media className={s.typeMediaEmpty} label={`IMAGE — ${x.nameEn}`} />}
+                  {img ? <img src={img.src} alt={`${p.name} ${x.name}${img.caption ? ` — ${img.caption}` : ''}`} loading="lazy" /> : <Media className={s.typeMediaEmpty} label={`IMAGE — ${x.nameEn}`} />}
                 </div>
                 <p className={s.typeCardEn}>{`Type ${pad(i + 1)} · ${x.nameEn}`}</p>
-                <h4 className={s.typeCardName}>{x.name}</h4>
-                <p className={s.typeCardBody}>{x.body}</p>
+                <h4 className={s.typeCardName}>{x.name}{set.length > 1 && <span className={s.typeCardStep}>{pad(j + 1)}</span>}</h4>
+                <p className={s.typeCardBody}>{img?.caption ?? x.body}</p>
               </li>
-            );
+            ));
           })}
         </ul>
       </div>
