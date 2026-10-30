@@ -74,7 +74,8 @@ export interface ProductDetail {
   /** 용도별 사양·작동 (방화용/방범용 등) — icon: fire | security */
   usages?: { name: string; nameEn: string; icon: 'fire' | 'security'; spec: string; specLabel: string; items: string[] }[];
   /** 생산 설비 소개 — 사진은 ProductPage의 PRODUCTION_IMAGES */
-  production?: { title: string; body: string };
+  /** steps: 사진마다 붙는 공정 이름·설명 (PRODUCTION_IMAGES와 같은 순서) */
+  production?: { title: string; body: string; steps?: { title: string; body: string }[] };
   /** 슬랫 계열별 두께 비교표 — 계열마다 [사진 + 두께별 전체두께·피치 표] (사진은 ProductPage의 SLAT_GROUP_IMAGES, 같은 순서) */
   slatGroups?: { name: string; nameEn: string; body: string; rows: { thickness: string; total: string; pitch: string }[] }[];
   /** 개폐 방식 — 헤드룸(천장 여유 공간)에 따라 고르는 타입 (그림은 OPEN_TYPE_IMAGES, 같은 순서) */
@@ -260,6 +261,13 @@ const STEEL_TYPES: ProductDetail['types'] = [
 const STEEL_PRODUCTION: ProductDetail['production'] = {
   title: '최신 포밍기 보유로 슬랫 품질이 우수합니다',
   body: '강판 코일을 직접 들여와 자체 포밍 라인에서 슬랫을 성형합니다.',
+  // 공정 이름·설명은 사진을 보고 붙인 것 → 확인 필요
+  steps: [
+    { title: '강판 코일 입고', body: '규격에 맞는 전기아연도금 강판 코일을 들여옵니다.' },
+    { title: '언코일링', body: '코일을 풀어 포밍기에 일정한 속도로 공급합니다.' },
+    { title: '롤 포밍', body: '여러 단의 롤러를 거치며 슬랫 단면을 성형합니다.' },
+    { title: '절단 · 검수', body: '정해진 길이로 절단하고 치수와 표면을 검수합니다.' },
+  ],
 };
 
 export const PRODUCT_DETAILS: ProductDetail[] = [

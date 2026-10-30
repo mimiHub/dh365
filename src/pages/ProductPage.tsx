@@ -11,7 +11,7 @@ import {
   type TestReport,
 } from '../data/products';
 import { COMPANY } from '../data/site';
-import { Badge, Button, Media, cx } from '../components/ui';
+import { Badge, Button, Media, SliderNav, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
 import { SafetyBand, SafetyDetails } from './product/SafetyBand';
 import { ProductTabBar } from './product/ProductTabBar';
@@ -947,17 +947,67 @@ const USAGE_ICONS: Record<'fire' | 'security', ReactNode> = {
 function ProductionBlock({ product: p }: { product: ProductDetail }) {
   const imgs = PRODUCTION_IMAGES[p.slug] ?? [];
   const pr = p.production!;
+  const track = useRef<HTMLUListElement>(null);
+  const [index, setIndex] = useState(0);
+  const [atEnd, setAtEnd] = useState(false); // 한 화면에 3장이 보이면 4장 중 2번째부터 이미 끝 → 다음 버튼 비활성
+  const trackId = useId();
+
+  // 화살표로 카드 한 장씩 이동 — 목록만 가로로 스크롤(페이지 세로 스크롤은 그대로)
+  const go = (i: number) => {
+    const n = Math.max(0, Math.min(imgs.length - 1, i));
+    setIndex(n);
+    const el = track.current;
+    const item = el?.children[n] as HTMLElement | undefined;
+    if (el && item) el.scrollTo({ left: item.offsetLeft - el.offsetLeft, behavior: 'smooth' });
+  };
+  // 손으로 밀어서 넘겨도 번호가 따라오게
+  const onScroll = () => {
+    const el = track.current;
+    const first = el?.children[0] as HTMLElement | undefined;
+    if (!el || !first) return;
+    const step = first.offsetWidth + parseFloat(getComputedStyle(el).columnGap || '0');
+    setIndex(Math.round(el.scrollLeft / step));
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+  };
+  useEffect(onScroll, []); // 처음 그릴 때 끝인지(카드가 화면에 다 들어오는지) 확인
+
   return (
     <section className={cx('container', s.block)} aria-labelledby="production-title">
-      <BlockHead en="PRODUCTION" title={pr.title} id="production-title" />
-      <p className={s.productionBody}>{pr.body}</p>
-      <ul className={s.production}>
-        {imgs.map((src, i) => (
-          <li key={src}>
-            <img src={src} alt={`${p.name} 슬랫 포밍 라인 ${i + 1}`} loading="lazy" />
-          </li>
-        ))}
+      <div className={s.prodHead}>
+        <BlockHead en="PRODUCTION" title={pr.title} id="production-title" />
+        <p className={s.productionBody}>{pr.body}</p>
+      </div>
+      {/* 카드: 흰 사진 상자가 회색 판 위로 반쯤 올라탄 모양 (회색 판은 사진 중간부터) */}
+      <ul ref={track} id={trackId} className={s.prodTrack} onScroll={onScroll}>
+        {imgs.map((src, i) => {
+          const st = pr.steps?.[i];
+          return (
+            <li key={src} className={s.prodCard}>
+              <div className={s.prodImg}>
+                <img src={src} alt={`${p.name} 슬랫 생산 — ${st?.title ?? `공정 ${i + 1}`}`} loading="lazy" />
+              </div>
+              <p className={s.prodNo}>STEP {pad(i + 1)}</p>
+              <h4 className={s.prodTitle}>{st?.title ?? `공정 ${i + 1}`}</h4>
+              {st && <p className={s.prodBody}>{st.body}</p>}
+              <span className={cx(s.prodDot, i === index && s.prodDotOn)} aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+            </li>
+          );
+        })}
       </ul>
+      <div className={s.prodNav}>
+        <SliderNav
+          current={index}
+          total={imgs.length}
+          onPrev={() => go(index - 1)}
+          onNext={() => go(index + 1)}
+          prevDisabled={index === 0}
+          nextDisabled={atEnd || index >= imgs.length - 1}
+          controls={trackId}
+          itemLabel="공정"
+        />
+      </div>
     </section>
   );
 }
