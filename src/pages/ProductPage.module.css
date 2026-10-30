@@ -342,24 +342,37 @@
 .typeCardBody { margin-top: var(--space-1); max-width: 420px; font-size: 14px; line-height: 22px; color: var(--ink-muted); }
 .typeMediaEmpty { width: 100%; height: 100%; }
 
-/* 용도 — [제목 + 슬랫 그림 | 큰 두께 숫자 줄] */
+/* 용도 — 머리 가운데 / [방화용 카드 | 슬랫 그림 | 방범용 카드] 같은 높이 */
 .typeLabel { font-size: 12px; line-height: 20px; font-weight: 700; letter-spacing: .12em; color: var(--ink-subtle); }
-.usageEd { display: grid; grid-template-columns: 4fr 8fr; gap: var(--space-10); margin-top: var(--space-16); padding-top: var(--space-8); border-top: 2px solid var(--ink); }
-.usageEdTitle { margin-top: var(--space-3); font-size: 32px; line-height: 42px; font-weight: 800; letter-spacing: -0.03em; }
-.usageEdImg { display: block; width: 46%; max-width: 180px; margin-top: var(--space-8); }
-.usageEdList { display: flex; flex-direction: column; }
-.usageEdRow { display: grid; grid-template-columns: 220px auto 1fr; align-items: center; gap: var(--space-8); padding: var(--space-8) 0; border-bottom: 1px solid var(--line); }
-.usageEdRow:first-child { padding-top: 0; }
-.usageEdName { display: flex; align-items: center; gap: var(--space-4); }
-.usageEdIcon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line-strong); color: var(--brand); }
-.usageEdIcon svg { width: 24px; height: 24px; }
-.usageEdFire .usageEdIcon { color: var(--fire, #e8482c); border-color: currentColor; }
+.usageEd { margin-top: var(--space-16); padding: var(--space-12) var(--space-10); border-radius: var(--radius-lg); background: var(--surface-alt); }
+.usageEdHead { text-align: center; }
+.usageEdTitle { font-size: 32px; line-height: 44px; font-weight: 700; letter-spacing: -0.02em; }
+.usageEdGrid { display: grid; grid-template-columns: 1fr minmax(160px, 240px) 1fr; gap: var(--space-6); align-items: stretch; margin-top: var(--space-10); }
+.usageEdFig { position: relative; display: grid; place-items: center; margin: 0; }
+/* 슬랫 뒤 흰 원 — 두 카드를 잇는 가운데 축 */
+.usageEdFig::before { content: ""; position: absolute; width: 100%; aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 16px 40px -20px rgba(10, 42, 102, .35); }
+.usageEdFig img { position: relative; width: 52%; height: auto; }
+.usageEdFig figcaption { position: absolute; bottom: 0; font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--ink-subtle); }
+.usageEdCard { display: flex; flex-direction: column; padding: var(--space-8); border-radius: var(--radius-md); background: #fff; border-top: 3px solid var(--brand); }
+.usageEdFire { border-top-color: var(--fire); }
+.usageEdName { display: flex; align-items: center; gap: var(--space-3); }
+.usageEdIcon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line-strong); color: var(--brand); }
+.usageEdIcon svg { width: 22px; height: 22px; }
+.usageEdFire .usageEdIcon { color: var(--fire); border-color: currentColor; }
 .usageEn { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--accent-text); }
-.usageEdLabel { margin-top: 2px; font-size: 22px; line-height: 30px; font-weight: 800; }
-.usageEdSpec { display: flex; align-items: baseline; gap: var(--space-2); font-size: clamp(48px, 5vw, 72px); line-height: 1; font-weight: 800; letter-spacing: -0.04em; color: var(--brand); font-variant-numeric: tabular-nums; }
+.usageEdLabel { margin-top: 2px; font-size: 20px; line-height: 28px; font-weight: 700; }
+.usageEdSpec { display: flex; align-items: baseline; gap: var(--space-2); margin-top: var(--space-6); font-size: 64px; line-height: 1; font-weight: 800; letter-spacing: -0.04em; color: var(--brand); font-variant-numeric: tabular-nums; }
 .usageEdSpec small { font-size: 15px; font-weight: 700; letter-spacing: .06em; color: var(--ink-subtle); }
 [data-theme="dark"] .usageEdSpec { color: var(--ink); }
-.usageEdItems { display: flex; flex-direction: column; gap: var(--space-1); justify-self: end; text-align: right; font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+.usageEdItems { display: flex; flex-direction: column; gap: var(--space-2); margin-top: auto; padding-top: var(--space-6); border-top: 1px solid var(--line); font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+.usageEdSpec + .usageEdItems { margin-top: var(--space-6); }
+.usageEdItems li { display: flex; gap: var(--space-2); }
+.usageEdItems li::before { content: ""; flex: none; width: 5px; height: 5px; margin-top: 8px; border-radius: 50%; background: var(--accent); }
+/* 오른쪽 카드는 글을 오른쪽 정렬 → 슬랫을 사이에 두고 대칭 */
+.usageEdRight { align-items: flex-end; text-align: right; }
+.usageEdRight .usageEdName { flex-direction: row-reverse; }
+.usageEdRight .usageEdItems { align-self: stretch; align-items: flex-end; }
+.usageEdRight .usageEdItems li { flex-direction: row-reverse; }
 
 /* ── 생산 설비 ── 카드: 흰 사진 상자 + 사진 중간부터 깔린 회색 판 / 아래 가운데 SliderNav */
 .prodHead { display: grid; grid-template-columns: 1fr auto; gap: var(--space-8); align-items: end; }
@@ -558,10 +571,6 @@
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
   .prodTrack { grid-auto-columns: calc((100% - var(--space-6)) / 2); }
-  .usageEd { grid-template-columns: 1fr; gap: var(--space-8); }
-  .usageEdImg { width: 160px; }
-  .usageEdRow { grid-template-columns: 1fr auto; }
-  .usageEdItems { grid-column: 1 / -1; justify-self: start; text-align: left; flex-direction: row; flex-wrap: wrap; column-gap: var(--space-4); }
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .panelWrap { grid-template-columns: 1fr; }
   .slatGroups { grid-template-columns: 1fr; gap: var(--space-12); }
@@ -589,11 +598,17 @@
   .typeCards { grid-template-columns: 1fr; gap: var(--space-10); }
   .typeCardsWrap::before { top: -24px; left: 40%; height: calc(100cqi * 2 / 3 + 24px * 2); }
   .typeCardEn { margin-top: 40px; }
-  .usageEd { margin-top: var(--space-16); }
-  .usageEdTitle { font-size: 26px; line-height: 34px; }
-  .usageEdRow { gap: var(--space-4); padding: var(--space-6) 0; }
-  .usageEdLabel { font-size: 18px; }
-  .usageEdIcon { width: 44px; height: 44px; }
+  .usageEd { padding: var(--space-8) var(--space-5); }
+  .usageEdTitle { font-size: 24px; line-height: 34px; }
+  .usageEdGrid { grid-template-columns: 1fr; gap: var(--space-4); }
+  .usageEdFig { order: -1; width: 160px; justify-self: center; margin-bottom: var(--space-2); }
+  .usageEdFig figcaption { display: none; }
+  .usageEdCard { padding: var(--space-6); }
+  .usageEdSpec { font-size: 48px; }
+  .usageEdRight { align-items: stretch; text-align: left; }
+  .usageEdRight .usageEdName { flex-direction: row; }
+  .usageEdRight .usageEdItems { align-items: stretch; }
+  .usageEdRight .usageEdItems li { flex-direction: row; }
   /* 셔터의 구성 4개: 모바일은 2열 세로 카드 (가로형이면 사진이 너무 작아짐) */
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .componentsFour .component { flex-direction: column; }

@@ -902,33 +902,41 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
         </ul>
       </div>
       {p.usages && (
+        // 용도: 머리(가운데) → [방화용 카드 | 슬랫 그림 | 방범용 카드] — 슬랫이 가운데라 두 카드가 같은 높이로 마주 봄
         <div className={s.usageEd}>
           <div className={s.usageEdHead}>
-            <p className={s.typeLabel}>USAGE</p>
-            <h4 className={s.usageEdTitle}>용도에 따라<br />두께를 고릅니다</h4>
-            {slatImg && <img className={s.usageEdImg} src={slatImg} alt={`${p.name} 슬랫 — ${p.usages.map((u) => `${u.name} ${u.spec}`).join(', ')}`} loading="lazy" />}
+            <p className="dh-eyebrow">USAGE</p>
+            <h4 className={s.usageEdTitle}>용도에 따라 두께를 고릅니다</h4>
           </div>
-          <ul className={s.usageEdList}>
-            {p.usages.map((u) => (
-              <li key={u.nameEn} className={cx(s.usageEdRow, u.icon === 'fire' && s.usageEdFire)}>
-                <div className={s.usageEdName}>
-                  <span className={s.usageEdIcon} aria-hidden="true">{USAGE_ICONS[u.icon]}</span>
-                  <div>
-                    <p className={s.usageEn}>{u.nameEn}</p>
-                    <p className={s.usageEdLabel}>{u.name}</p>
+          <div className={s.usageEdGrid}>
+            {p.usages.map((u, i) => (
+              <Fragment key={u.nameEn}>
+                {i === 1 && slatImg && (
+                  <figure className={s.usageEdFig}>
+                    <img src={slatImg} alt={`${p.name} 슬랫 — ${p.usages!.map((x) => `${x.name} ${x.spec}`).join(', ')}`} loading="lazy" />
+                    <figcaption>SLAT</figcaption>
+                  </figure>
+                )}
+                <article className={cx(s.usageEdCard, u.icon === 'fire' && s.usageEdFire, i === 1 && s.usageEdRight)}>
+                  <div className={s.usageEdName}>
+                    <span className={s.usageEdIcon} aria-hidden="true">{USAGE_ICONS[u.icon]}</span>
+                    <div>
+                      <p className={s.usageEn}>{u.nameEn}</p>
+                      <p className={s.usageEdLabel}>{u.name}</p>
+                    </div>
                   </div>
-                </div>
-                <p className={s.usageEdSpec}>
-                  <span className="sr-only">{u.specLabel} </span>
-                  {u.spec.replace(/^EGI\s*/, '')}
-                  <small>{u.spec.match(/^EGI/) ? 'EGI' : ''}</small>
-                </p>
-                <ul className={s.usageEdItems}>
-                  {u.items.map((it) => <li key={it}>{it}</li>)}
-                </ul>
-              </li>
+                  <p className={s.usageEdSpec}>
+                    <span className="sr-only">{u.specLabel} </span>
+                    {u.spec.replace(/^EGI\s*/, '')}
+                    <small>{u.spec.match(/^EGI/) ? 'EGI' : ''}</small>
+                  </p>
+                  <ul className={s.usageEdItems}>
+                    {u.items.map((it) => <li key={it}>{it}</li>)}
+                  </ul>
+                </article>
+              </Fragment>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </section>
