@@ -22,29 +22,43 @@
 .cardsWrap { position: relative; max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin: -240px auto 0; padding: 0 var(--gutter); }
 /* align-items:flex-end → 선택 카드만 설명이 있어 키가 커지고, 자연스럽게 위로 솟음
    위 여백(--space-5)은 hover로 떠오르는 카드가 스크롤 박스에 잘리지 않게 */
-.cards { --visible: 4; --gap: var(--space-4); display: flex; align-items: flex-end; gap: var(--gap); padding: var(--space-5) 0 var(--space-10); overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+/* ── 카드 = 가로 아코디언 ── 5장이 한 줄에 모두 보이고, 선택 카드만 넓어짐(flex-grow). 사진이 카드 전체 */
+.cards { --visible: 5; --gap: var(--space-3); display: flex; align-items: stretch; gap: var(--gap); padding: var(--space-5) 0 var(--space-10); overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
 .cards::-webkit-scrollbar { display: none; }
-.cardItem { flex: 0 0 calc((100% - (var(--visible) - 1) * var(--gap)) / var(--visible)); scroll-snap-align: start; }
+.cardItem { flex: 1 1 0; min-width: 0; scroll-snap-align: start; transition: flex-grow .6s cubic-bezier(.22,1,.36,1); }
+.cardItem:has(.cardOn) { flex-grow: 2.6; }
 
-/* position:relative — 닫힌 카드의 sr-only 요약(absolute)이 스크롤 트랙 밖으로 빠져 모바일 가로 스크롤을 만들던 문제 방지 */
-.card { position: relative; display: flex; flex-direction: column; padding: var(--space-6) var(--space-6) 0; background: var(--surface-raised); border: 1px solid transparent; box-shadow: var(--shadow-card); transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+/* position:relative — 닫힌 카드의 sr-only 요약(absolute)이 스크롤 트랙 밖으로 빠지지 않게 */
+.card { position: relative; display: block; height: 440px; overflow: hidden; border-radius: var(--radius-md); background: var(--brand); box-shadow: var(--shadow-card); transition: box-shadow .25s ease, transform .25s ease; }
 .card:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-.cardOn { border-color: var(--line-strong); box-shadow: var(--shadow-float); }
-
-.cardEn { font-size: 15px; line-height: 22px; font-weight: 600; letter-spacing: 0.02em; color: var(--silver); }
-.cardName { margin-top: var(--space-1); font-size: 24px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
-.cardDesc { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--ink); font-size: 15px; line-height: 24px; color: var(--ink-muted); }
-/* 사진은 카드 패딩을 무시하고 좌우 끝까지 */
-.cardMedia { aspect-ratio: 1 / 1; margin: var(--space-6) calc(var(--space-6) * -1) 0; }
-
-/* 선택 안 된 카드 — 코아드처럼 글자·사진을 흐리게. hover하면 또렷해지며 살짝 떠오름 */
-.card:not(.cardOn) .cardName,
-.card:not(.cardOn) .cardEn,
-.card:not(.cardOn) .cardMedia { opacity: .45; transition: opacity .25s ease; }
+.cardOn { box-shadow: var(--shadow-float); }
+.cardMedia { position: absolute; inset: 0; transition: transform .8s cubic-bezier(.22,1,.36,1); }
+.card:hover .cardMedia { transform: scale(1.05); }
+/* 글자 읽히게 아래쪽만 네이비 그라데이션 */
+.card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 22, 52, 0) 25%, rgba(6, 22, 52, .6) 55%, rgba(6, 22, 52, .94) 100%); transition: background .4s ease; }
+.card:not(.cardOn)::after { background: linear-gradient(180deg, rgba(6, 22, 52, .25) 0%, rgba(6, 22, 52, .55) 55%, rgba(6, 22, 52, .9) 100%); }
+.cardText { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; padding: var(--space-6); color: #fff; }
+.cardNo { font-size: 13px; font-weight: 700; letter-spacing: .1em; color: #8fc2ff; }
+.cardEn { margin-top: var(--space-3); font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: .06em; color: rgba(255, 255, 255, .65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cardName { margin-top: 2px; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.02em; color: #fff; word-break: keep-all; }
+.cardOn .cardName { font-size: 26px; line-height: 36px; }
+/* 좁은 카드: 긴 이름(철재방화셔터 / 철재단열방화셔터)이 칸을 넘지 않게 작게 + 단어 중간 줄바꿈 허용 */
+.card:not(.cardOn) .cardName { font-size: 17px; line-height: 24px; }
+/* 태블릿: 선택 카드를 덜 넓혀서 좁은 카드 폭 확보, 글자·여백 한 단계 작게 → 단어 중간 줄바꿈 없이 들어감 */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .cardItem:has(.cardOn) { flex-grow: 2; }
+  .card:not(.cardOn) .cardText { padding: var(--space-4); }
+  .card:not(.cardOn) .cardName { font-size: clamp(13px, 1.5vw, 15px); line-height: 1.45; }
+}
+/* 선택 카드 설명 + 아래 파란 바(선택 표시) */
+.cardDesc { max-width: 360px; margin-top: var(--space-3); font-size: 15px; line-height: 24px; color: rgba(255, 255, 255, .85); animation: cardDescIn .5s .15s cubic-bezier(.22,1,.36,1) both; }
+@keyframes cardDescIn { from { opacity: 0; transform: translateY(8px); } }
+.cardOn .cardText::after { content: ""; width: 48px; height: 3px; margin-top: var(--space-5); background: var(--accent); }
+/* 선택 안 된 카드 — 살짝 어둡게, hover하면 밝아지며 떠오름 */
+.card:not(.cardOn) .cardMedia { opacity: .8; transition: opacity .25s ease, transform .8s cubic-bezier(.22,1,.36,1); }
 .card:not(.cardOn):hover { transform: translateY(-4px); }
-.card:not(.cardOn):hover .cardName,
-.card:not(.cardOn):hover .cardEn,
-.card:not(.cardOn):hover .cardMedia { opacity: .85; }
+.card:not(.cardOn):hover .cardMedia { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cardItem, .cardMedia, .card { transition: none; } .cardDesc { animation: none; } }
 
 /* 화살표 — PC·모바일 공통 디자인: 네이비 원 + 흰 아이콘.
    밝은 사진·흰 카드 어느 쪽 위에서도 대비가 확실함 (배경 없는 회색 아이콘은 묻혔음) */
@@ -262,7 +276,8 @@
   .arrow svg { width: 22px; height: 22px; }
   .prev { left: 2px; }
   .next { right: 2px; }
-  .cardName { font-size: 22px; line-height: 32px; }
+  .card { height: 380px; }
+  .cardItem, .cardItem:has(.cardOn) { flex: 0 0 calc(100% - 0px); }
   .highlight { font-size: 17px; line-height: 28px; }
   .body { margin-top: var(--space-12); }
   .name { font-size: 32px; line-height: 42px; }
