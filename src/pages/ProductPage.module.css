@@ -601,7 +601,8 @@
   .usageEd { padding: var(--space-8) var(--space-5); }
   .usageEdTitle { font-size: 24px; line-height: 34px; }
   .usageEdGrid { grid-template-columns: 1fr; gap: var(--space-4); }
-  .usageEdFig { order: -1; width: 160px; justify-self: center; margin-bottom: var(--space-2); }
+  .usageEdFig { order: -1; width: 160px; aspect-ratio: 1; justify-self: center; margin-bottom: var(--space-2); } /* 원(::before)이 상자 높이를 넘지 않게 상자도 정사각형 */
+  .usageEdFig::before { inset: 0; width: auto; }
   .usageEdFig figcaption { display: none; }
   .usageEdCard { padding: var(--space-6); }
   .usageEdSpec { font-size: 48px; }
