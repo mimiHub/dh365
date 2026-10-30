@@ -337,7 +337,7 @@
 .typeCardEn { margin-top: 64px; /* 블록(사진 아래 40px)보다 아래에서 글자 시작 → 글자는 늘 흰 바탕 */ font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--ink-subtle); }
 .typeCardName { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font-size: 20px; line-height: 30px; font-weight: 700; color: var(--ink); }
 @media (min-width: 768px) {
-  .typeCardsWrap::before { left: calc((100% - var(--space-6) * 2) / 3 * 2 + var(--space-6) * 2 - 32px); } /* 3번째 카드 왼쪽보다 32px 앞에서 시작 */
+  .typeCardsWrap::before { left: calc((100% - var(--space-6) * 2) / 3 * 2.5 + var(--space-6) * 2); } /* 3번째 카드 가운데부터 시작 → 사진 절반만 블록 위에 걸침 */
 }
 .typeCardStep { display: inline-grid; place-items: center; min-width: 26px; height: 22px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent-text); font-size: 12px; font-weight: 700; }
 .typeCardBody { margin-top: var(--space-1); max-width: 420px; font-size: 14px; line-height: 22px; color: var(--ink-muted); }
