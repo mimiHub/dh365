@@ -869,18 +869,20 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
     <section className={cx('container', s.block, s.typesSection)} aria-labelledby="types-title">
       {/* 머리: [빨간 점 + 큰 영문 제목 | 오른쪽 설명] */}
       <div className={s.typeIntro}>
-        <h3 id="types-title" className={s.typeIntroTitle}>
-          <span className={s.typeIntroDot} aria-hidden="true" />
-          SHUTTER
-          <br />
-          TYPES
-          <span className="sr-only"> — 형태 · 용도</span>
-        </h3>
+        <div>
+          {/* 사이트 공통 머리 스타일: 파란 영문 eyebrow + 굵은 한글 제목 (영문 대문자 큰 제목은 사이트 톤과 안 맞아서) */}
+          <p className="dh-eyebrow">SHUTTER TYPES</p>
+          <h3 id="types-title" className={s.typeIntroTitle}>
+            형태에 맞게,
+            <br />
+            용도에 맞게
+          </h3>
+        </div>
         <p className={s.typeIntroDesc}>
           {p.name}는 개구부를 막는 방식에 따라 일반형과 비상문 일체형으로 나뉩니다. 현장의 대피 동선에 맞춰 형태를 고르고, 용도(방화·방범)에 따라 슬랫 두께를 정합니다.
         </p>
       </div>
-      <p className={s.typeCardsLabel}>(SHUTTER TYPES)</p>
+      <p className={s.typeCardsLabel}>({p.types?.map((x) => x.name).join(" · ")})</p>
       {/* 카드 줄 — 두 번째 카드 뒤에 브랜드 색 블록(::before)이 화면 오른쪽 끝까지 깔림 */}
       <div className={s.typeCardsWrap}>
         <ul className={s.typeCards}>

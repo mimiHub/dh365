@@ -318,8 +318,7 @@
 
 /* ── 형태 · 용도 ── 레퍼런스: 큰 영문 제목 + 오른쪽 설명 / 작은 괄호 라벨 / 사진 카드 줄 + 뒤에 깔린 색 블록 */
 .typeIntro { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: end; }
-.typeIntroTitle { position: relative; padding-left: var(--space-6); font-size: clamp(44px, 5.4vw, 80px); line-height: 1.02; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
-.typeIntroDot { position: absolute; left: 0; top: 0.18em; width: 10px; height: 10px; border-radius: 50%; background: var(--fire); } /* 레드는 이 점 하나만 */
+.typeIntroTitle { font-size: 48px; line-height: 62px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); } /* 히어로(72px)와 섹션 제목(32px) 사이 — 같은 굵기·자간 */
 .typeIntroDesc { max-width: 440px; justify-self: end; padding-bottom: var(--space-2); font-size: 14px; line-height: 24px; color: var(--ink-muted); }
 .typeCardsLabel { margin-top: var(--space-12); font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--ink); }
 /* 색 블록이 화면 오른쪽 끝까지 가도록 자르는 건 상세 전체(.body, 화면 폭) 기준 — container(최대 폭)에서 자르면 넓은 화면에서 블록이 중간에 끊김 */
@@ -565,7 +564,7 @@
   .production { gap: var(--space-2); }
   /* 형태: 제목·설명 위아래, 카드 한 줄씩. 색 블록은 오른쪽에서 두 카드 사진 사이에 걸치게 */
   .typeIntro { grid-template-columns: 1fr; gap: var(--space-4); }
-  .typeIntroTitle { font-size: 44px; padding-left: var(--space-5); }
+  .typeIntroTitle { font-size: 32px; line-height: 44px; }
   .typeIntroDesc { justify-self: start; }
   .typeCardsLabel { margin-top: var(--space-8); }
   .typeCards { grid-template-columns: 1fr; gap: var(--space-10); }
