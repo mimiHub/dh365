@@ -285,25 +285,7 @@ export function ProductPage() {
    * PC·태블릿: 화살표는 '선택'이 아니라 '보기'를 옮김(코아드 방식). 선택은 카드를 눌러서.
    * 모바일(한 장씩): 보이는 카드 = 선택된 카드. 화살표·스와이프가 곧 카테고리 선택
    *   (한 장만 보이는데 흐린 비선택 카드가 보이면 무엇이 선택됐는지 알 수 없어서)
-   * 끝에 닿았는지는 스크롤 위치에서 읽어 옴 — 스와이프와 버튼이 같은 스크롤을 공유하므로 따로 state로 들지 않음
    */
-  const [edge, setEdge] = useState({ start: true, end: true });
-  const sync = useCallback(() => {
-    const el = track.current;
-    if (!el) return;
-    setEdge({ start: el.scrollLeft <= 2, end: el.scrollLeft >= el.scrollWidth - el.clientWidth - 2 });
-  }, []);
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    sync();
-    el.addEventListener('scroll', sync, { passive: true });
-    window.addEventListener('resize', sync);
-    return () => {
-      el.removeEventListener('scroll', sync);
-      window.removeEventListener('resize', sync);
-    };
-  }, [sync]);
 
   // 한 칸 = 카드 폭 + 간격 (간격은 CSS에서 읽어 반응형 값과 어긋나지 않게)
   const step = (el: HTMLElement) => {
@@ -314,11 +296,9 @@ export function ProductPage() {
     (i: number) => navigate(productPath(PRODUCT_CATEGORIES[i]), { replace: true, state: { keepScroll: true } }),
     [navigate],
   );
-  const slide = (dir: 1 | -1) => {
-    if (single) return selectAt(catIndex + dir); // 선택이 바뀌면 아래 effect가 그 카드로 스크롤
-    const el = track.current;
-    if (el) el.scrollBy({ left: dir * step(el), behavior: 'smooth' });
-  };
+  // 화살표 = 이전/다음 카테고리 선택 (PC는 5장이 다 보이는 아코디언이라 '보기'만 옮길 일이 없음 → 모바일과 같은 동작)
+  // 선택이 바뀌면 아래 effect가 그 카드가 보이게 스크롤
+  const slide = (dir: 1 | -1) => selectAt(catIndex + dir);
 
   // 모바일 스와이프: 스크롤이 멈추면 화면에 스냅된 카드를 선택
   // (scrollend 이벤트는 사파리 지원이 늦어서, 마지막 scroll 이후 150ms 조용하면 멈춘 것으로 봄)
@@ -385,18 +365,13 @@ export function ProductPage() {
       <div className={s.introBand}>
         {/* 카테고리 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
         <nav className={s.cardsWrap} aria-label="제품 분류">
-          {/* 다 보이면(양 끝 모두 닿음) 화살표를 감춤 — 눌러도 안 움직이는 버튼을 남기지 않음
-              모바일은 선택 기준(첫·마지막 카테고리)으로, PC는 스크롤 끝 기준으로 비활성 */}
-          {!(edge.start && edge.end) && (
-            <>
-              <button type="button" className={cx(s.arrow, s.prev)} onClick={() => slide(-1)} disabled={single ? catIndex === 0 : edge.start} aria-label={single ? '이전 분류' : '이전 분류 보기'} aria-controls="product-cards">
-                <Chevron dir="left" />
-              </button>
-              <button type="button" className={cx(s.arrow, s.next)} onClick={() => slide(1)} disabled={single ? catIndex === PRODUCT_CATEGORIES.length - 1 : edge.end} aria-label={single ? '다음 분류' : '다음 분류 보기'} aria-controls="product-cards">
-                <Chevron dir="right" />
-              </button>
-            </>
-          )}
+          {/* 화살표 — 항상 보임. 첫·마지막 카테고리에서는 해당 방향만 흐리게(비활성) */}
+          <button type="button" className={cx(s.arrow, s.prev)} onClick={() => slide(-1)} disabled={catIndex === 0} aria-label="이전 분류" aria-controls="product-cards">
+            <Chevron dir="left" />
+          </button>
+          <button type="button" className={cx(s.arrow, s.next)} onClick={() => slide(1)} disabled={catIndex === PRODUCT_CATEGORIES.length - 1} aria-label="다음 분류" aria-controls="product-cards">
+            <Chevron dir="right" />
+          </button>
           <ul ref={track} id="product-cards" className={s.cards}>
             {PRODUCT_CATEGORIES.map((c, i) => {
               const on = i === catIndex;
