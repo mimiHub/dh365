@@ -377,15 +377,15 @@ export function ProductPage() {
               const on = i === catIndex;
               return (
                 <li key={c.key} className={s.cardItem}>
-                  {/* 사진이 카드 전체, 글자는 아래 어두운 그라데이션 위. 선택 카드는 옆으로 넓어지며 설명·파란 바가 나타남(가로 아코디언) */}
+                  {/* 사진이 카드 전체, 글자는 아래 어두운 그라데이션 위. 5장 같은 폭 — 선택은 크기가 아니라 밝기·파란 테두리·파란 바로 표시 */}
                   <Link to={productPath(c)} {...swap} className={cx(s.card, on && s.cardOn)} aria-current={on ? 'page' : undefined}>
                     <Media className={s.cardMedia} src={HERO_IMAGES[c.key]} position={IMAGE_POSITION[c.key]} label={`IMAGE — ${pad(i + 1)}`} />
                     <span className={s.cardText}>
                       <span className={s.cardNo}>{pad(i + 1)}</span>
                       <span className={s.cardEn}>{c.labelEn}</span>
                       <strong className={s.cardName}>{c.label}</strong>
-                      {/* 닫힌 카드의 요약은 화면에서만 숨김 — 스크린리더는 모든 카드 요약을 읽을 수 있게 */}
-                      <span className={cx(s.cardDesc, !on && 'sr-only')}>{c.summary}</span>
+                      {/* 요약은 화면에서 숨김(카드 폭이 같아 글 양을 맞추려고) — 스크린리더는 읽음. 선택 카테고리 요약은 아래 강조 문장이 대신함 */}
+                      <span className="sr-only">{c.summary}</span>
                     </span>
                   </Link>
                 </li>
