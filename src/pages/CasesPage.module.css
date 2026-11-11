@@ -116,6 +116,9 @@
   .cats { display: flex; overflow-x: auto; scrollbar-width: none; }
   .cats::-webkit-scrollbar { display: none; }
   .cats li { flex: 1 0 auto; }
+  /* 가로 스크롤일 땐 구분선 없음 — 잘린 지점에 다음 칸의 선만 걸려 '막대'처럼 보여서. 칸 사이는 간격으로 구분 */
+  .cats li + li::before { display: none; }
+  .cats { gap: var(--space-1); }
   .cat { padding-inline: var(--space-5); }
 }
 @media (max-width: 1024px) {
