@@ -34,7 +34,9 @@
 .no { color: var(--ink-subtle); }
 .titleCell { text-align: left !important; }
 /* 긴 제목은 한 줄 말줄임 — table-layout: fixed라 칸 폭이 고정돼야 ellipsis가 동작 */
-.title { display: flex; align-items: center; gap: var(--space-2); min-width: 0; color: var(--ink); }
+.title { display: flex; align-items: center; gap: var(--space-2); min-width: 0; color: var(--ink); text-decoration: none; }
+.title:hover .titleText { color: var(--accent-text); text-decoration: underline; text-underline-offset: 4px; }
+.title:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
 .titleText { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
 .lock { flex-shrink: 0; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--surface-alt); color: var(--brand); }
 .table tbody tr:hover .lock { background: var(--surface); }

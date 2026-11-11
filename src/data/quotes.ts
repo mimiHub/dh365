@@ -27,3 +27,43 @@ export const QUOTES: QuoteItem[] = [
   { id: 202, title: '방화스크린 견적', author: '이*길', views: 8, answered: true, secret: true },
   { id: 201, title: '방화셔터 견적서 요청드립니다.', author: '오*인', views: 10, answered: true, secret: true },
 ];
+
+// ── 상세 화면용 목업 ──
+// 원본 글은 비밀글이라 내용을 알 수 없음 → 화면 확인용 예시. 실제로는 비밀번호 확인 API가 맞을 때만 서버가 내용을 내려 줌
+export const MOCK_PASSWORD = '1234';
+
+export interface QuoteDetail {
+  contact: string; // 가린 연락처
+  email: string;
+  region: string;
+  products: string[];
+  size: string;
+  files: string[];
+  body: string;
+  answer?: { by: string; body: string };
+}
+
+// 제목의 낱말로 제품을 짐작 (예시 내용이 제목과 어긋나지 않게)
+const productsOf = (title: string) => {
+  const found = [
+    [/스크린/, '스크린방화셔터'],
+    [/철재|철제/, '철재방화셔터'],
+    [/내풍압/, '내풍압셔터'],
+    [/방범|웨이브|샷다/, '방범셔터'],
+    [/망입/, '망입유리'],
+  ].filter(([re]) => (re as RegExp).test(title)).map(([, name]) => name as string);
+  return found.length ? found : ['기타'];
+};
+
+export const quoteDetailOf = (q: QuoteItem): QuoteDetail => ({
+  contact: '010-****-5678',
+  email: '',
+  region: '경기도 화성시',
+  products: productsOf(q.title),
+  size: '폭 4,000 × 높이 3,500mm · 2개소',
+  files: ['현장사진_01.jpg', '평면도.pdf'],
+  body: `${q.title}\n\n현장 도면과 사진을 첨부했습니다. 설치 가능 여부와 대략적인 견적, 시공 가능한 일정을 안내 부탁드립니다.`,
+  answer: q.answered
+    ? { by: '(주)대한방화 담당자', body: '안녕하세요, (주)대한방화입니다.\n문의하신 내용 확인했습니다. 첨부해 주신 도면 기준으로 견적서를 작성해 남겨 주신 연락처로 안내드렸습니다.\n현장 실측이 필요하면 담당자가 일정 조율 연락을 드리겠습니다.' }
+    : undefined,
+});

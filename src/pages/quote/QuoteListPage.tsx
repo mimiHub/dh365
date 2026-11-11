@@ -1,5 +1,5 @@
 import { useRef, type FormEvent } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { QUOTES } from '../../data/quotes';
 import { Button, Pagination, cx } from '../../components/ui';
 import { QuoteHero } from './QuoteHero';
@@ -15,6 +15,7 @@ const squash = (t: string) => t.replace(/\s+/g, '').toLowerCase(); // 띄어쓰�
 export function QuoteListPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const top = useRef<HTMLDivElement>(null);
 
   const q = (params.get('q') ?? '').trim();
@@ -107,8 +108,8 @@ export function QuoteListPage() {
                 <tr key={it.id} style={{ animationDelay: `${i * 30}ms` }}>
                   <td className={s.no}>{it.id}</td>
                   <td className={s.titleCell}>
-                    {/* 상세(비밀번호 확인) 화면이 생기면 <Link to={`/quote/${it.id}`}>로 바꿀 자리 */}
-                    <span className={s.title}>
+                    {/* 상세 — 비밀글이면 비밀번호 확인부터. state.from: 상세의 '목록'이 보던 검색·페이지로 돌아오게 */}
+                    <Link to={`/quote/${it.id}`} state={{ from: `/quote${location.search}` }} className={s.title}>
                       {it.secret && (
                         <span className={s.lock}>
                           <LockIcon />
@@ -116,7 +117,7 @@ export function QuoteListPage() {
                         </span>
                       )}
                       <span className={s.titleText}>{it.title}</span>
-                    </span>
+                    </Link>
                   </td>
                   <td className={s.state}>
                     <span className={cx(s.chip, it.answered && s.chipDone)}>{it.answered ? '답변완료' : '접수'}</span>

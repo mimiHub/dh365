@@ -5,6 +5,7 @@ import { ProductPage } from './pages/ProductPage';
 import { CasesPage } from './pages/CasesPage';
 import { QuoteListPage } from './pages/quote/QuoteListPage';
 import { QuoteWritePage } from './pages/quote/QuoteWritePage';
+import { QuoteDetailPage } from './pages/quote/QuoteDetailPage';
 
 const routes: RouteObject[] = [
   {
@@ -17,6 +18,8 @@ const routes: RouteObject[] = [
       { path: '/cases/:category?', element: <CasesPage /> },
       { path: '/quote', element: <QuoteListPage /> },
       { path: '/quote/write', element: <QuoteWritePage /> },
+      // /quote/write가 먼저 맞으므로 :id에 'write'가 들어오지 않음 (라우터는 고정 경로를 동적 경로보다 우선)
+      { path: '/quote/:id', element: <QuoteDetailPage /> },
       { path: '*', element: <Home /> },
     ],
   },

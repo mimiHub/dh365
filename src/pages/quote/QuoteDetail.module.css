@@ -1,0 +1,75 @@
+/* 견적문의 상세 — 비밀번호 확인 카드 / 글 내용 */
+.body { max-width: calc(880px + var(--gutter) * 2); padding-top: var(--space-12); padding-bottom: var(--space-16); }
+
+/* ── 비밀번호 확인 ── */
+.gate { display: flex; flex-direction: column; align-items: center; max-width: 520px; margin: 0 auto; padding: var(--space-10) var(--space-8); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-card); text-align: center; }
+.gateIcon { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--accent-soft); color: var(--brand); }
+.gateTitle { margin-top: var(--space-5); font-size: 26px; line-height: 36px; font-weight: 700; letter-spacing: -0.02em; }
+.gateDesc { margin-top: var(--space-2); font-size: 15px; color: var(--ink-muted); }
+/* 어떤 글을 여는지 확인용 — 제목·글쓴이만 (내용은 비밀번호 뒤) */
+.gatePost { width: 100%; margin-top: var(--space-6); padding: var(--space-4) var(--space-5); border-radius: var(--radius-md); background: var(--surface-alt); text-align: left; }
+.gatePost div { display: grid; grid-template-columns: 56px 1fr; gap: var(--space-3); font-size: 14px; line-height: 22px; }
+.gatePost div + div { margin-top: var(--space-1); }
+.gatePost dt { color: var(--ink-subtle); }
+.gatePost dd { margin: 0; min-width: 0; font-weight: 500; color: var(--ink); word-break: keep-all; }
+.gateForm { display: flex; gap: var(--space-2); width: 100%; margin-top: var(--space-5); }
+.gateInput { flex: 1; min-width: 0; height: 52px; padding: 0 var(--space-5); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--surface); font: inherit; font-size: 16px; color: var(--ink); transition: border-color .2s ease, box-shadow .2s ease; }
+.gateInput:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.gateInput[aria-invalid="true"] { border-color: var(--fire); }
+.gateInput[aria-invalid="true"]:focus { box-shadow: 0 0 0 4px var(--fire-soft); }
+.gateBtn { height: 52px; min-width: 96px; }
+.gateError { margin-top: var(--space-3); font-size: 14px; font-weight: 500; color: var(--fire-text); }
+.gateHint { margin-top: var(--space-3); font-size: 13px; color: var(--ink-subtle); }
+.back { margin-top: var(--space-6); font-size: 14px; font-weight: 600; color: var(--ink-muted); text-underline-offset: 4px; }
+.back:hover { color: var(--accent-text); }
+
+/* ── 글 ── */
+.post { animation: postIn .5s cubic-bezier(.22,1,.36,1); }
+@keyframes postIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .post { animation: none; } }
+.postHead { padding-bottom: var(--space-6); border-bottom: 2px solid var(--brand); }
+.postTop { display: flex; align-items: center; gap: var(--space-3); }
+.no { font-size: 13px; letter-spacing: .04em; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--surface-alt); border: 1px solid var(--line); font-size: 13px; line-height: 18px; font-weight: 600; color: var(--ink-subtle); }
+.chipDone { background: var(--accent-soft); border-color: transparent; color: var(--accent-text); }
+.postTitle { margin-top: var(--space-3); font-size: 30px; line-height: 42px; font-weight: 700; letter-spacing: -0.025em; word-break: keep-all; text-wrap: balance; }
+.postMeta { display: flex; gap: var(--space-4); margin-top: var(--space-3); font-size: 14px; color: var(--ink-subtle); }
+.postMeta span + span::before { content: ""; display: inline-block; width: 1px; height: 12px; margin-right: var(--space-4); background: var(--line-strong); vertical-align: -1px; }
+
+.sample { margin-top: var(--space-5); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); background: var(--surface-alt); font-size: 13px; color: var(--ink-subtle); }
+
+/* 작성 폼과 같은 항목 순서 — 라벨 | 값 */
+.info { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--space-5); border-top: 1px solid var(--line); }
+.info div { display: grid; grid-template-columns: 112px 1fr; gap: var(--space-4); padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+.info div:last-child { grid-column: 1 / -1; }
+.info dt { font-size: 14px; font-weight: 600; color: var(--ink-muted); }
+.info dd { margin: 0; min-width: 0; font-size: 15px; color: var(--ink); word-break: keep-all; }
+.files { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.files li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--surface-alt); font-size: 14px; }
+
+.content { margin-top: var(--space-8); }
+.contentTitle { font-size: 16px; font-weight: 700; }
+.contentBody { margin-top: var(--space-3); font-size: 16px; line-height: 28px; color: var(--ink); white-space: pre-line; word-break: keep-all; }
+
+.answer { margin-top: var(--space-8); padding: var(--space-6); border-radius: var(--radius-md); background: var(--accent-soft); }
+.answerTitle { display: flex; align-items: center; gap: var(--space-3); font-size: 15px; font-weight: 700; color: var(--brand); }
+.answerBadge { padding: 2px 10px; border-radius: var(--radius-pill); background: var(--brand); color: #ffffff; font-size: 12px; font-weight: 700; }
+.waiting { margin-top: var(--space-8); padding: var(--space-5) var(--space-6); border: 1px dashed var(--line-strong); border-radius: var(--radius-md); font-size: 15px; color: var(--ink-muted); word-break: keep-all; }
+
+.actions { display: flex; justify-content: center; margin-top: var(--space-10); padding-top: var(--space-8); border-top: 1px solid var(--line); }
+.actions :global(.dh-btn) { min-width: 180px; }
+
+@media (max-width: 767px) {
+  .body { padding-top: var(--space-8); padding-bottom: var(--space-12); }
+  .gate { padding: var(--space-8) var(--space-5); }
+  .gateTitle { font-size: 22px; line-height: 32px; }
+  .gateForm { flex-direction: column; }
+  /* 세로 배치에선 flex:1이 '높이'를 0부터 늘리는 뜻이 돼 입력칸이 납작해짐 → 세로일 땐 크기 고정 */
+  .gateInput { flex: none; width: 100%; }
+  .gateBtn { width: 100%; }
+  .postTitle { font-size: 22px; line-height: 32px; }
+  .info { grid-template-columns: 1fr; }
+  .info div { grid-template-columns: 96px 1fr; padding: var(--space-3) 0; }
+  .answer { padding: var(--space-5); }
+  .actions :global(.dh-btn) { width: 100%; }
+}

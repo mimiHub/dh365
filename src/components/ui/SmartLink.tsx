@@ -11,8 +11,8 @@ type Props = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
  */
 export function SmartLink({ href, ...rest }: Props) {
   if (href.startsWith('/')) {
-    const [pathname, hash] = href.split('#');
-    return <Link to={{ pathname: pathname || '/', hash: hash ? `#${hash}` : '' }} {...rest} />;
+    // 문자열로 넘기면 라우터가 경로·?검색어·#해시를 알아서 나눔 ('/quote?page=2', '/#about' 모두 OK)
+    return <Link to={href} {...rest} />;
   }
   return <a href={href} {...rest} />;
 }
