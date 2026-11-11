@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { COMPANY } from '../../data/site';
 import { Button, cx } from '../../components/ui';
 import { QuoteHero } from './QuoteHero';
-import { ContactCall } from '../../sections/ContactCall';
+import { Contact } from '../../sections/Contact';
 import screenImg from '../../assets/product-screen-shutter.png';
 import steelImg from '../../assets/product-steel-shutter.png';
 import aluminumImg from '../../assets/card-aluminum-shutter.jpg';
@@ -124,12 +124,6 @@ export function QuoteWritePage() {
       <QuoteHero sub="글쓰기" />
 
       <div className={cx('container', s.body)}>
-        {/* 왼쪽 = 견적상담 전화 블록(제품소개·메인 하단 상담 섹션과 같은 컴포넌트), 오른쪽 = 폼 */}
-        <div className={s.layout}>
-        <aside className={s.side} aria-label="전화 견적상담">
-          <ContactCall titleId="quote-call-title" />
-          <p className={s.sideNote}>글로 남기기 번거로우시면 전화 주세요. 현장 규격을 말씀해 주시면 바로 안내해 드립니다.</p>
-        </aside>
 
         {done ? (
           <div className={s.done} role="status">
@@ -373,8 +367,10 @@ export function QuoteWritePage() {
             </div>
           </form>
         )}
-        </div>
       </div>
+
+      {/* 견적상담 — 제품소개 하단과 같은 섹션 (대표번호 + 문의 카드 3열) */}
+      <Contact />
     </>
   );
 }

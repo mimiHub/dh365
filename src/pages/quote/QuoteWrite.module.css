@@ -1,10 +1,5 @@
 /* 견적문의 글쓰기 — 전화 상담 띠 + 흰 카드 폼 (라벨 | 입력 2열) */
-.body { padding-top: var(--space-12); padding-bottom: var(--space-16); }
-
-/* ── 2열: 견적상담(왼쪽, 스크롤해도 따라옴) | 폼 ── */
-.layout { display: grid; grid-template-columns: 5fr 7fr; /* 하단 상담 섹션(Contact)과 같은 비율 */ gap: var(--space-10); align-items: start; }
-.side { position: sticky; top: calc(var(--header-height) + var(--space-8)); padding-top: var(--space-6); }
-.sideNote { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); font-size: 15px; line-height: 24px; color: var(--ink-muted); word-break: keep-all; }
+.body { max-width: calc(var(--container-narrow) + var(--gutter) * 2); padding-top: var(--space-12); padding-bottom: var(--space-16); }
 
 /* ── 폼 카드 ── */
 .form { padding: var(--space-8) var(--space-10) var(--space-10); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-card); }
@@ -15,7 +10,7 @@
 .star { margin-left: 2px; color: var(--fire-text); font-weight: 700; }
 
 /* fieldset 기본 테두리·여백 제거 후 일반 줄과 같은 그리드로 */
-.row { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-5); align-items: start; min-width: 0; margin: 0; padding: var(--space-5) 0; border: 0; border-bottom: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-5); align-items: start; min-width: 0; margin: 0; padding: var(--space-5) 0; border: 0; border-bottom: 1px solid var(--line); }
 /* legend는 grid 자식이 안 되는 브라우저가 있어 float로 그리드 칸에 들어가게 (fieldset+grid 보정) */
 .row > legend { float: left; }
 .label { display: block; padding: 0; padding-top: 13px; font-size: 16px; line-height: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
@@ -43,7 +38,7 @@
 .counter { margin-top: var(--space-2); text-align: right; font-size: 13px; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
 
 /* ── 제품 선택 카드 (체크박스는 화면에서만 숨기고 카드가 상태를 보여 줌) ── */
-.products { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+.products { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); }
 .product { display: block; cursor: pointer; }
 .productCheck { position: absolute; opacity: 0; width: 1px; height: 1px; } /* 포커스·클릭은 그대로 받음 */
 .productImg { position: relative; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border: 2px solid transparent; border-radius: var(--radius-md); background: var(--surface-alt); transition: border-color .2s ease, box-shadow .2s ease; }
@@ -62,10 +57,10 @@
 
 /* ── 규격 ── */
 .size { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
-.unit { position: relative; display: flex; align-items: center; flex: 1 1 120px; max-width: 170px; }
+.unit { position: relative; display: flex; align-items: center; flex: 1 1 140px; max-width: 200px; }
 .unit .input { padding-right: 48px; }
 .unit > span:last-child { position: absolute; right: var(--space-4); font-size: 14px; color: var(--ink-subtle); pointer-events: none; }
-.qty { margin-left: var(--space-3); max-width: 140px; }
+.qty { margin-left: var(--space-3); max-width: 160px; }
 .times { color: var(--ink-subtle); }
 
 /* ── 첨부 ── */
@@ -108,8 +103,6 @@ input:focus-visible + .fileBtn { outline: 2px solid var(--focus); outline-offset
 .doneDesc { margin: var(--space-3) 0 var(--space-8); font-size: 16px; line-height: 26px; color: var(--ink-muted); word-break: keep-all; }
 
 @media (max-width: 1024px) {
-  .layout { grid-template-columns: 1fr; gap: var(--space-8); }
-  .side { position: static; padding-top: 0; }
   .form { padding: var(--space-6); }
   .row { grid-template-columns: 140px 1fr; }
   .products { grid-template-columns: repeat(3, 1fr); }
