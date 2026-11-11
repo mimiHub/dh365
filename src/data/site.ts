@@ -54,9 +54,9 @@ export const NAV: NavItem[] = [
   { label: '견적문의', href: '/quote', children: [{ label: '견적문의', href: '/quote' }, { label: '견적문의 작성', href: '/quote/write' }] },
   {
     label: '고객센터',
-    href: '/#contact',
+    href: '/#news',
     children: [
-      { label: '설계문의', href: '/#contact' },
+      // 설계문의는 견적문의로 통합 (실제 문의는 견적문의로만 받음)
       { label: '공지사항', href: '/#news' },
     ],
   },

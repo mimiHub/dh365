@@ -1,7 +1,7 @@
 .contact { position: relative; background: var(--surface-alt); }
 .inner { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-10); align-items: center; }
 
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); /* 견적문의 · 오시는길 */ gap: var(--space-4); }
 .card { position: relative; display: flex; flex-direction: column; min-height: 260px; padding: var(--space-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); transition: background-color .25s ease, border-color .25s ease, transform .25s ease; }
 .card:hover { background: var(--brand); border-color: var(--brand); transform: translateY(-4px); }
 .card:hover .en, .card:hover .cTitle, .card:hover .desc, .card:hover .go { color: #ffffff; }
