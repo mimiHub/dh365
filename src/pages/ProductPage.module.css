@@ -47,7 +47,7 @@
 .cardNo { font-size: 13px; font-weight: 700; letter-spacing: .1em; color: #8fc2ff; }
 .cardEn { margin-top: var(--space-3); font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: .06em; color: rgba(255, 255, 255, .65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* 이름은 늘 2줄 높이 — 1줄 이름도 같은 칸을 차지해 모든 카드의 번호·영문명 높이가 같음 */
-.cardName { margin-top: 2px; min-height: 52px; font-size: 18px; line-height: 26px; font-weight: 700; letter-spacing: -0.02em; color: #fff; word-break: keep-all; }
+.cardName { margin-top: 2px; min-height: 56px; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.02em; color: #fff; word-break: keep-all; }
 /* 아래 바: 선택 카드만 파랑으로 채워짐, 나머지는 흐린 선 → 같은 자리에서 '켜짐/꺼짐' */
 .cardText::after { content: ""; height: 3px; margin-top: var(--space-5); background: rgba(255, 255, 255, .18); transition: background .3s ease; }
 .cardOn .cardText::after { background: var(--accent); }
@@ -280,7 +280,7 @@
   .next { right: 2px; }
   .card { height: 380px; }
   .cardItem { flex: 0 0 100%; }
-  .cardName { font-size: 22px; line-height: 30px; min-height: 0; }
+  .cardName { font-size: 24px; line-height: 32px; min-height: 0; }
   .highlight { font-size: 17px; line-height: 28px; }
   .body { margin-top: var(--space-12); }
   .name { font-size: 32px; line-height: 42px; }
