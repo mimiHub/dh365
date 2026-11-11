@@ -1,6 +1,6 @@
-import { COMPANY } from '../data/site';
 import { SmartLink, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
+import { ContactCall } from './ContactCall';
 import s from './Contact.module.css';
 
 const CARDS = [
@@ -15,15 +15,7 @@ export function Contact() {
   return (
     <section id="contact" className={cx('section', s.contact)} ref={ref} aria-labelledby="contact-title">
       <div className={cx('container', s.inner)}>
-        <div className={cx(s.call, 'reveal')}>
-          <p className="dh-eyebrow">CONTACT</p>
-          <h2 id="contact-title" className={s.title}>견적상담</h2>
-          <a href={`tel:${COMPANY.tel}`} className={s.tel}>{COMPANY.tel}</a>
-          <dl className={s.meta}>
-            <div><dt>C.P</dt><dd><a href={`tel:${COMPANY.mobile}`}>{COMPANY.mobile}</a></dd></div>
-            <div><dt>E-mail</dt><dd><a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a></dd></div>
-          </dl>
-        </div>
+        <ContactCall titleId="contact-title" className="reveal" />
         <ul className={s.cards}>
           {CARDS.map((c, i) => (
             <li key={c.title} className="reveal" style={{ ['--reveal-delay' as string]: `${i * 80}ms` }}>

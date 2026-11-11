@@ -1,17 +1,13 @@
 /* 견적문의 글쓰기 — 전화 상담 띠 + 흰 카드 폼 (라벨 | 입력 2열) */
-.body { max-width: calc(var(--container-narrow) + var(--gutter) * 2); padding-top: var(--space-12); padding-bottom: var(--space-16); }
+.body { padding-top: var(--space-12); padding-bottom: var(--space-16); }
 
-/* ── 전화 상담 띠: 네이비 → 블루, 뒤에 도면을 아주 옅게 ── */
-.callBand { position: relative; display: flex; align-items: center; justify-content: center; gap: var(--space-6); min-height: 112px; padding: var(--space-5) var(--space-8); overflow: hidden; border-radius: var(--radius-pill); background: linear-gradient(100deg, var(--brand) 0%, #0b3a8c 55%, var(--accent) 100%); color: #ffffff; text-decoration: none; isolation: isolate; box-shadow: 0 20px 40px -16px rgba(10, 42, 102, .5); }
-.callBg { position: absolute; left: 0; top: 50%; z-index: -1; width: 46%; transform: translateY(-50%); opacity: .08; filter: invert(1) grayscale(1); mix-blend-mode: screen; pointer-events: none; }
-.callLabel { font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; }
-.callNum { display: inline-flex; align-items: center; gap: var(--space-3); font-size: 40px; line-height: 48px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.callIcon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #ffffff; color: var(--brand); transition: transform .3s ease; }
-.callBand:hover .callIcon { transform: rotate(-12deg) scale(1.06); }
-.callBand:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+/* ── 2열: 견적상담(왼쪽, 스크롤해도 따라옴) | 폼 ── */
+.layout { display: grid; grid-template-columns: 5fr 7fr; /* 하단 상담 섹션(Contact)과 같은 비율 */ gap: var(--space-10); align-items: start; }
+.side { position: sticky; top: calc(var(--header-height) + var(--space-8)); padding-top: var(--space-6); }
+.sideNote { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); font-size: 15px; line-height: 24px; color: var(--ink-muted); word-break: keep-all; }
 
 /* ── 폼 카드 ── */
-.form { margin-top: var(--space-10); padding: var(--space-8) var(--space-10) var(--space-10); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-card); }
+.form { padding: var(--space-8) var(--space-10) var(--space-10); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-card); }
 .formHead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); padding-bottom: var(--space-5); border-bottom: 2px solid var(--brand); }
 .formTitle { font-size: 24px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
 .required { font-size: 14px; color: var(--ink-subtle); }
@@ -19,7 +15,7 @@
 .star { margin-left: 2px; color: var(--fire-text); font-weight: 700; }
 
 /* fieldset 기본 테두리·여백 제거 후 일반 줄과 같은 그리드로 */
-.row { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-5); align-items: start; min-width: 0; margin: 0; padding: var(--space-5) 0; border: 0; border-bottom: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-5); align-items: start; min-width: 0; margin: 0; padding: var(--space-5) 0; border: 0; border-bottom: 1px solid var(--line); }
 /* legend는 grid 자식이 안 되는 브라우저가 있어 float로 그리드 칸에 들어가게 (fieldset+grid 보정) */
 .row > legend { float: left; }
 .label { display: block; padding: 0; padding-top: 13px; font-size: 16px; line-height: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
@@ -47,7 +43,7 @@
 .counter { margin-top: var(--space-2); text-align: right; font-size: 13px; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
 
 /* ── 제품 선택 카드 (체크박스는 화면에서만 숨기고 카드가 상태를 보여 줌) ── */
-.products { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); }
+.products { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
 .product { display: block; cursor: pointer; }
 .productCheck { position: absolute; opacity: 0; width: 1px; height: 1px; } /* 포커스·클릭은 그대로 받음 */
 .productImg { position: relative; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border: 2px solid transparent; border-radius: var(--radius-md); background: var(--surface-alt); transition: border-color .2s ease, box-shadow .2s ease; }
@@ -66,10 +62,10 @@
 
 /* ── 규격 ── */
 .size { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
-.unit { position: relative; display: flex; align-items: center; flex: 1 1 140px; max-width: 200px; }
+.unit { position: relative; display: flex; align-items: center; flex: 1 1 120px; max-width: 170px; }
 .unit .input { padding-right: 48px; }
 .unit > span:last-child { position: absolute; right: var(--space-4); font-size: 14px; color: var(--ink-subtle); pointer-events: none; }
-.qty { margin-left: var(--space-3); max-width: 160px; }
+.qty { margin-left: var(--space-3); max-width: 140px; }
 .times { color: var(--ink-subtle); }
 
 /* ── 첨부 ── */
@@ -105,15 +101,15 @@ input:focus-visible + .fileBtn { outline: 2px solid var(--focus); outline-offset
 .submitRow :global(.dh-btn) { min-width: 180px; }
 
 /* ── 접수 완료 ── */
-.done { display: flex; flex-direction: column; align-items: center; margin-top: var(--space-10); padding: var(--space-16) var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); text-align: center; box-shadow: var(--shadow-card); animation: doneIn .5s cubic-bezier(.22,1,.36,1); }
+.done { display: flex; flex-direction: column; align-items: center; padding: var(--space-16) var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); text-align: center; box-shadow: var(--shadow-card); animation: doneIn .5s cubic-bezier(.22,1,.36,1); }
 @keyframes doneIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .doneIcon { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
 .doneTitle { margin-top: var(--space-5); font-size: 28px; line-height: 38px; font-weight: 700; letter-spacing: -0.02em; }
 .doneDesc { margin: var(--space-3) 0 var(--space-8); font-size: 16px; line-height: 26px; color: var(--ink-muted); word-break: keep-all; }
 
 @media (max-width: 1024px) {
-  .callLabel { font-size: 20px; }
-  .callNum { font-size: 32px; line-height: 40px; }
+  .layout { grid-template-columns: 1fr; gap: var(--space-8); }
+  .side { position: static; padding-top: 0; }
   .form { padding: var(--space-6); }
   .row { grid-template-columns: 140px 1fr; }
   .products { grid-template-columns: repeat(3, 1fr); }
@@ -121,12 +117,7 @@ input:focus-visible + .fileBtn { outline: 2px solid var(--focus); outline-offset
 
 @media (max-width: 767px) {
   .body { padding-top: var(--space-8); padding-bottom: var(--space-12); }
-  .callBand { flex-direction: column; gap: var(--space-2); min-height: 0; padding: var(--space-5); border-radius: var(--radius-lg); }
-  .callLabel { font-size: 16px; line-height: 24px; opacity: .85; }
-  .callNum { font-size: 28px; line-height: 36px; }
-  .callIcon { width: 36px; height: 36px; }
-  .callBg { width: 90%; }
-  .form { margin-top: var(--space-6); padding: var(--space-5) var(--space-4) var(--space-6); border-radius: var(--radius-md); }
+  .form { padding: var(--space-5) var(--space-4) var(--space-6); border-radius: var(--radius-md); }
   .formHead { flex-direction: column; gap: var(--space-1); }
   .formTitle { font-size: 20px; line-height: 28px; }
   /* 라벨을 입력칸 위로 */

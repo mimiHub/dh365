@@ -1,12 +1,5 @@
 .contact { position: relative; background: var(--surface-alt); }
 .inner { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-10); align-items: center; }
-.title { font-size: 32px; line-height: 44px; font-weight: 700; }
-.tel { display: inline-block; margin-top: var(--space-2); font-size: 64px; line-height: 72px; font-weight: 800; letter-spacing: -0.03em; color: var(--brand); font-variant-numeric: tabular-nums; }
-.tel:hover { color: var(--accent-text); }
-.meta { margin-top: var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); font-size: 16px; }
-.meta div { display: flex; gap: var(--space-4); }
-.meta dt { width: 56px; font-weight: 700; color: var(--ink-subtle); }
-.meta a:hover { color: var(--accent-text); }
 
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
 .card { position: relative; display: flex; flex-direction: column; min-height: 260px; padding: var(--space-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); transition: background-color .25s ease, border-color .25s ease, transform .25s ease; }
@@ -22,7 +15,6 @@
   .inner { grid-template-columns: 1fr; }
 }
 @media (max-width: 767px) {
-  .tel { font-size: 40px; line-height: 48px; }
   .cards { grid-template-columns: 1fr; }
   .card { min-height: 0; }
   .go { display: none; }

@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { COMPANY } from '../../data/site';
 import { Button, cx } from '../../components/ui';
 import { QuoteHero } from './QuoteHero';
-import drawingImg from '../../assets/drawing-steel-shutter.png';
+import { ContactCall } from '../../sections/ContactCall';
 import screenImg from '../../assets/product-screen-shutter.png';
 import steelImg from '../../assets/product-steel-shutter.png';
 import aluminumImg from '../../assets/card-aluminum-shutter.jpg';
@@ -124,19 +124,12 @@ export function QuoteWritePage() {
       <QuoteHero sub="글쓰기" />
 
       <div className={cx('container', s.body)}>
-        {/* 전화 상담 띠 — 글로 남기기 번거로운 분을 위해 맨 위에 */}
-        <a href={`tel:${COMPANY.tel}`} className={s.callBand}>
-          <img src={drawingImg} alt="" className={s.callBg} aria-hidden="true" />
-          <span className={s.callLabel}>간편한 전화 견적상담</span>
-          <span className={s.callNum}>
-            <span className={s.callIcon} aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1L6.6 10.8Z" />
-              </svg>
-            </span>
-            {COMPANY.tel}
-          </span>
-        </a>
+        {/* 왼쪽 = 견적상담 전화 블록(제품소개·메인 하단 상담 섹션과 같은 컴포넌트), 오른쪽 = 폼 */}
+        <div className={s.layout}>
+        <aside className={s.side} aria-label="전화 견적상담">
+          <ContactCall titleId="quote-call-title" />
+          <p className={s.sideNote}>글로 남기기 번거로우시면 전화 주세요. 현장 규격을 말씀해 주시면 바로 안내해 드립니다.</p>
+        </aside>
 
         {done ? (
           <div className={s.done} role="status">
@@ -380,6 +373,7 @@ export function QuoteWritePage() {
             </div>
           </form>
         )}
+        </div>
       </div>
     </>
   );
