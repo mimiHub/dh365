@@ -59,6 +59,7 @@ export const NAV: NavItem[] = [
       { label: '공지사항', href: '/#news' },
       // 설계문의 — 견적문의와 같은 폼의 별도 게시판
       { label: '설계문의', href: '/design' },
+      { label: 'FAQ', href: '/faq' },
     ],
   },
 ];

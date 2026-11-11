@@ -7,6 +7,7 @@ import { QuoteListPage } from './pages/quote/QuoteListPage';
 import { QuoteWritePage } from './pages/quote/QuoteWritePage';
 import { QuoteDetailPage } from './pages/quote/QuoteDetailPage';
 import { BOARDS } from './pages/quote/boards';
+import { FaqPage } from './pages/FaqPage';
 
 const routes: RouteObject[] = [
   {
@@ -25,6 +26,7 @@ const routes: RouteObject[] = [
       { path: '/design', element: <QuoteListPage key="design" board={BOARDS.design} /> },
       { path: '/design/write', element: <QuoteWritePage key="design" board={BOARDS.design} /> },
       { path: '/design/:id', element: <QuoteDetailPage board={BOARDS.design} /> },
+      { path: '/faq', element: <FaqPage /> },
       { path: '*', element: <Home /> },
     ],
   },
