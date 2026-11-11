@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CASES, PRODUCTS, type CaseItem } from '../data/site';
 import { CASE_IMAGES } from '../data/caseImages';
@@ -31,7 +31,31 @@ export function CasesPage() {
   const navigate = useNavigate();
   const listTop = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const catList = useRef<HTMLUListElement>(null);
+  const [catOverflow, setCatOverflow] = useState(false);
   const [openId, setOpenId] = useState<number | null>(null);
+
+  const catIndex = Math.max(0, CATEGORIES.findIndex((c) => c.key === category));
+
+  // 분류가 화면보다 넓을 때(가로 스크롤)만 ‹ › 버튼 — 사이트 공통 Tabs와 같은 방식. 크기 변화는 ResizeObserver로 감시
+  useEffect(() => {
+    const list = catList.current;
+    if (!list) return;
+    const check = () => setCatOverflow(list.scrollWidth > list.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, []);
+
+  // 선택한 분류를 목록 가운데로 — scrollIntoView는 페이지 세로 스크롤까지 움직여서 목록만 직접 스크롤
+  useEffect(() => {
+    const list = catList.current;
+    const item = list?.children[catIndex] as HTMLElement | undefined;
+    if (!list || !item || list.scrollWidth <= list.clientWidth) return;
+    const x = item.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
+    list.scrollTo({ left: x - (list.clientWidth - item.offsetWidth) / 2, behavior: 'smooth' });
+  }, [catIndex, catOverflow]);
 
   const q = (params.get('q') ?? '').trim();
   const product = PRODUCTS.find((p) => p.key === category);
@@ -48,6 +72,8 @@ export function CasesPage() {
 
   // 분류 탭 = 탭처럼 동작 → 기록을 쌓지 않고(replace) 스크롤 유지. 분류를 바꾸면 검색어·페이지는 초기화
   const swap = { replace: true, state: { keepScroll: true } } as const;
+
+  const goCat = (d: 1 | -1) => navigate(casesPath(CATEGORIES[catIndex + d]?.key), swap);
 
   const search = (next: { q?: string; page?: number }) => {
     const sp = new URLSearchParams();
@@ -110,7 +136,14 @@ export function CasesPage() {
       <div className={s.band}>
         {/* 분류 — 히어로 아래쪽에 걸친 흰 패널. 각 칸에 사례 수를 같이 보여 줘 '어디에 얼마나 있는지'를 먼저 알 수 있게 */}
         <nav className={s.catWrap} aria-label="시공사례 분류">
-          <ul className={s.cats}>
+          <div className={cx(s.catPanel, catOverflow && s.catScroll)}>
+          {/* 화살표는 목록(ul) 바깥 — 목록 안에는 분류 항목만 있어야 스크린리더가 개수를 정확히 읽음 */}
+          {catOverflow && (
+            <button type="button" className={cx('dh-tabs-arrow', s.catArrow)} aria-label="이전 분류" disabled={catIndex === 0} onClick={() => goCat(-1)}>
+              <Chevron dir="left" />
+            </button>
+          )}
+          <ul ref={catList} className={s.cats}>
             {CATEGORIES.map((c) => {
               const on = c.key === category;
               return (
@@ -126,6 +159,12 @@ export function CasesPage() {
               );
             })}
           </ul>
+          {catOverflow && (
+            <button type="button" className={cx('dh-tabs-arrow', s.catArrow)} aria-label="다음 분류" disabled={catIndex === CATEGORIES.length - 1} onClick={() => goCat(1)}>
+              <Chevron dir="right" />
+            </button>
+          )}
+          </div>
         </nav>
 
         <div className={cx('container', s.body)}>
