@@ -2,6 +2,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { COMPANY } from '../../data/site';
 import { Button, cx } from '../../components/ui';
 import { QuoteHero } from './QuoteHero';
+import type { Board } from './boards';
 import { Contact } from '../../sections/Contact';
 import screenImg from '../../assets/product-screen-shutter.png';
 import steelImg from '../../assets/product-steel-shutter.png';
@@ -25,6 +26,7 @@ const PHONE_PREFIX = ['010', '011', '016', '017', '018', '019', '02', '031', '03
 
 const MAX_FILES = 5;
 const MAX_FILE_MB = 10;
+const MAX_VIDEO_MB = 100; // [가안] 현재 사이트 동영상 첨부 용량 기준 확인 필요
 const MAX_MESSAGE = 2000;
 
 type Field = 'name' | 'phone' | 'email' | 'sido' | 'products' | 'message' | 'password' | 'agree';
@@ -52,16 +54,18 @@ function validate(fd: FormData): Errors {
 }
 
 /**
- * 견적문의 글쓰기 — /quote/write
+ * 문의 글쓰기 — /quote/write · /design/write (폼은 같고 이름·주소만 board에서)
  * 입력칸 대부분은 '비제어'(브라우저가 값을 들고 있음) → 제출할 때 FormData로 한 번에 읽음.
  * 화면에 실시간으로 반영해야 하는 것(글자 수, 첨부 파일 목록, 오류 메시지)만 state로 관리.
  */
-export function QuoteWritePage() {
+export function QuoteWritePage({ board }: { board: Board }) {
   const formRef = useRef<HTMLFormElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState('');
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoError, setVideoError] = useState('');
   const [msgLen, setMsgLen] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -107,6 +111,17 @@ export function QuoteWritePage() {
 
   const removeFile = (i: number) => setFiles((fs) => fs.filter((_, j) => j !== i));
 
+  // 동영상 — 현장 셔터 작동 영상 등 1개. 사진·도면과 용량 기준이 달라 칸을 따로 둠
+  const pickVideo = (e: ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    e.target.value = '';
+    if (!f) return;
+    if (!f.type.startsWith('video/')) return setVideoError('동영상 파일(mp4, mov 등)만 첨부할 수 있습니다.');
+    if (f.size > MAX_VIDEO_MB * 1024 * 1024) return setVideoError(`${MAX_VIDEO_MB}MB 이하의 동영상만 첨부할 수 있습니다.`);
+    setVideo(f);
+    setVideoError('');
+  };
+
   const err = (k: Field) =>
     errors[k] ? (
       <p id={`err-${k}`} className={s.error}>
@@ -121,7 +136,7 @@ export function QuoteWritePage() {
 
   return (
     <>
-      <QuoteHero sub="글쓰기" />
+      <QuoteHero board={board} sub="글쓰기" />
 
       <div className={cx('container', s.body)}>
 
@@ -132,14 +147,14 @@ export function QuoteWritePage() {
                 <path d="m5 12.5 4.5 4.5L19 7.5" />
               </svg>
             </span>
-            <h2 className={s.doneTitle}>견적문의가 접수되었습니다</h2>
+            <h2 className={s.doneTitle}>{board.title}가 접수되었습니다</h2>
             <p className={s.doneDesc}>담당자가 내용을 검토한 뒤 남겨 주신 연락처로 안내해 드리겠습니다.<br />급하신 경우 {COMPANY.tel}로 전화 주세요.</p>
-            <Button href="/quote" variant="secondary">목록으로</Button>
+            <Button href={board.path} variant="secondary">목록으로</Button>
           </div>
         ) : (
           <form ref={formRef} className={s.form} onSubmit={onSubmit} onChange={onChange} noValidate aria-labelledby="quote-form-title">
             <div className={s.formHead}>
-              <h2 id="quote-form-title" className={s.formTitle}>견적문의 작성</h2>
+              <h2 id="quote-form-title" className={s.formTitle}>{board.title} 작성</h2>
               <p className={s.required}>
                 <span className={s.star} aria-hidden="true">*</span> 표시는 필수 입력입니다
               </p>
@@ -179,7 +194,7 @@ export function QuoteWritePage() {
               <label htmlFor="q-email" className={s.label}>이메일</label>
               <div className={s.field}>
                 <input id="q-email" name="email" type="email" autoComplete="email" placeholder="example@company.com" className={s.input} {...a11y('email', 'hint-email')} />
-                <p id="hint-email" className={s.hint}>견적서를 메일로도 받으실 수 있습니다.</p>
+                <p id="hint-email" className={s.hint}>{board.emailHint}</p>
                 {err('email')}
               </div>
             </div>
@@ -305,6 +320,45 @@ export function QuoteWritePage() {
             </div>
 
             <div className={s.row}>
+              <span className={s.label}>동영상 첨부</span>
+              <div className={s.field}>
+                {video ? (
+                  // 고른 뒤에는 버튼 대신 파일 줄 — 1개만이라 바꾸려면 지우고 다시 고름
+                  <ul className={s.fileList} aria-label="첨부한 동영상">
+                    <li className={s.fileItem}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect x="3" y="5" width="13" height="14" rx="2" />
+                        <path d="m16 10 5-3v10l-5-3" />
+                      </svg>
+                      <span className={s.fileName}>{video.name}</span>
+                      <span className={s.fileSize}>{(video.size / 1024 / 1024).toFixed(1)}MB</span>
+                      <button type="button" className={s.fileRemove} onClick={() => setVideo(null)} aria-label={`${video.name} 삭제`}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                          <path d="M6 6l12 12M18 6 6 18" />
+                        </svg>
+                      </button>
+                    </li>
+                  </ul>
+                ) : (
+                  <div className={s.fileBox}>
+                    <input id="q-video" type="file" accept="video/*" className="sr-only" onChange={pickVideo} aria-describedby="hint-video" />
+                    <label htmlFor="q-video" className={s.fileBtn}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect x="3" y="5" width="13" height="14" rx="2" />
+                        <path d="m16 10 5-3v10l-5-3" />
+                      </svg>
+                      동영상 선택
+                    </label>
+                    <span id="hint-video" className={s.fileHint}>
+                      현장·작동 영상 등 · 1개, {MAX_VIDEO_MB}MB 이하
+                    </span>
+                  </div>
+                )}
+                {videoError && <p className={s.error}>{videoError}</p>}
+              </div>
+            </div>
+
+            <div className={s.row}>
               <label htmlFor="q-message" className={s.label}>
                 문의사항<Req />
               </label>
@@ -352,18 +406,18 @@ export function QuoteWritePage() {
                   <dt>수집 항목</dt>
                   <dd>업체명/이름, 연락처, 이메일, 설치지역, 첨부자료</dd>
                   <dt>이용 목적</dt>
-                  <dd>견적 산출 및 상담 안내</dd>
+                  <dd>{board.purpose}</dd>
                   <dt>보유 기간</dt>
                   <dd>상담 완료 후 1년 (관계 법령에 따라 보존이 필요한 경우 그 기간)</dd>
                 </dl>
-                <p>동의를 거부하실 수 있으나, 거부 시 견적문의 접수가 어렵습니다.</p>
+                <p>동의를 거부하실 수 있으나, 거부 시 {board.title} 접수가 어렵습니다.</p>
               </details>
               {err('agree')}
             </div>
 
             <div className={s.submitRow}>
-              <Button href="/quote" variant="secondary" size="lg">취소</Button>
-              <Button type="submit" size="lg" arrow>견적문의 등록</Button>
+              <Button href={board.path} variant="secondary" size="lg">취소</Button>
+              <Button type="submit" size="lg" arrow>{board.title} 등록</Button>
             </div>
           </form>
         )}

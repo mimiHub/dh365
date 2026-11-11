@@ -41,7 +41,7 @@
 /* 작성 폼과 같은 항목 순서 — 라벨 | 값 */
 .info { display: grid; grid-template-columns: 1fr 1fr; margin-top: var(--space-5); border-top: 1px solid var(--line); }
 .info div { display: grid; grid-template-columns: 112px 1fr; gap: var(--space-4); padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
-.info div:last-child { grid-column: 1 / -1; }
+.info div:nth-last-child(-n + 2) { grid-column: 1 / -1; } /* 첨부자료·동영상은 한 줄 전체 */
 .info dt { font-size: 14px; font-weight: 600; color: var(--ink-muted); }
 .info dd { margin: 0; min-width: 0; font-size: 15px; color: var(--ink); word-break: keep-all; }
 .files { display: flex; flex-wrap: wrap; gap: var(--space-2); }

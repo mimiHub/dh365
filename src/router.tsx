@@ -6,6 +6,7 @@ import { CasesPage } from './pages/CasesPage';
 import { QuoteListPage } from './pages/quote/QuoteListPage';
 import { QuoteWritePage } from './pages/quote/QuoteWritePage';
 import { QuoteDetailPage } from './pages/quote/QuoteDetailPage';
+import { BOARDS } from './pages/quote/boards';
 
 const routes: RouteObject[] = [
   {
@@ -16,10 +17,14 @@ const routes: RouteObject[] = [
       { path: '/products/:category/:slug?', element: <ProductPage /> },
       // :category? — 없으면 전체. 검색어·페이지는 ?q= &page= (주소에 담아 새로고침·공유해도 그대로)
       { path: '/cases/:category?', element: <CasesPage /> },
-      { path: '/quote', element: <QuoteListPage /> },
-      { path: '/quote/write', element: <QuoteWritePage /> },
+      // 견적문의·설계문의 = 같은 화면에 설정(board)만 다르게. key: 게시판을 옮겨 다닐 때 상태를 새로 시작
+      { path: '/quote', element: <QuoteListPage key="quote" board={BOARDS.quote} /> },
+      { path: '/quote/write', element: <QuoteWritePage key="quote" board={BOARDS.quote} /> },
       // /quote/write가 먼저 맞으므로 :id에 'write'가 들어오지 않음 (라우터는 고정 경로를 동적 경로보다 우선)
-      { path: '/quote/:id', element: <QuoteDetailPage /> },
+      { path: '/quote/:id', element: <QuoteDetailPage board={BOARDS.quote} /> },
+      { path: '/design', element: <QuoteListPage key="design" board={BOARDS.design} /> },
+      { path: '/design/write', element: <QuoteWritePage key="design" board={BOARDS.design} /> },
+      { path: '/design/:id', element: <QuoteDetailPage board={BOARDS.design} /> },
       { path: '*', element: <Home /> },
     ],
   },

@@ -57,8 +57,8 @@ export const NAV: NavItem[] = [
     href: '/#news',
     children: [
       { label: '공지사항', href: '/#news' },
-      // 설계문의 — 접수는 견적문의 폼 하나로 받으므로 같은 작성 화면으로 연결 (견적상담 섹션의 설계문의 카드와 같음)
-      { label: '설계문의', href: '/quote/write' },
+      // 설계문의 — 견적문의와 같은 폼의 별도 게시판
+      { label: '설계문의', href: '/design' },
     ],
   },
 ];

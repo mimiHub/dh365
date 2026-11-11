@@ -1,20 +1,21 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
-import { MOCK_PASSWORD, QUOTES, quoteDetailOf, type QuoteItem } from '../../data/quotes';
+import { MOCK_PASSWORD, quoteDetailOf, type QuoteItem } from '../../data/quotes';
+import type { Board } from './boards';
 import { Button, cx } from '../../components/ui';
 import { QuoteHero } from './QuoteHero';
 import s from './QuoteDetail.module.css';
 
 // 한 번 연 비밀글은 이 탭을 닫기 전까지 다시 묻지 않음 (sessionStorage: 탭 단위, 닫으면 사라짐)
-const KEY = 'dh365-quote-unlocked';
-const readUnlocked = (id: number) => {
+const keyOf = (board: Board) => `dh365-${board.key}-unlocked`; // 게시판마다 따로 (견적 215번 ≠ 설계 215번)
+const readUnlocked = (KEY: string, id: number) => {
   try {
     return (JSON.parse(sessionStorage.getItem(KEY) ?? '[]') as number[]).includes(id);
   } catch {
     return false; // 저장소를 못 쓰는 환경(사생활 보호 모드 등)이면 매번 물음
   }
 };
-const saveUnlocked = (id: number) => {
+const saveUnlocked = (KEY: string, id: number) => {
   try {
     const list = JSON.parse(sessionStorage.getItem(KEY) ?? '[]') as number[];
     sessionStorage.setItem(KEY, JSON.stringify([...new Set([...list, id])]));
@@ -24,26 +25,26 @@ const saveUnlocked = (id: number) => {
 };
 
 /**
- * 견적문의 상세 — /quote/:id
+ * 문의 상세 — /quote/:id · /design/:id
  * 비밀글이면 비밀번호 확인 → 맞으면 글 내용·답변.
  * key={id}: 다른 글로 이동하면 컴포넌트를 새로 만들어 '열림' 상태·입력값이 이전 글에서 넘어오지 않게
  */
-export function QuoteDetailPage() {
+export function QuoteDetailPage({ board }: { board: Board }) {
   const { id } = useParams();
-  const item = QUOTES.find((q) => q.id === Number(id));
-  if (!item) return <Navigate to="/quote" replace />;
-  return <QuoteDetail key={item.id} item={item} />;
+  const item = board.items.find((q) => q.id === Number(id));
+  if (!item) return <Navigate to={board.path} replace />;
+  return <QuoteDetail key={item.id} board={board} item={item} />;
 }
 
-function QuoteDetail({ item }: { item: QuoteItem }) {
+function QuoteDetail({ board, item }: { board: Board; item: QuoteItem }) {
   const location = useLocation();
   // 목록에서 왔으면 보던 검색·페이지로, 주소로 바로 왔으면 목록 첫 페이지로
-  const backTo = (location.state as { from?: string } | null)?.from ?? '/quote';
-  const [unlocked, setUnlocked] = useState(() => !item.secret || readUnlocked(item.id));
+  const backTo = (location.state as { from?: string } | null)?.from ?? board.path;
+  const [unlocked, setUnlocked] = useState(() => !item.secret || readUnlocked(keyOf(board), item.id));
 
   return (
     <>
-      <QuoteHero sub="상세" />
+      <QuoteHero board={board} sub="상세" />
       <div className={cx('container', s.body)}>
         {unlocked ? (
           <Post item={item} backTo={backTo} />
@@ -52,7 +53,7 @@ function QuoteDetail({ item }: { item: QuoteItem }) {
             item={item}
             backTo={backTo}
             onOpen={() => {
-              saveUnlocked(item.id);
+              saveUnlocked(keyOf(board), item.id);
               setUnlocked(true);
             }}
           />
@@ -184,6 +185,24 @@ function Post({ item, backTo }: { item: QuoteItem; backTo: string }) {
                 </li>
               ))}
             </ul>
+          </dd>
+        </div>
+        <div>
+          <dt>동영상</dt>
+          <dd>
+            {d.video ? (
+              <ul className={s.files}>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="3" y="5" width="13" height="14" rx="2" />
+                    <path d="m16 10 5-3v10l-5-3" />
+                  </svg>
+                  {d.video}
+                </li>
+              </ul>
+            ) : (
+              '—'
+            )}
           </dd>
         </div>
       </dl>

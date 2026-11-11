@@ -1,6 +1,6 @@
 import { useRef, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { QUOTES } from '../../data/quotes';
+import type { Board } from './boards';
 import { Button, Pagination, cx } from '../../components/ui';
 import { QuoteHero } from './QuoteHero';
 import s from './QuoteList.module.css';
@@ -9,10 +9,11 @@ const PAGE_SIZE = 10;
 const squash = (t: string) => t.replace(/\s+/g, '').toLowerCase(); // 띄어쓰기 무시 검색
 
 /**
- * 견적문의 목록 — /quote (?q=검색어 &page=번호)
+ * 문의 목록 — /quote · /design (?q=검색어 &page=번호)
  * 시공사례 페이지와 같은 방식: 검색어·페이지를 주소에 담고, 목록은 주소에서 계산
  */
-export function QuoteListPage() {
+export function QuoteListPage({ board }: { board: Board }) {
+  const QUOTES = board.items;
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +31,7 @@ export function QuoteListPage() {
     if (nq) sp.set('q', nq);
     if (next.page && next.page > 1) sp.set('page', String(next.page));
     const qs = sp.toString();
-    navigate({ pathname: '/quote', search: qs ? `?${qs}` : '' }, { state: { keepScroll: true } });
+    navigate({ pathname: board.path, search: qs ? `?${qs}` : '' }, { state: { keepScroll: true } });
   };
 
   const onSearch = (e: FormEvent<HTMLFormElement>) => {
@@ -45,12 +46,12 @@ export function QuoteListPage() {
 
   return (
     <>
-      <QuoteHero sub="목록" />
+      <QuoteHero board={board} sub="목록" />
 
       <div className={cx('container', s.body)}>
         <div className={s.toolbar} ref={top}>
           <h2 className={s.summary} aria-live="polite">
-            견적문의
+            {board.title}
             <span className={s.total}>
               {q && <>‘{q}’ 검색 결과 </>}총 <strong>{list.length}</strong>건 · {page} / {pages} 페이지
             </span>
@@ -67,7 +68,7 @@ export function QuoteListPage() {
                 </svg>
               </button>
             </form>
-            <Button href="/quote/write" className={s.write}>
+            <Button href={`${board.path}/write`} className={s.write}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M4 20h4L19 9l-4-4L4 16v4Z" />
                 <path d="m13.5 6.5 4 4" />
@@ -79,13 +80,13 @@ export function QuoteListPage() {
 
         <p className={s.notice}>
           <LockIcon />
-          모든 견적문의는 비밀글로 등록되어 작성자와 담당자만 볼 수 있습니다.
+          모든 {board.title}는 비밀글로 등록되어 작성자와 담당자만 볼 수 있습니다.
         </p>
 
         {shown.length ? (
           // 게시판 = 진짜 표(table) — 열 머리(th)가 있어 스크린리더가 '번호 215, 제목 …'처럼 칸 이름과 함께 읽어 줌
           <table className={s.table}>
-            <caption className="sr-only">견적문의 목록 — 번호, 제목, 처리 상태, 글쓴이, 조회수</caption>
+            <caption className="sr-only">{board.title} 목록 — 번호, 제목, 처리 상태, 글쓴이, 조회수</caption>
             <colgroup>
               <col className={s.colNo} />
               <col />
@@ -109,7 +110,7 @@ export function QuoteListPage() {
                   <td className={s.no}>{it.id}</td>
                   <td className={s.titleCell}>
                     {/* 상세 — 비밀글이면 비밀번호 확인부터. state.from: 상세의 '목록'이 보던 검색·페이지로 돌아오게 */}
-                    <Link to={`/quote/${it.id}`} state={{ from: `/quote${location.search}` }} className={s.title}>
+                    <Link to={`${board.path}/${it.id}`} state={{ from: `${board.path}${location.search}` }} className={s.title}>
                       {it.secret && (
                         <span className={s.lock}>
                           <LockIcon />
@@ -136,9 +137,9 @@ export function QuoteListPage() {
           </table>
         ) : (
           <div className={s.empty}>
-            <p>{q ? <>‘{q}’에 맞는 견적문의가 없습니다.</> : '등록된 견적문의가 없습니다.'}</p>
+            <p>{q ? <>‘{q}’에 맞는 {board.title}가 없습니다.</> : `등록된 ${board.title}가 없습니다.`}</p>
             {q && (
-              <Link to="/quote" state={{ keepScroll: true }} className={s.emptyReset}>
+              <Link to={board.path} state={{ keepScroll: true }} className={s.emptyReset}>
                 검색어 지우기
               </Link>
             )}

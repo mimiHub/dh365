@@ -39,6 +39,7 @@ export interface QuoteDetail {
   products: string[];
   size: string;
   files: string[];
+  video?: string;
   body: string;
   answer?: { by: string; body: string };
 }
@@ -62,6 +63,7 @@ export const quoteDetailOf = (q: QuoteItem): QuoteDetail => ({
   products: productsOf(q.title),
   size: '폭 4,000 × 높이 3,500mm · 2개소',
   files: ['현장사진_01.jpg', '평면도.pdf'],
+  video: '현장_셔터작동.mp4',
   body: `${q.title}\n\n현장 도면과 사진을 첨부했습니다. 설치 가능 여부와 대략적인 견적, 시공 가능한 일정을 안내 부탁드립니다.`,
   answer: q.answered
     ? { by: '(주)대한방화 담당자', body: '안녕하세요, (주)대한방화입니다.\n문의하신 내용 확인했습니다. 첨부해 주신 도면 기준으로 견적서를 작성해 남겨 주신 연락처로 안내드렸습니다.\n현장 실측이 필요하면 담당자가 일정 조율 연락을 드리겠습니다.' }
