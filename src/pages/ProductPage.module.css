@@ -22,10 +22,10 @@
 .cardsWrap { position: relative; max-width: calc(var(--container-narrow) + var(--gutter) * 2); margin: -252px auto 0; /* 카드 줄 위 여백을 12px 늘린 만큼 끌어올려 카드 위치는 그대로 */ padding: 0 var(--gutter); }
 /* align-items:flex-end → 선택 카드만 설명이 있어 키가 커지고, 자연스럽게 위로 솟음
    위 여백(--space-5)은 hover로 떠오르는 카드가 스크롤 박스에 잘리지 않게 */
-/* ── 카드 = 같은 폭 5장 ── 선택은 크기가 아니라 '밝기 + 파란 테두리 + 파란 바'로 표시 (크기 차이는 균형이 깨져 보여서) */
-.cards { --visible: 5; --gap: var(--space-3); display: flex; align-items: stretch; gap: var(--gap); padding: var(--space-8) 0 var(--space-12); overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+/* ── 카드 = 같은 폭, 한 화면에 4장(태블릿 3장·모바일 1장) — 나머지는 화살표·스와이프로 ── 선택은 크기가 아니라 '밝기 + 파란 테두리 + 파란 바'로 표시 (크기 차이는 균형이 깨져 보여서) */
+.cards { --visible: 4; --gap: var(--space-4); display: flex; align-items: stretch; gap: var(--gap); padding: var(--space-8) 0 var(--space-12); overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
 .cards::-webkit-scrollbar { display: none; }
-.cardItem { flex: 1 1 0; min-width: 0; scroll-snap-align: start; }
+.cardItem { flex: 0 0 calc((100% - (var(--visible) - 1) * var(--gap)) / var(--visible)); min-width: 0; scroll-snap-align: start; } /* 한 화면에 --visible장, 나머지는 옆으로 */
 
 /* position:relative — sr-only 요약(absolute)이 스크롤 트랙 밖으로 빠지지 않게 */
 .card { position: relative; display: block; height: 440px; overflow: hidden; border-radius: var(--radius-md); background: var(--brand); box-shadow: var(--shadow-card); transition: box-shadow .3s ease, transform .3s ease; }
@@ -57,7 +57,7 @@
 
 /* 화살표 — PC·모바일 공통 디자인: 네이비 원 + 흰 아이콘.
    밝은 사진·흰 카드 어느 쪽 위에서도 대비가 확실함 (배경 없는 회색 아이콘은 묻혔음) */
-.arrow { position: absolute; top: 55%; z-index: 1; width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--brand); color: #ffffff; box-shadow: 0 6px 16px rgba(10, 42, 102, 0.35); cursor: pointer; transition: background-color .2s ease, opacity .2s ease, transform .2s ease; }
+.arrow { position: absolute; top: 55%; z-index: 5; /* 카드 글자(z-index 1)보다 위 — 모바일에서 카드 위에 걸친 화살표가 눌리게 */ width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--brand); color: #ffffff; box-shadow: 0 6px 16px rgba(10, 42, 102, 0.35); cursor: pointer; transition: background-color .2s ease, opacity .2s ease, transform .2s ease; }
 .arrow:hover:not(:disabled) { background: var(--accent); transform: scale(1.06); }
 .arrow svg { width: 24px; height: 24px; }
 .arrow svg path { stroke-width: 2; }

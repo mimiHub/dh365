@@ -321,20 +321,25 @@ export function ProductPage() {
   }, [single, catIndex, selectAt]);
 
   // 선택 카드가 보이는 범위 밖이면 보이게만 당겨 옴 (이미 보이면 그대로 — 화면이 괜히 움직이지 않게)
+  // 카드 시작선(스냅 위치)에 딱 맞춰 이동: 왼쪽으로 벗어나면 그 카드가 첫 장, 오른쪽으로 벗어나면 그 카드가 마지막 장이 되게
   // scrollIntoView는 페이지 세로 스크롤까지 움직여서 트랙만 직접 스크롤
   useEffect(() => {
     const el = track.current;
     const item = el?.children[catIndex] as HTMLElement | undefined;
     if (!el || !item) return;
-    const left = item.offsetLeft - el.offsetLeft;
     const pad = parseFloat(getComputedStyle(el).paddingLeft) || 0;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    const stepW = item.offsetWidth + gap;
+    const start = catIndex * stepW; // 이 카드가 첫 장일 때의 스크롤 위치
+    const max = el.scrollWidth - el.clientWidth;
     if (single) {
-      el.scrollTo({ left: left - pad, behavior: 'smooth' }); // 한 장씩: 선택 카드에 딱 맞춤
+      el.scrollTo({ left: Math.min(start, max), behavior: 'smooth' }); // 한 장씩: 선택 카드에 딱 맞춤
       return;
     }
-    if (left - pad < el.scrollLeft) el.scrollTo({ left: left - pad, behavior: 'smooth' });
-    else if (left + item.offsetWidth + pad > el.scrollLeft + el.clientWidth)
-      el.scrollTo({ left: left + item.offsetWidth + pad - el.clientWidth, behavior: 'smooth' });
+    const visible = Math.max(1, Math.round((el.clientWidth - pad * 2 + gap) / stepW));
+    const first = Math.round(el.scrollLeft / stepW); // 지금 보이는 첫 장 번호
+    if (catIndex < first) el.scrollTo({ left: start, behavior: 'smooth' });
+    else if (catIndex > first + visible - 1) el.scrollTo({ left: Math.min((catIndex - visible + 1) * stepW, max), behavior: 'smooth' });
   }, [catIndex, single]);
 
   // 잘못된 카테고리 주소 → 첫 카테고리로 (Hook 호출이 모두 끝난 뒤에 분기해야 Hook 순서 규칙을 지킴)
