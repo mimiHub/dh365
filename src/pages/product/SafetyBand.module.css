@@ -143,7 +143,9 @@
 /* ── 반응형 ── */
 @media (max-width: 1024px) {
   .grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
-  .light, .alignEnd { border: 1px solid var(--line); border-radius: 0; text-align: left; align-items: flex-start; padding: var(--space-10) var(--space-8); }
+  /* 한 열로 쌓이면 패널이 화면 폭 전체 → 안쪽 내용도 꽉 채움 (flex-start면 내용 폭만큼만 줄어 오른쪽이 비었음) */
+  .light, .alignEnd { border: 1px solid var(--line); border-radius: 0; text-align: left; align-items: stretch; padding: var(--space-10) var(--space-8); }
+  .lead, .cells, .voice { max-width: none; }
   .light:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
   .alignEnd { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
   .cellHead { justify-content: flex-start; }
