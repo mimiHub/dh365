@@ -370,13 +370,6 @@ export function ProductPage() {
       <div className={s.introBand}>
         {/* 카테고리 카드 — 히어로 하단에 걸쳐 놓임. 선택한 카드만 설명이 열려 키가 커지고 테두리가 생김 */}
         <nav className={s.cardsWrap} aria-label="제품 분류">
-          {/* 화살표 — 항상 보임. 첫·마지막 카테고리에서는 해당 방향만 흐리게(비활성) */}
-          <button type="button" className={cx(s.arrow, s.prev)} onClick={() => slide(-1)} disabled={catIndex === 0} aria-label="이전 분류" aria-controls="product-cards">
-            <Chevron dir="left" />
-          </button>
-          <button type="button" className={cx(s.arrow, s.next)} onClick={() => slide(1)} disabled={catIndex === PRODUCT_CATEGORIES.length - 1} aria-label="다음 분류" aria-controls="product-cards">
-            <Chevron dir="right" />
-          </button>
           <ul ref={track} id="product-cards" className={s.cards}>
             {PRODUCT_CATEGORIES.map((c, i) => {
               const on = i === catIndex;
@@ -397,6 +390,18 @@ export function ProductPage() {
               );
             })}
           </ul>
+          {/* 넘기기 — 사이트 공통 슬라이더 컨트롤 [01 / 05 ‹ ›]. 숫자로 '뒤에 더 있음'을 알려 주고, 오른쪽 끝 카드는 일부만 보이게(CSS --visible 소수) */}
+          <SliderNav
+            className={s.cardsNav}
+            current={catIndex}
+            total={PRODUCT_CATEGORIES.length}
+            onPrev={() => slide(-1)}
+            onNext={() => slide(1)}
+            prevDisabled={catIndex === 0}
+            nextDisabled={catIndex === PRODUCT_CATEGORIES.length - 1}
+            controls="product-cards"
+            itemLabel="분류"
+          />
         </nav>
 
         <p className={cx('container', s.highlight)}>
@@ -1343,10 +1348,3 @@ function BlockHead({ en, title, id }: { en: string; title: string; id?: string }
   );
 }
 
-function Chevron({ dir }: { dir: 'left' | 'right' }) {
-  return (
-    <svg width="28" height="28" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d={dir === 'left' ? 'M12.5 4.5 7 10l5.5 5.5' : 'M7.5 4.5 13 10l-5.5 5.5'} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
