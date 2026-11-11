@@ -2,6 +2,7 @@ import { createBrowserRouter, createMemoryRouter, type RouteObject } from 'react
 import App from './App';
 import { Home } from './pages/Home';
 import { ProductPage } from './pages/ProductPage';
+import { CasesPage } from './pages/CasesPage';
 
 const routes: RouteObject[] = [
   {
@@ -10,6 +11,8 @@ const routes: RouteObject[] = [
       { path: '/', element: <Home /> },
       // :slug? — 선택 사항. 없으면 카테고리의 첫 제품을 보여줌 (/products/steel = 철재방화셔터)
       { path: '/products/:category/:slug?', element: <ProductPage /> },
+      // :category? — 없으면 전체. 검색어·페이지는 ?q= &page= (주소에 담아 새로고침·공유해도 그대로)
+      { path: '/cases/:category?', element: <CasesPage /> },
       { path: '*', element: <Home /> },
     ],
   },

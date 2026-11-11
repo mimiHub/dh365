@@ -31,14 +31,14 @@ export const NAV: NavItem[] = [
   },
   {
     label: '시공사례',
-    href: '/#cases',
+    href: '/cases',
     children: [
-      { label: '철재방화셔터', href: '/#cases' },
-      { label: '방화스크린셔터', href: '/#cases' },
-      { label: '제연스크린', href: '/#cases' },
-      { label: '망입유리', href: '/#cases' },
-      { label: '내풍압셔터', href: '/#cases' },
-      { label: '방범셔터', href: '/#cases' },
+      { label: '철재방화셔터', href: '/cases/steel' },
+      { label: '방화스크린셔터', href: '/cases/screen' },
+      { label: '제연스크린', href: '/cases/smoke' },
+      { label: '망입유리', href: '/cases/wired' },
+      { label: '내풍압셔터', href: '/cases/wind' },
+      { label: '방범셔터', href: '/cases/security' },
     ],
   },
   {
@@ -158,6 +158,8 @@ export interface CaseItem {
 export const CASES: CaseItem[] = [
   { id: 1, product: 'screen', title: '인천남동물류센터 하역장 스크린방화셔터' },
   { id: 2, product: 'steel', title: '자동차 부품공장 철재방화셔터' },
+  { id: 27, product: 'steel', title: '아산시 배방읍 세교리 근린생활 지하주차장' }, // 기존 사이트 시공사례 게시물 — 사진 미확보
+  { id: 28, product: 'steel', title: '울산 JMC현장 방폭형 철재방화셔터 설치' }, // 기존 사이트 시공사례 게시물 — 사진 미확보
   { id: 3, product: 'smoke', title: '푸드코트 제연스크린 시공' },
   { id: 4, product: 'screen', title: '안산성곡물류센터 하역장 스크린방화셔터' },
   { id: 5, product: 'wind', title: '수소충전소 내풍압셔터 설치(방폭형)' },
