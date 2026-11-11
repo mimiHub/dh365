@@ -235,9 +235,21 @@ const mm = (n: number) => n.toLocaleString('ko-KR');
 
 /** '*강조*' 표기를 <em>으로 — 데이터에 HTML을 넣지 않고(dangerouslySetInnerHTML 없이) 강조만 표현 */
 function Highlight({ text }: { text: string }) {
+  // 쉼표 뒤에서 줄바꿈 — 문장이 '앞 구절, / 뒤 구절'로 나뉘어 읽히게 (쉼표는 남기고 뒤 공백만 줄바꿈으로)
+  const lines = (part: string) =>
+    part.split(/,\s*/).map((seg, j, arr) => (
+      <Fragment key={j}>
+        {seg}
+        {j < arr.length - 1 && (
+          <>
+            ,<br />
+          </>
+        )}
+      </Fragment>
+    ));
   return (
     <>
-      {text.split('*').map((part, i) => (i % 2 ? <em key={i}>{part}</em> : <Fragment key={i}>{part}</Fragment>))}
+      {text.split('*').map((part, i) => (i % 2 ? <em key={i}>{lines(part)}</em> : <Fragment key={i}>{lines(part)}</Fragment>))}
     </>
   );
 }
