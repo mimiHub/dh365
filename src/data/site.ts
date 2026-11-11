@@ -56,8 +56,9 @@ export const NAV: NavItem[] = [
     label: '고객센터',
     href: '/#news',
     children: [
-      // 설계문의는 견적문의로 통합 (실제 문의는 견적문의로만 받음)
       { label: '공지사항', href: '/#news' },
+      // 설계문의 — 접수는 견적문의 폼 하나로 받으므로 같은 작성 화면으로 연결 (견적상담 섹션의 설계문의 카드와 같음)
+      { label: '설계문의', href: '/quote/write' },
     ],
   },
 ];
