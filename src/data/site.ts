@@ -51,7 +51,7 @@ export const NAV: NavItem[] = [
       { label: '동영상자료', href: '/#news' },
     ],
   },
-  { label: '견적문의', href: '/#contact', children: [{ label: '견적문의', href: '/#contact' }] },
+  { label: '견적문의', href: '/quote', children: [{ label: '견적문의', href: '/quote' }, { label: '견적문의 작성', href: '/quote/write' }] },
   {
     label: '고객센터',
     href: '/#contact',

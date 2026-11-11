@@ -1,0 +1,16 @@
+/* 페이지 번호 — 동그란 버튼 (SliderNav와 같은 모양 언어) */
+.pager { display: flex; justify-content: center; align-items: center; gap: var(--space-2); margin-top: var(--space-12); }
+.pages { display: flex; gap: var(--space-1); margin: 0 var(--space-2); }
+.no { min-width: 44px; height: 44px; padding: 0 var(--space-2); border: 0; border-radius: 50%; background: none; font: inherit; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-muted); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+.no:hover { background: var(--surface-alt); color: var(--ink); }
+.on, .on:hover { background: var(--brand); color: #ffffff; }
+.round { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line-strong); border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.round:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+.round:disabled { opacity: .3; cursor: not-allowed; }
+.no:focus-visible, .round:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 767px) {
+  .pager { gap: var(--space-1); }
+  .pages { margin: 0 var(--space-1); gap: 0; }
+  .no { min-width: 40px; height: 40px; }
+  .round { width: 40px; height: 40px; }
+}

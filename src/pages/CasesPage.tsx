@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type M
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CASES, PRODUCTS, type CaseItem } from '../data/site';
 import { CASE_IMAGES } from '../data/caseImages';
-import { Media, SliderNav, cx } from '../components/ui';
+import { Media, Pagination, SliderNav, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
 import s from './CasesPage.module.css';
 
@@ -232,7 +232,7 @@ export function CasesPage() {
             </div>
           )}
 
-          {pages > 1 && <Pagination page={page} pages={pages} onGo={goPage} />}
+          <Pagination page={page} pages={pages} onGo={goPage} />
         </div>
       </div>
 
@@ -281,28 +281,6 @@ function Marked({ text, q }: { text: string; q: string }) {
       <mark>{text.slice(at, at + q.length)}</mark>
       {text.slice(at + q.length)}
     </>
-  );
-}
-
-function Pagination({ page, pages, onGo }: { page: number; pages: number; onGo: (n: number) => void }) {
-  return (
-    <nav className={s.pager} aria-label="페이지">
-      <button type="button" className={s.round} onClick={() => onGo(page - 1)} disabled={page === 1} aria-label="이전 페이지">
-        <Chevron dir="left" />
-      </button>
-      <ol className={s.pages}>
-        {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
-          <li key={n}>
-            <button type="button" className={cx(s.pageNo, n === page && s.pageOn)} onClick={() => onGo(n)} aria-current={n === page ? 'page' : undefined}>
-              {n}
-            </button>
-          </li>
-        ))}
-      </ol>
-      <button type="button" className={s.round} onClick={() => onGo(page + 1)} disabled={page === pages} aria-label="다음 페이지">
-        <Chevron dir="right" />
-      </button>
-    </nav>
   );
 }
 

@@ -84,7 +84,7 @@ export function Header() {
         </nav>
 
         <div className={s.util}>
-          <Button href="#contact" size="sm" className={s.cta}>견적문의</Button>
+          <Button href="/quote/write" size="sm" className={s.cta}>견적문의</Button>
           <button
             type="button"
             className={s.burger}

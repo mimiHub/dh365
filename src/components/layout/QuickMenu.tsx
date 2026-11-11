@@ -1,7 +1,7 @@
 import { COMPANY } from '../../data/site';
 import { useScrolled } from '../../hooks/useScrolled';
 import { useStopAtFooter } from '../../hooks/useStopAtFooter';
-import { cx } from '../ui';
+import { SmartLink, cx } from '../ui';
 import s from './QuickMenu.module.css';
 
 /**
@@ -18,7 +18,7 @@ export function QuickMenu() {
           <span className={s.callLabel}>견적상담</span>
           <span className={s.callNum}>{COMPANY.tel.split('-').slice(0, 1)}<br />{COMPANY.tel.split('-').slice(1).join('-')}</span>
         </a>
-        <a href="#contact" className={s.btn}>견적문의</a>
+        <SmartLink href="/quote/write" className={s.btn}>견적문의</SmartLink>
         <a href="#top" className={cx(s.btn, s.top)}>TOP</a>
       </aside>
     </div>

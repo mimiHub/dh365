@@ -1,10 +1,10 @@
 import { COMPANY } from '../data/site';
-import { cx } from '../components/ui';
+import { SmartLink, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
 import s from './Contact.module.css';
 
 const CARDS = [
-  { en: 'ESTIMATE', title: '견적문의', desc: '현장 규격과 용도를 남겨주시면 견적을 안내드립니다.', href: '#contact' },
+  { en: 'ESTIMATE', title: '견적문의', desc: '현장 규격과 용도를 남겨주시면 견적을 안내드립니다.', href: '/quote/write' },
   { en: 'DESIGN', title: '설계문의', desc: '인정 규격 검토와 설계 도면 상담을 도와드립니다.', href: '#contact' },
   { en: 'LOCATION', title: '오시는길', desc: '과천 본사 · 부산지사 · 광주지사', href: '#contact' },
 ];
@@ -27,12 +27,12 @@ export function Contact() {
         <ul className={s.cards}>
           {CARDS.map((c, i) => (
             <li key={c.title} className="reveal" style={{ ['--reveal-delay' as string]: `${i * 80}ms` }}>
-              <a href={c.href} className={s.card}>
+              <SmartLink href={c.href} className={s.card}>
                 <span className={s.en}>{c.en}</span>
                 <strong className={s.cTitle}>{c.title}</strong>
                 <span className={s.desc}>{c.desc}</span>
                 <span className={s.go} aria-hidden="true">→</span>
-              </a>
+              </SmartLink>
             </li>
           ))}
         </ul>

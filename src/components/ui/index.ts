@@ -8,3 +8,4 @@ export { StatItem } from './StatItem';
 export { cx } from './cx';
 export { SmartLink } from './SmartLink';
 export { SliderNav } from './SliderNav';
+export { Pagination } from './Pagination';

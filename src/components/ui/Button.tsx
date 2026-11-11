@@ -1,5 +1,6 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
 import { cx } from './cx';
+import { SmartLink } from './SmartLink';
 
 type Variant = 'primary' | 'secondary' | 'solid' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
@@ -33,7 +34,8 @@ export function Button({ variant = 'primary', size = 'md', arrow, children, clas
     </>
   );
   if ('href' in rest && rest.href !== undefined) {
-    return <a className={cls} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>{inner}</a>;
+    // SmartLink: '/…'는 라우터 이동(새로고침 없음), 그 밖은 일반 <a>
+    return <SmartLink className={cls} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement> & { href: string })}>{inner}</SmartLink>;
   }
   return (
     <button type="button" className={cls} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>

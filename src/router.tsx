@@ -3,6 +3,8 @@ import App from './App';
 import { Home } from './pages/Home';
 import { ProductPage } from './pages/ProductPage';
 import { CasesPage } from './pages/CasesPage';
+import { QuoteListPage } from './pages/quote/QuoteListPage';
+import { QuoteWritePage } from './pages/quote/QuoteWritePage';
 
 const routes: RouteObject[] = [
   {
@@ -13,6 +15,8 @@ const routes: RouteObject[] = [
       { path: '/products/:category/:slug?', element: <ProductPage /> },
       // :category? — 없으면 전체. 검색어·페이지는 ?q= &page= (주소에 담아 새로고침·공유해도 그대로)
       { path: '/cases/:category?', element: <CasesPage /> },
+      { path: '/quote', element: <QuoteListPage /> },
+      { path: '/quote/write', element: <QuoteWritePage /> },
       { path: '*', element: <Home /> },
     ],
   },
