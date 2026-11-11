@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type M
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CASES, PRODUCTS, type CaseItem } from '../data/site';
 import { CASE_IMAGES } from '../data/caseImages';
-import { Media, cx } from '../components/ui';
+import { Media, SliderNav, cx } from '../components/ui';
 import { Contact } from '../sections/Contact';
 import s from './CasesPage.module.css';
 
@@ -37,7 +37,7 @@ export function CasesPage() {
 
   const catIndex = Math.max(0, CATEGORIES.findIndex((c) => c.key === category));
 
-  // 분류가 화면보다 넓을 때(가로 스크롤)만 ‹ › 버튼 — 사이트 공통 Tabs와 같은 방식. 크기 변화는 ResizeObserver로 감시
+  // 분류가 화면보다 넓을 때(가로 스크롤)만 아래에 SliderNav. 크기 변화는 ResizeObserver로 감시
   useEffect(() => {
     const list = catList.current;
     if (!list) return;
@@ -137,13 +137,7 @@ export function CasesPage() {
         {/* 분류 — 히어로 아래쪽에 걸친 흰 패널. 각 칸에 사례 수를 같이 보여 줘 '어디에 얼마나 있는지'를 먼저 알 수 있게 */}
         <nav className={s.catWrap} aria-label="시공사례 분류">
           <div className={cx(s.catPanel, catOverflow && s.catScroll)}>
-          {/* 화살표는 목록(ul) 바깥 — 목록 안에는 분류 항목만 있어야 스크린리더가 개수를 정확히 읽음 */}
-          {catOverflow && (
-            <button type="button" className={cx('dh-tabs-arrow', s.catArrow)} aria-label="이전 분류" disabled={catIndex === 0} onClick={() => goCat(-1)}>
-              <Chevron dir="left" />
-            </button>
-          )}
-          <ul ref={catList} className={s.cats}>
+          <ul ref={catList} id="case-cats" className={s.cats}>
             {CATEGORIES.map((c) => {
               const on = c.key === category;
               return (
@@ -159,12 +153,21 @@ export function CasesPage() {
               );
             })}
           </ul>
-          {catOverflow && (
-            <button type="button" className={cx('dh-tabs-arrow', s.catArrow)} aria-label="다음 분류" disabled={catIndex === CATEGORIES.length - 1} onClick={() => goCat(1)}>
-              <Chevron dir="right" />
-            </button>
-          )}
           </div>
+          {/* 분류가 넘칠 때(모바일)만 — 사이트 공통 슬라이더 컨트롤 [01 / 07 ‹ ›]. 몇 번째인지·뒤에 더 있는지를 숫자로 알려 줌 */}
+          {catOverflow && (
+            <SliderNav
+              className={s.catNav}
+              current={catIndex}
+              total={CATEGORIES.length}
+              onPrev={() => goCat(-1)}
+              onNext={() => goCat(1)}
+              prevDisabled={catIndex === 0}
+              nextDisabled={catIndex === CATEGORIES.length - 1}
+              controls="case-cats"
+              itemLabel="분류"
+            />
+          )}
         </nav>
 
         <div className={cx('container', s.body)}>
