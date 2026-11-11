@@ -8,11 +8,14 @@
 
 .qWrap { margin: 0; font: inherit; }
 .q { display: flex; align-items: center; gap: var(--space-4); width: 100%; padding: var(--space-5) var(--space-2); border: 0; background: none; font: inherit; text-align: left; color: var(--ink); cursor: pointer; transition: background-color .2s ease; }
-.q:hover { background: var(--surface-alt); }
+/* 호버는 배경 대신 글자·Q 색으로 — 배경을 깔면 아래 답 상자(안쪽 여백·둥근 모서리)와 겹쳐 보임 */
+.q:hover .qText { color: var(--accent-text); }
+.q:hover .mark { background: var(--accent); color: #ffffff; }
+.q:hover .chev { border-color: var(--accent-text); }
 .q:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-.mark { flex-shrink: 0; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); font-size: 15px; font-weight: 800; color: var(--accent-text); }
+.mark { transition: background-color .2s ease, color .2s ease; flex-shrink: 0; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-soft); font-size: 15px; font-weight: 800; color: var(--accent-text); }
 .open .q .mark { background: var(--brand); color: #ffffff; }
-.qText { flex: 1; min-width: 0; font-size: 17px; line-height: 26px; font-weight: 600; letter-spacing: -0.015em; word-break: keep-all; }
+.qText { flex: 1; min-width: 0; font-size: 17px; line-height: 26px; font-weight: 600; letter-spacing: -0.015em; word-break: keep-all; transition: color .2s ease; }
 .cat { display: block; margin-bottom: 2px; font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: .02em; color: var(--ink-subtle); }
 /* 꺾쇠 — 열리면 위로 */
 .chev { flex-shrink: 0; width: 10px; height: 10px; margin: 0 var(--space-2) 4px; border-right: 1.8px solid var(--ink-muted); border-bottom: 1.8px solid var(--ink-muted); transform: rotate(45deg); transition: transform .3s cubic-bezier(.22,1,.36,1), margin .3s ease; }
