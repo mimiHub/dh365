@@ -15,6 +15,18 @@
 - `src/pages` 폴더는 만들지 않음 (Next의 pages 라우터로 인식되어 충돌)
 - 링크·이동은 `@/lib/router` (`Link`, `useNavigate`, `useParams` …), 이미지는 `public/images`에 두고 `'/images/파일명'`으로 사용
 
+## 프로젝트 플러그인
+
+`.claude/settings.json`에 팀 공용 플러그인이 등록되어 있다. 저장소를 처음 열 때(폴더 신뢰 승인 시) Claude Code가 설치를 안내한다.
+
+| 플러그인 | 용도 |
+| --- | --- |
+| `nextjs@nextjs` (vercel/next.js 공식) | Next.js 스킬 — Cache Components·Partial Prefetching 적용, 실행 중인 dev 서버로 동작 검증 |
+| `playwright@claude-plugins-official` | 브라우저 자동화·E2E — 화면 확인, 클릭·이동 동작 검증, 스크린샷 |
+
+- 플러그인 도구(스킬·MCP)가 보이지 않으면 작업자에게 설치를 안내한다: `/plugin`에서 위 두 플러그인을 설치하거나, 터미널에서 `claude plugin install nextjs@nextjs --scope project` / `claude plugin install playwright@claude-plugins-official --scope project`
+- 화면을 추가·수정하면 가능하면 Playwright로 해당 페이지를 열어 콘솔 오류와 이동 동작을 확인한다.
+
 ## 커밋 규칙 — TASK 문서 동기화
 
 커밋하기 전에 반드시 아래를 확인한다.

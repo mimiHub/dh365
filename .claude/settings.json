@@ -1,0 +1,14 @@
+{
+  "enabledPlugins": {
+    "nextjs@nextjs": true,
+    "playwright@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "nextjs": {
+      "source": {
+        "source": "github",
+        "repo": "vercel/next.js"
+      }
+    }
+  }
+}
