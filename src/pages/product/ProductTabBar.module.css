@@ -1,0 +1,66 @@
+/* 제품 탭 바 — 흰 바탕, 아래 구분선. 회색 띠 바로 아래에 붙어 '흰 영역의 머리'가 됨 */
+.bar { background: var(--surface); }
+.tabRow { border-bottom: 1px solid var(--line); } /* 탭 줄 아래에만 선 — 칩 줄은 선 없이 */
+.list { display: flex; overflow-x: auto; scrollbar-width: none; }
+.list::-webkit-scrollbar { display: none; }
+/* 칸 균등 분할 */
+.list > li { flex: 1 0 0; min-width: max-content; } /* 기준 폭 0에서 똑같이 늘어나 칸 균등. 글자보다는 좁아지지 않음(넘치면 스크롤) */
+
+.tab { position: relative; display: flex; align-items: center; justify-content: center; height: 64px; padding: 0 var(--space-5); font-size: 16px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; transition: color .2s ease; }
+.tab:hover { color: var(--ink); }
+/* 선택: 위쪽 굵은 선(코아드 방식) — 회색 띠 경계에 걸쳐 '탭이 열린' 모양. scaleX로 펼쳐짐 */
+.tab::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--ink); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.tab[aria-current="page"] { color: var(--ink); font-weight: 700; }
+.tab[aria-current="page"]::before { transform: scaleX(1); }
+.tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+.mobile { display: none; }
+
+/* ── 2단계 탭 (PC 전용) ── 1단계 탭 바로 아래 붙은 연회색 띠. 글자 탭 + 사이 구분선, 선택은 파란 글자 + 밑줄
+   (칩처럼 떨어져 떠 있으면 '필터 버튼'으로 읽혀서, 탭에 붙여 하위 메뉴임을 보이게) */
+/* 위 소개 띠(회색)와 겹치지 않게 연한 파랑 — 선택 글자색(파랑)과 같은 계열이라 '하위 메뉴'로 묶여 보임 */
+.subRow { background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface)); border-bottom: 1px solid var(--line); }
+.subList { display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; }
+.subList::-webkit-scrollbar { display: none; }
+.subList > li { display: flex; align-items: center; }
+.subList > li + li::before { content: ""; width: 1px; height: 14px; background: var(--line-strong); } /* 항목 사이 세로 구분선 */
+.subTab { position: relative; display: flex; align-items: center; height: 56px; padding: 0 var(--space-6); font-size: 15px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; transition: color .2s ease; }
+.subTab:hover { color: var(--ink); }
+.subTab::after { content: ""; position: absolute; left: var(--space-6); right: var(--space-6); bottom: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+.subTab[aria-current="page"] { color: var(--accent-text); font-weight: 700; }
+.subTab[aria-current="page"]::after { transform: scaleX(1); }
+.subTab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+@media (max-width: 767px) {
+  .list, .subRow { display: none; }
+  .tabRow { border-bottom: 0; }
+  .mobile { border-bottom: 1px solid var(--line); }
+  .mobile { position: relative; display: block; padding-top: var(--space-4); padding-bottom: var(--space-4); }
+
+  .select { display: flex; align-items: center; width: 100%; height: 56px; padding: 0 var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); box-shadow: 0 1px 2px rgba(10, 42, 102, 0.04); transition: border-color .2s ease, box-shadow .2s ease; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+  /* 연한 테두리(사이트 톤) — 열렸을 때만 브랜드 블루로 강조 */
+  .select[aria-expanded="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .selectLabel { flex: none; margin-right: var(--space-3); padding-right: var(--space-3); border-right: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--ink-subtle); }
+  .selectValue { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 700; }
+  .chevron { flex: none; width: 8px; height: 8px; margin-left: var(--space-3); border-right: 2px solid var(--ink-subtle); border-bottom: 2px solid var(--ink-subtle); transform: translateY(-2px) rotate(45deg); transition: transform .2s ease; }
+  .chevronOpen { transform: translateY(2px) rotate(225deg); }
+
+  /* 패널 — 항상 상자 바로 아래. 내용 위에 떠서 레이아웃을 밀지 않음 */
+  .panel { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(100% - var(--space-4) + 6px); z-index: 20; max-height: 60vh; overflow-y: auto; padding: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); box-shadow: 0 2px 6px rgba(10, 42, 102, 0.12), 0 18px 40px rgba(10, 42, 102, 0.28); /* 가까운 그림자 + 넓은 그림자 2겹 — 뒤 사진과 확실히 분리 */ opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s ease, transform .18s ease, visibility 0s .18s; }
+  .panelOpen { opacity: 1; visibility: visible; transform: none; transition: opacity .18s ease, transform .18s ease; }
+  .group + .group { margin-top: var(--space-1); padding-top: var(--space-1); border-top: 1px solid var(--line); }
+  /* 1단계 — 링크든 머리글이든 같은 크기·굵기 */
+  .lv1 { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; padding: 0 var(--space-3); font-size: 16px; font-weight: 700; color: var(--ink); }
+  .groupLabel { cursor: default; }
+  .groupOn { color: var(--accent-text); }
+  .count { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--surface-alt); color: var(--ink-subtle); font-size: 11px; font-weight: 700; }
+  /* 2단계 — 들여쓰기 + 왼쪽 세로선, 한 단계 작고 가벼운 글씨 */
+  .children { margin: 0 0 var(--space-2) var(--space-5); padding-left: var(--space-2); border-left: 2px solid var(--line); }
+  .lv2 { min-height: 42px; padding: 0 var(--space-3); font-size: 15px; font-weight: 500; color: var(--ink-muted); }
+  .option { display: flex; align-items: center; border-radius: var(--radius-sm); }
+  .option:active { background: var(--surface-alt); }
+  .option[aria-current="page"] { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; }
+  .option[aria-current="page"]::after { content: ""; width: 10px; height: 5px; margin-left: auto; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg) translateY(-2px); }
+  .option:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+}

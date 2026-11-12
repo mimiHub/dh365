@@ -1,0 +1,65 @@
+/* 프로젝트 전역 — 리셋, 레이아웃 유틸, 공통 모션.
+   색·간격 값은 직접 쓰지 않고 design-system 토큰(var(--…))만 사용합니다. */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { margin: 0; min-width: 320px; font-family: var(--font-sans); font-size: 16px; line-height: 1.625; color: var(--ink); background: var(--surface); -webkit-font-smoothing: antialiased; word-break: keep-all; }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; }
+
+/* 섹션 테마: data-theme이 붙은 요소는 자기 배경·글자색을 다시 잡아야 토큰 전환이 보입니다 */
+[data-theme] { background: var(--surface); color: var(--ink); }
+
+.container { width: 100%; max-width: calc(var(--container) + var(--gutter) * 2); margin: 0 auto; padding: 0 var(--gutter); }
+.section { padding: var(--space-16) 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.skip-link { position: fixed; left: var(--space-4); top: -100px; z-index: var(--z-modal); padding: var(--space-3) var(--space-5); background: var(--accent); color: var(--on-accent); border-radius: var(--radius-pill); }
+.skip-link:focus { top: var(--space-4); }
+
+/* 탭 = 칩 한 줄 (PC·모바일 공통). 디자인 시스템의 '알약 트랙' 탭을 이 프로젝트에선 칩형으로 덮어씀.
+   넘치면 가로 스크롤 + 좌우 화살표(Tabs 컴포넌트가 넘침을 감지해 렌더) */
+/* 상하 padding 4px: 포커스 링(outline-offset)이 스크롤 박스에 잘리지 않게 */
+.dh-tabs { display: flex; max-width: none; padding: 4px 2px; gap: var(--space-2); border: 0; border-radius: 0; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.dh-tabs::-webkit-scrollbar { display: none; }
+.dh-tab { flex: none; border: 1px solid var(--line-strong); }
+.dh-tab:hover { border-color: var(--ink); }
+.dh-tab[aria-selected="true"] { border-color: var(--accent); }
+
+/* 탭 좌우 화살표 — Tabs 컴포넌트가 넘칠 때만 렌더.
+   [‹] [스크롤 영역(flex:1)] [›] 를 나란히 배치 (친구야 Chip.List 방식).
+   화살표가 칩 위에 겹쳐 뜨지 않고, 칩은 스크롤 영역 가장자리에서 깔끔하게 잘림 */
+.dh-tabs-wrap.is-overflow { display: flex; align-items: center; gap: var(--space-2); }
+.dh-tabs-wrap.is-overflow .dh-tabs { flex: 1; min-width: 0; } /* min-width:0 없으면 flex 자식이 내용 폭 이하로 안 줄어 스크롤이 안 생김 */
+.dh-tabs-arrow { flex: none; width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+.dh-tabs-arrow:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+.dh-tabs-arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.dh-tabs-arrow:disabled { border-color: var(--line); color: var(--ink-subtle); cursor: default; opacity: .6; }
+
+/* 이미지 플레이스홀더 라벨 (시안 단계) */
+.dh-media-label { position: absolute; left: var(--space-4); bottom: var(--space-4); font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.55); }
+
+/* 스크롤 등장 — useReveal 훅이 data-revealed 속성을 붙입니다 (className은 React 소유라 건드리지 않음) */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); transition-delay: var(--reveal-delay, 0ms); }
+.reveal[data-revealed] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { transform: none; transition: opacity .3s linear; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media (max-width: 1024px) {
+  :root { --gutter: 24px; }
+  .section { padding: var(--space-12) 0; }
+  .dh-heading-title { font-size: 34px; line-height: 46px; }
+  .dh-heading-desc { font-size: 16px; line-height: 26px; }
+}
+@media (max-width: 767px) {
+  :root { --gutter: 20px; }
+  .section { padding: var(--space-10) 0; }
+  .dh-heading-title { font-size: 28px; line-height: 38px; }
+  /* 모바일은 칩 크기만 한 단계 작게 */
+  .dh-tab { height: 40px; padding: 0 var(--space-5); font-size: 14px; }
+}

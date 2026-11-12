@@ -1,0 +1,47 @@
+/* 관리자 틀 — 왼쪽 네이비 메뉴(240) + 본문(연회색 바탕 위 흰 패널들) */
+.shell { --side-w: 240px; --top-h: 60px; display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); min-height: 100vh; background: var(--surface-alt); color: var(--ink); }
+/* embed — 카탈로그 안 미리보기: 화면 높이 대신 고정 높이, 서랍도 이 상자 안에서 */
+.embed { position: relative; min-height: 0; height: 720px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-md); }
+.embed .main { overflow-y: auto; }
+
+.side { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; background: var(--brand); color: #ffffff; overflow-y: auto; }
+.embed .side { position: relative; height: auto; }
+.brand { display: flex; align-items: center; gap: var(--space-2); height: var(--top-h); padding: 0 var(--space-5); border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.logo { width: 112px; height: auto; filter: brightness(0) invert(1); }
+.brandTag { padding: 2px 6px; border-radius: var(--radius-sm); background: rgba(255, 255, 255, .14); font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+
+.menu { display: grid; gap: 2px; padding: var(--space-4) var(--space-3); }
+.menuItem { display: flex; align-items: center; gap: var(--space-3); width: 100%; height: 44px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-sm); background: none; font: inherit; font-size: 15px; font-weight: 500; color: rgba(255, 255, 255, .72); text-align: left; text-decoration: none; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+.menuItem:hover { background: rgba(255, 255, 255, .08); color: #ffffff; }
+.menuItem:focus-visible { outline: 2px solid #9cc4f5; outline-offset: -2px; }
+.on, .on:hover { background: rgba(255, 255, 255, .14); color: #ffffff; font-weight: 700; box-shadow: inset 3px 0 0 #9cc4f5; }
+.menuLabel { flex: 1; }
+.badge { min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-pill); background: var(--fire); font-size: 11px; line-height: 20px; font-weight: 700; color: #ffffff; text-align: center; font-variant-numeric: tabular-nums; }
+
+.main { display: flex; flex-direction: column; min-width: 0; }
+.top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; height: var(--top-h); padding: 0 var(--space-6); background: var(--surface); border-bottom: 1px solid var(--line); }
+.menuBtn { display: none; place-items: center; width: 40px; height: 40px; margin-left: calc(var(--space-2) * -1); border: 0; border-radius: var(--radius-sm); background: none; color: var(--ink); cursor: pointer; }
+.menuBtn:hover { background: var(--surface-alt); }
+.topRight { display: flex; align-items: center; gap: var(--space-4); margin-left: auto; }
+.user { font-size: 14px; font-weight: 600; color: var(--ink-muted); }
+.logout { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-pill); background: var(--surface); font: inherit; font-size: 13px; color: var(--ink-muted); cursor: pointer; }
+.logout:hover { border-color: var(--line-strong); color: var(--ink); }
+.content { flex: 1; padding: var(--space-6); }
+
+.scrim { display: none; }
+
+/* 1024px 이하 — 메뉴는 왼쪽 서랍. embed는 상자 폭 기준이 아니라 화면 폭 기준이므로 카탈로그에서 창을 줄여 확인 */
+@media (max-width: 1024px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .side { position: fixed; z-index: 20; left: 0; top: 0; bottom: 0; width: var(--side-w); height: auto; transform: translateX(-100%); transition: transform .3s cubic-bezier(.22,1,.36,1); }
+  .embed .side { position: absolute; }
+  .open .side { transform: none; box-shadow: var(--shadow-float); }
+  .scrim { position: fixed; z-index: 19; inset: 0; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .embed .scrim { position: absolute; }
+  .open .scrim { display: block; opacity: 1; pointer-events: auto; }
+  .scrim { display: block; }
+  .menuBtn { display: grid; }
+  .top { padding: 0 var(--space-4); }
+  .content { padding: var(--space-4); }
+}
+@media (prefers-reduced-motion: reduce) { .side, .scrim { transition: none; } }

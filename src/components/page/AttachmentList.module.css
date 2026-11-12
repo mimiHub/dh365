@@ -1,0 +1,9 @@
+.list { display: grid; grid-template-columns: minmax(0, 1fr); /* 기본 1fr은 최소폭이 '내용 폭'이라 긴 파일명이 칸을 밀어냄 → 0까지 줄 수 있게 */ gap: var(--space-2); }
+.item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); font-size: 15px; }
+.icon { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent-text); }
+.name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-weight: 500; }
+.size { flex-shrink: 0; white-space: nowrap; color: var(--ink-subtle); font-size: 13px; font-variant-numeric: tabular-nums; }
+.down { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; color: var(--brand); border: 1px solid var(--line-strong); transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+a.down:hover { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+a.down:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+span.down { opacity: .4; }

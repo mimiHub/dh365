@@ -1,0 +1,10 @@
+.card { padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+.label { display: flex; align-items: center; gap: var(--space-2); font-size: 14px; font-weight: 600; color: var(--ink-muted); }
+.icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent-text); }
+.value { margin-top: var(--space-3); font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.unit { margin-left: 4px; font-size: 15px; font-weight: 600; color: var(--ink-subtle); }
+.delta { margin-top: var(--space-1); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.since { font-weight: 400; color: var(--ink-subtle); }
+.good { color: var(--accent-text); }
+.bad { color: var(--fire-text); }
+.neutral { color: var(--ink-muted); }

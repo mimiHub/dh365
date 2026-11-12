@@ -1,0 +1,14 @@
+.stats { position: relative; overflow: hidden; }
+.deco { position: absolute; top: 0; right: 0; width: 34%; height: 100%; background: repeating-linear-gradient(180deg, rgba(196,200,207,0.08) 0 30px, transparent 30px 34px); pointer-events: none; }
+.deco::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: var(--accent); }
+.inner { position: relative; display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-12); align-items: end; }
+.more { margin-top: var(--space-8); }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-10) var(--space-8); }
+@media (max-width: 1024px) {
+  .inner { grid-template-columns: 1fr; }
+  .deco { width: 50%; opacity: .5; }
+}
+@media (max-width: 767px) {
+  .grid { grid-template-columns: 1fr; gap: var(--space-6); }
+  .grid :global(.dh-stat-value) { font-size: 44px; line-height: 52px; }
+}

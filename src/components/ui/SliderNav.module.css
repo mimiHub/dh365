@@ -1,0 +1,12 @@
+/* 슬라이더 컨트롤 — 랜딩 제품 슬라이더 디자인 그대로 (테두리 원 + 장수) */
+.nav { flex: none; display: flex; align-items: center; gap: var(--space-2); }
+.count { margin-right: var(--space-3); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+.count strong { color: var(--ink); }
+.arrow { width: 56px; height: 56px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.arrow:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+.arrow:disabled { opacity: .35; cursor: default; }
+.arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+@media (max-width: 767px) {
+  .arrow { width: 44px; height: 44px; } /* 터치 타깃 최소 44px */
+}

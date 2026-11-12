@@ -1,0 +1,11 @@
+/* 견적문의 목록 — 머리·검색·표는 components/page 공용, 여기는 견적문의만의 것 */
+.body { max-width: calc(var(--container-narrow) + var(--gutter) * 2); padding-top: var(--space-12); padding-bottom: var(--space-16); }
+.write { flex-shrink: 0; }
+.notice { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-6) 0 var(--space-5); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--accent-soft); font-size: 14px; line-height: 20px; color: var(--accent-text); }
+
+@media (max-width: 767px) {
+  .body { padding-top: var(--space-10); padding-bottom: var(--space-12); }
+  .write { width: 100%; }
+  .notice { align-items: flex-start; font-size: 13px; }
+  .notice svg { margin-top: 2px; flex-shrink: 0; }
+}

@@ -1,0 +1,45 @@
+.slogan { display: flex; flex-direction: column; font-size: 96px; line-height: 100px; font-weight: 800; letter-spacing: -0.04em; color: var(--brand); }
+.em { color: var(--accent-text); }
+
+.intro { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); margin-top: var(--space-12); padding-top: var(--space-10); border-top: 1px solid var(--line); }
+.lead { font-size: 30px; line-height: 44px; font-weight: 700; letter-spacing: -0.025em; }
+.body { font-size: 17px; line-height: 30px; color: var(--ink-muted); }
+.more { margin-top: var(--space-6); }
+
+.strengths { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-10); margin-top: var(--space-16); align-items: stretch; }
+.list { counter-reset: none; border-top: 2px solid var(--ink); }
+.item { border-bottom: 1px solid var(--line); }
+.itemHead { width: 100%; display: flex; align-items: baseline; gap: var(--space-5); padding: var(--space-6) 0; border: 0; background: none; text-align: left; cursor: pointer; color: var(--ink-subtle); transition: color .25s ease; }
+.itemOn .itemHead, .itemHead:hover { color: var(--ink); }
+.itemHead:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.no { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+.itemOn .no { color: var(--accent-text); }
+.itemTitle { font-size: 26px; line-height: 36px; font-weight: 700; letter-spacing: -0.02em; }
+/* grid-template-rows 0fr↔1fr: height:auto를 애니메이션하는 표준 트릭 (자식은 한 개의 래퍼) */
+.itemBody { display: grid; grid-template-rows: 0fr; overflow: hidden; transition: grid-template-rows .5s cubic-bezier(.22,1,.36,1); }
+.itemBody > * { min-height: 0; }
+.itemOn .itemBody { grid-template-rows: 1fr; }
+.itemBody p { padding-left: 44px; font-size: 16px; line-height: 27px; color: var(--ink-muted); }
+.points { padding: var(--space-4) 0 var(--space-6) 44px; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.points li { padding: 4px 12px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent-text); font-size: 13px; font-weight: 600; }
+
+.figure { position: relative; }
+.figure::before { content: ""; position: absolute; right: -24px; bottom: -24px; width: 60%; height: 60%; background: var(--silver); opacity: .35; }
+.media { position: relative; height: 100%; min-height: 460px; animation: fade .6s ease both; }
+@keyframes fade { from { opacity: .3; } to { opacity: 1; } }
+
+/* 지사 지도·시험성적서처럼 사진이 아니라 글자가 있는 문서 이미지는 cover로 자르면 내용이 잘림 → contain + 여백 */
+.docMedia { background: var(--surface-alt); }
+.docMedia :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: var(--space-6); box-sizing: border-box; }
+
+@media (max-width: 1024px) {
+  .slogan { font-size: 64px; line-height: 70px; }
+  .intro, .strengths { grid-template-columns: 1fr; gap: var(--space-8); }
+  .lead { font-size: 24px; line-height: 36px; }
+  .media { min-height: 320px; }
+  .figure::before { display: none; }
+}
+@media (max-width: 767px) {
+  .slogan { font-size: 40px; line-height: 46px; }
+  .itemTitle { font-size: 20px; line-height: 30px; }
+}

@@ -1,0 +1,17 @@
+.head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-6); scroll-margin-top: calc(var(--header-height) + var(--space-5)); }
+.title { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-4); font-size: 32px; line-height: 44px; font-weight: 700; letter-spacing: -0.025em; color: var(--ink); }
+.title em { font-style: normal; color: var(--accent-text); }
+.total { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink-subtle); }
+.total strong { color: var(--accent-text); font-weight: 700; font-variant-numeric: tabular-nums; }
+.tools { display: flex; align-items: center; gap: var(--space-3); }
+@media (max-width: 1024px) {
+  .head { flex-direction: column; align-items: stretch; }
+  /* 세로 배치에선 제목 줄이 한 줄을 다 차지 → 건수·페이지는 오른쪽 끝으로 (양 끝 정렬)
+     space-between 대신 margin-left:auto — 제목이 길어 건수가 다음 줄로 내려가도 오른쪽에 붙음 */
+  .total { margin-left: auto; }
+}
+@media (max-width: 767px) {
+  .title { font-size: 26px; line-height: 36px; }
+  .tools { flex-wrap: wrap; }
+  .tools > :global(.dh-btn) { width: 100%; }
+}

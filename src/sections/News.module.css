@@ -1,0 +1,29 @@
+.cols { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-10); margin-top: var(--space-10); }
+.colHead { display: flex; justify-content: space-between; align-items: center; padding-bottom: var(--space-4); border-bottom: 2px solid var(--ink); }
+.colTitle { font-size: 22px; line-height: 32px; font-weight: 700; }
+
+.notice { display: grid; grid-template-columns: 120px 1fr; column-gap: var(--space-6); row-gap: var(--space-2); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); transition: background-color .2s ease; }
+.notice:hover { background: var(--surface-alt); }
+.notice:hover .nTitle { color: var(--accent-text); }
+.notice:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.date { grid-row: span 2; font-size: 14px; line-height: 26px; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+.nTitle { font-size: 18px; line-height: 26px; font-weight: 600; transition: color .2s ease; }
+.summary { grid-column: 2; font-size: 14px; line-height: 22px; color: var(--ink-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.archives { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: var(--space-6); background: var(--line); border: 1px solid var(--line); }
+.archive { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 168px; padding: var(--space-5); background: var(--surface); transition: background-color .25s ease; }
+.archive:hover { background: var(--accent); }
+.archive:hover .aEn, .archive:hover .aKo, .archive:hover .aArrow { color: var(--on-accent); }
+.archive:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.aEn { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent-text); }
+.aKo { font-size: 18px; line-height: 26px; font-weight: 600; padding-right: var(--space-8); }
+.aArrow { position: absolute; right: var(--space-5); bottom: var(--space-5); font-size: 20px; color: var(--ink-subtle); transition: transform .25s ease; }
+.archive:hover .aArrow { transform: translateX(4px); }
+
+@media (max-width: 1024px) { .cols { grid-template-columns: 1fr; } }
+@media (max-width: 767px) {
+  .notice { grid-template-columns: 1fr; }
+  .date { grid-row: auto; }
+  .summary { grid-column: 1; }
+  .archive { min-height: 128px; }
+}

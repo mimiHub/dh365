@@ -1,0 +1,166 @@
+import logo from '../../assets/logo.png';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { NAV, COMPANY, type NavItem } from '../../data/site';
+import { Button, SmartLink, cx } from '../ui';
+import { useScrolled } from '../../hooks/useScrolled';
+import s from './Header.module.css';
+
+/**
+ * 지금 주소가 어느 대메뉴에 속하는지 — 주소의 첫 마디로 비교 ('/library/spec/11' → 'library')
+ * 대메뉴 주소만 보면 고객센터(/notice)에 있는 설계문의(/design)·FAQ(/faq)를 놓치므로 하위 메뉴 주소까지 같이 봄.
+ * '/#about' 같은 메인 섹션 앵커는 '페이지'가 아니라서 비교하지 않음
+ */
+const sectionOf = (href: string) => (href.startsWith('/') && !href.startsWith('/#') ? href.split(/[/?#]/)[1] : '');
+const isCurrentSection = (item: NavItem, pathname: string) => {
+  const cur = sectionOf(pathname);
+  return !!cur && [item, ...(item.children ?? [])].some((n) => sectionOf(n.href) === cur);
+};
+/** 하위 메뉴 — 그 주소이거나 그 아래 주소면 현재 페이지 ('/library/spec/11'도 시방서) */
+const isCurrentPage = (href: string, pathname: string) => {
+  const path = href.split(/[?#]/)[0];
+  return !!sectionOf(href) && (pathname === path || pathname.startsWith(`${path}/`));
+};
+
+/**
+ * GNB — 히어로 위에서는 투명+흰 글자, 스크롤하거나 메뉴에 마우스를 올리면 흰 배경.
+ * PC: 1뎁스 hover 시 전체 2뎁스를 한 번에 펼치는 '전체형 드롭다운'(코아드 방식)
+ * 모바일(≤1024): 햄버거 → 전체화면 메뉴 + 아코디언
+ */
+export function Header() {
+  const scrolled = useScrolled(40);
+  // 투명 헤더는 메인 히어로 위에서만. 하위 페이지는 상단에 흰 카테고리 탭이 붙으므로 처음부터 흰 배경
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
+  const currentIdx = NAV.findIndex((item) => isCurrentSection(item, pathname));
+  const [megaOpen, setMegaOpen] = useState(false);
+
+  /**
+   * 호버 인텐트(hover intent) — 마우스가 대메뉴 위에 '머물렀을 때만' 메가메뉴를 엶.
+   * 하위 페이지는 대메뉴 바로 아래에 카테고리 탭이 붙어 있어서, 탭으로 가는 길에 대메뉴를 스치기만 해도
+   * 메가메뉴(300px)가 펼쳐져 탭을 덮었음. 열 때만 짧게 기다리고, 닫을 때는 바로 닫음.
+   */
+  const openTimer = useRef<number | undefined>(undefined);
+  const cancelOpen = () => window.clearTimeout(openTimer.current);
+  const openMegaSoon = () => {
+    cancelOpen();
+    openTimer.current = window.setTimeout(() => setMegaOpen(true), 180);
+  };
+  const closeMega = () => {
+    cancelOpen();
+    setMegaOpen(false);
+  };
+  useEffect(() => cancelOpen, []); // 언마운트 시 남은 타이머 정리
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+  // 모바일 메뉴가 열리면 헤더는 투명 + 흰 글자(네이비 오버레이 위에 떠 있음)
+  const solid = (scrolled || megaOpen || !isHome) && !mobileOpen;
+
+  // 모바일 메뉴가 열려 있으면 배경 스크롤 잠금 + ESC로 닫기
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    // 다른 플로팅 요소(우측 퀵메뉴)가 메뉴 위에 뜨지 않도록 body에 상태 표시
+    document.body.toggleAttribute('data-menu-open', mobileOpen);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMobileOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen]);
+
+  return (
+    <header
+      className={cx(s.header, solid && s.solid, scrolled && !mobileOpen && s.compact, mobileOpen && s.menuOpen)}
+      onMouseLeave={closeMega}
+    >
+      <div className={cx('container', s.bar)}>
+        <SmartLink href="/" className={s.logo} aria-label={`${COMPANY.name} 홈`}>
+          <img src={logo} alt={COMPANY.name} />
+        </SmartLink>
+
+        <nav className={s.gnb} aria-label="주 메뉴" onMouseEnter={openMegaSoon}
+          // 키보드 탐색: 포커스가 들어오면 바로 열고(기다릴 이유 없음), 포커스가 대메뉴 밖으로 나가면 닫음
+          onFocus={() => setMegaOpen(true)}
+          onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && closeMega()}
+        >
+          <ul className={s.depth1}>
+            {NAV.map((item, i) => (
+              <li key={item.label}>
+                {/* aria-current: 화면엔 선택 표시, 스크린리더엔 '현재 위치'. 대메뉴는 '이 묶음 안'이라 true, 하위 메뉴는 정확한 페이지라 page */}
+                <SmartLink href={item.href} className={s.d1link} aria-current={i === currentIdx ? 'true' : undefined}>
+                  {item.label}
+                </SmartLink>
+                {item.children && (
+                  <ul className={cx(s.depth2, megaOpen && s.depth2Open)}>
+                    {item.children.map((c) => (
+                      <li key={c.label}>
+                        <SmartLink href={c.href} onClick={closeMega} aria-current={isCurrentPage(c.href, pathname) ? 'page' : undefined}>{c.label}</SmartLink>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className={s.util}>
+          <Button href="/quote/write" size="sm" className={s.cta}>견적문의</Button>
+          <button
+            type="button"
+            className={s.burger}
+            aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            onClick={() => {
+              // 열 때마다 지금 있는 대메뉴를 펼친 채로 (메인 등 해당 없으면 첫 번째)
+              if (!mobileOpen) setOpenIdx(Math.max(0, currentIdx));
+              setMobileOpen((v) => !v);
+            }}
+          >
+            {/* SVG 한 장으로 그림: span 3개 + gap 방식은 브라우저 확대(90%, 110%…)에서
+                줄마다 픽셀 반올림이 달라 한 줄만 두꺼워 보임 */}
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <rect className={s.l1} x="3" y="5" width="18" height="2" rx="1" />
+              <rect className={s.l2} x="3" y="11" width="18" height="2" rx="1" />
+              <rect className={s.l3} x="3" y="17" width="18" height="2" rx="1" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* 메가 드롭다운 배경판 — 2뎁스 목록은 각 1뎁스 아래에 세로로 놓이고, 이 판이 그 뒤를 받쳐줍니다 */}
+      <div className={cx(s.megaBg, megaOpen && s.megaBgOpen)} aria-hidden="true" />
+
+      {/* hidden 속성 대신 inert: hidden은 display:none이라 닫힐 때 애니메이션이 안 보임.
+          inert는 화면엔 남겨두되 포커스·클릭·스크린리더에서 빼 줌 */}
+      <div id="mobile-menu" className={cx(s.mobile, mobileOpen && s.mobileOpen)} inert={!mobileOpen}>
+        <ul>
+          {NAV.map((item, i) => (
+            <li key={item.label} className={s.mItem} style={{ ['--i' as string]: i }}>
+              <button
+                type="button"
+                className={cx(s.mHead, i === currentIdx && s.mHeadOn)}
+                aria-expanded={openIdx === i}
+                onClick={() => setOpenIdx(openIdx === i ? null : i)}
+              >
+                {item.label}
+              </button>
+              {openIdx === i && item.children && (
+                <ul className={s.mSub}>
+                  {item.children.map((c) => (
+                    <li key={c.label}>
+                      <SmartLink href={c.href} onClick={() => setMobileOpen(false)} aria-current={isCurrentPage(c.href, pathname) ? 'page' : undefined}>{c.label}</SmartLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+        <a href={`tel:${COMPANY.tel}`} className={s.mTel} style={{ ['--i' as string]: NAV.length }}>
+          <span>견적상담</span>
+          {COMPANY.tel}
+        </a>
+      </div>
+    </header>
+  );
+}

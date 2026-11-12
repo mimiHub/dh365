@@ -1,0 +1,7 @@
+.head { padding-bottom: var(--space-6); border-bottom: 2px solid var(--brand); }
+.top { display: flex; align-items: center; gap: var(--space-3); }
+.no { font-size: 13px; letter-spacing: .04em; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+.title { margin-top: var(--space-3); font-size: 30px; line-height: 42px; font-weight: 700; letter-spacing: -0.025em; word-break: keep-all; text-wrap: balance; }
+.meta { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-3); font-size: 14px; color: var(--ink-subtle); }
+.meta span + span::before { content: ""; display: inline-block; width: 1px; height: 12px; margin-right: var(--space-4); background: var(--line-strong); vertical-align: -1px; }
+@media (max-width: 767px) { .title { font-size: 22px; line-height: 32px; } }
