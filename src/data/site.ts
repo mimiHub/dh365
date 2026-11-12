@@ -43,12 +43,12 @@ export const NAV: NavItem[] = [
   },
   {
     label: '자료실',
-    href: '/#news',
+    href: '/library/spec',
     children: [
-      { label: '시방서·일람표 및 설계도면', href: '/#news' },
-      { label: '보도자료', href: '/#news' },
-      { label: '관련법규', href: '/#news' },
-      { label: '동영상자료', href: '/#news' },
+      { label: '시방서·일람표 및 설계도면', href: '/library/spec' },
+      { label: '보도자료', href: '/library/press' },
+      { label: '관련법규', href: '/library/law' },
+      { label: '동영상자료', href: '/library/video' },
     ],
   },
   { label: '견적문의', href: '/quote', children: [{ label: '견적문의', href: '/quote' }, { label: '견적문의 작성', href: '/quote/write' }] },
@@ -194,10 +194,10 @@ export const NOTICES = [
 ];
 
 export const ARCHIVES = [
-  { label: '시방서·일람표 및 설계도면', en: 'SPECIFICATION', href: '#' },
-  { label: '보도자료', en: 'PRESS', href: '#' },
-  { label: '관련법규', en: 'REGULATIONS', href: '#' },
-  { label: '동영상자료', en: 'VIDEO', href: '#' },
+  { label: '시방서·일람표 및 설계도면', en: 'SPECIFICATION', href: '/library/spec' },
+  { label: '보도자료', en: 'PRESS', href: '/library/press' },
+  { label: '관련법규', en: 'REGULATIONS', href: '/library/law' },
+  { label: '동영상자료', en: 'VIDEO', href: '/library/video' },
 ];
 
 // 현재 사이트 하단 배너 링크. 배너가 이미지라 기관명 확인 필요 → 우선 도메인 표기

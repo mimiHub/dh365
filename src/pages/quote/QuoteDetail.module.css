@@ -27,14 +27,6 @@
 .post { animation: postIn .5s cubic-bezier(.22,1,.36,1); }
 @keyframes postIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .post { animation: none; } }
-.postHead { padding-bottom: var(--space-6); border-bottom: 2px solid var(--brand); }
-.postTop { display: flex; align-items: center; gap: var(--space-3); }
-.no { font-size: 13px; letter-spacing: .04em; color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
-.chip { display: inline-block; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--surface-alt); border: 1px solid var(--line); font-size: 13px; line-height: 18px; font-weight: 600; color: var(--ink-subtle); }
-.chipDone { background: var(--accent-soft); border-color: transparent; color: var(--accent-text); }
-.postTitle { margin-top: var(--space-3); font-size: 30px; line-height: 42px; font-weight: 700; letter-spacing: -0.025em; word-break: keep-all; text-wrap: balance; }
-.postMeta { display: flex; gap: var(--space-4); margin-top: var(--space-3); font-size: 14px; color: var(--ink-subtle); }
-.postMeta span + span::before { content: ""; display: inline-block; width: 1px; height: 12px; margin-right: var(--space-4); background: var(--line-strong); vertical-align: -1px; }
 
 .sample { margin-top: var(--space-5); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); background: var(--surface-alt); font-size: 13px; color: var(--ink-subtle); }
 
@@ -44,8 +36,6 @@
 .info div:nth-last-child(-n + 2) { grid-column: 1 / -1; } /* 첨부자료·동영상은 한 줄 전체 */
 .info dt { font-size: 14px; font-weight: 600; color: var(--ink-muted); }
 .info dd { margin: 0; min-width: 0; font-size: 15px; color: var(--ink); word-break: keep-all; }
-.files { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.files li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--surface-alt); font-size: 14px; }
 
 .content { margin-top: var(--space-8); }
 .contentTitle { font-size: 16px; font-weight: 700; }
@@ -67,7 +57,6 @@
   /* 세로 배치에선 flex:1이 '높이'를 0부터 늘리는 뜻이 돼 입력칸이 납작해짐 → 세로일 땐 크기 고정 */
   .gateInput { flex: none; width: 100%; }
   .gateBtn { width: 100%; }
-  .postTitle { font-size: 22px; line-height: 32px; }
   .info { grid-template-columns: 1fr; }
   .info div { grid-template-columns: 96px 1fr; padding: var(--space-3) 0; }
   .answer { padding: var(--space-5); }

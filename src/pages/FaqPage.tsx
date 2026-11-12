@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { COMPANY } from '../data/site';
 import { FAQS, FAQ_CATEGORIES, type FaqCategory } from '../data/faq';
 import { Button, SmartLink, Tabs, cx, type TabItem } from '../components/ui';
-import { QuoteHero } from './quote/QuoteHero';
+import { SubHero } from '../components/page';
 import s from './FaqPage.module.css';
 
 type Filter = 'all' | FaqCategory;
 const TABS: TabItem<Filter>[] = [{ value: 'all', label: '전체' }, ...FAQ_CATEGORIES];
-const HERO = { en: 'FAQ', title: '자주 묻는 질문', desc: '제품·견적·시공에 대해 자주 받는 질문을 모았습니다.' };
 const labelOf = (c: FaqCategory) => FAQ_CATEGORIES.find((x) => x.value === c)?.label ?? '';
 
 /**
@@ -30,7 +29,7 @@ export function FaqPage() {
 
   return (
     <>
-      <QuoteHero board={HERO} />
+      <SubHero en="FAQ" title="자주 묻는 질문" desc="제품·견적·시공에 대해 자주 받는 질문을 모았습니다." />
 
       <div className={cx('container', s.body)}>
         <Tabs className={s.tabs} items={TABS} value={filter} onChange={setFilter} label="질문 분류" idPrefix="faq" />

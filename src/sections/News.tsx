@@ -1,5 +1,5 @@
 import { ARCHIVES, NOTICES } from '../data/site';
-import { MoreLink, cx } from '../components/ui';
+import { MoreLink, SmartLink, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
 import s from './News.module.css';
 
@@ -38,11 +38,11 @@ export function News() {
             <ul className={s.archives}>
               {ARCHIVES.map((a) => (
                 <li key={a.label}>
-                  <a href={a.href} className={s.archive}>
+                  <SmartLink href={a.href} className={s.archive}>
                     <span className={s.aEn}>{a.en}</span>
                     <span className={s.aKo}>{a.label}</span>
                     <span className={s.aArrow} aria-hidden="true">→</span>
-                  </a>
+                  </SmartLink>
                 </li>
               ))}
             </ul>

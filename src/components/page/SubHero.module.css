@@ -1,16 +1,20 @@
 .hero { position: relative; margin-top: var(--header-height); height: 360px; display: grid; place-items: center; color: #ffffff; background: #0b1424; overflow: hidden; }
+.withNav { height: 440px; }
 .bg { position: absolute; inset: 0; }
-.bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; filter: saturate(.4); animation: zoom 8s ease-out both; }
-/* 네이비로 눌러 글자 대비 확보 + 오른쪽 위 브랜드 블루 빛 */
+.photo { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; filter: saturate(.4); animation: zoom 8s ease-out both; }
+/* 네이비로 눌러 글자 대비 확보 + 오른쪽 위 브랜드 블루 빛 (직접 그린 배경 위에도 같이 깔림) */
 .bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(600px 300px at 80% 10%, rgba(1, 99, 206, .35), transparent 70%), linear-gradient(180deg, rgba(10, 42, 102, .72), rgba(6, 14, 30, .82)); }
 @keyframes zoom { from { transform: scale(1.06); } to { transform: none; } }
 .text { position: relative; z-index: 1; padding: 0 var(--gutter); text-align: center; }
+.withNav .text { margin-bottom: 72px; } /* 아래에 걸치는 분류 패널만큼 위로 */
 .en { font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: #9cc4f5; }
 .title { margin-top: var(--space-3); font-size: 56px; line-height: 68px; font-weight: 800; letter-spacing: -0.03em; text-shadow: 0 2px 16px rgba(0, 0, 0, .3); }
 .desc { margin-top: var(--space-4); font-size: 18px; line-height: 28px; opacity: .85; word-break: keep-all; }
-@media (prefers-reduced-motion: reduce) { .bg img { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .photo { animation: none; } }
 @media (max-width: 767px) {
   .hero { height: 300px; }
+  .withNav { height: 360px; }
+  .withNav .text { margin-bottom: 48px; }
   .title { font-size: 40px; line-height: 52px; }
   .desc { font-size: 15px; line-height: 24px; }
 }

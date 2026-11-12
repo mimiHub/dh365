@@ -1,7 +1,7 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { COMPANY } from '../../data/site';
-import { Button, cx } from '../../components/ui';
-import { QuoteHero } from './QuoteHero';
+import { Button, Icon, cx } from '../../components/ui';
+import { SubHero } from '../../components/page';
 import type { Board } from './boards';
 import { Contact } from '../../sections/Contact';
 import screenImg from '../../assets/product-screen-shutter.png';
@@ -136,16 +136,14 @@ export function QuoteWritePage({ board }: { board: Board }) {
 
   return (
     <>
-      <QuoteHero board={board} sub="글쓰기" />
+      <SubHero en={board.en} title={board.title} desc={board.desc} sub="글쓰기" />
 
       <div className={cx('container', s.body)}>
 
         {done ? (
           <div className={s.done} role="status">
             <span className={s.doneIcon} aria-hidden="true">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m5 12.5 4.5 4.5L19 7.5" />
-              </svg>
+              <Icon name="check" size={36} strokeWidth={2} />
             </span>
             <h2 className={s.doneTitle}>{board.title}가 접수되었습니다</h2>
             <p className={s.doneDesc}>담당자가 내용을 검토한 뒤 남겨 주신 연락처로 안내해 드리겠습니다.<br />급하신 경우 {COMPANY.tel}로 전화 주세요.</p>
@@ -242,9 +240,7 @@ export function QuoteWritePage({ board }: { board: Board }) {
                             </svg>
                           )}
                           <span className={s.productTick} aria-hidden="true">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="m5 12.5 4.5 4.5L19 7.5" />
-                            </svg>
+                            <Icon name="check" size={14} strokeWidth={3} />
                           </span>
                         </span>
                         <span className={s.productName}>{p.label}</span>
@@ -291,9 +287,7 @@ export function QuoteWritePage({ board }: { board: Board }) {
                   {/* 실제 file input은 숨기고 label이 버튼 역할 — 모양을 자유롭게 바꾸는 표준 방법 */}
                   <input ref={fileInput} id="q-files" type="file" multiple accept="image/*,.pdf,.dwg,.dxf,.hwp,.doc,.docx,.xls,.xlsx" className="sr-only" onChange={addFiles} aria-describedby="hint-files" disabled={files.length >= MAX_FILES} />
                   <label htmlFor="q-files" className={cx(s.fileBtn, files.length >= MAX_FILES && s.fileBtnOff)}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="m20 11.5-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8" />
-                    </svg>
+                    <Icon name="clip" />
                     파일 선택
                   </label>
                   <span id="hint-files" className={s.fileHint}>
@@ -307,9 +301,7 @@ export function QuoteWritePage({ board }: { board: Board }) {
                         <span className={s.fileName}>{f.name}</span>
                         <span className={s.fileSize}>{(f.size / 1024 / 1024).toFixed(1)}MB</span>
                         <button type="button" className={s.fileRemove} onClick={() => removeFile(i)} aria-label={`${f.name} 삭제`}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-                            <path d="M6 6l12 12M18 6 6 18" />
-                          </svg>
+                          <Icon name="close" size={14} strokeWidth={2.2} />
                         </button>
                       </li>
                     ))}

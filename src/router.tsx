@@ -8,6 +8,8 @@ import { QuoteWritePage } from './pages/quote/QuoteWritePage';
 import { QuoteDetailPage } from './pages/quote/QuoteDetailPage';
 import { BOARDS } from './pages/quote/boards';
 import { FaqPage } from './pages/FaqPage';
+import { LibraryPage } from './pages/library/LibraryPage';
+import { LibraryDetailPage } from './pages/library/LibraryDetailPage';
 
 const routes: RouteObject[] = [
   {
@@ -27,6 +29,8 @@ const routes: RouteObject[] = [
       { path: '/design/write', element: <QuoteWritePage key="design" board={BOARDS.design} /> },
       { path: '/design/:id', element: <QuoteDetailPage board={BOARDS.design} /> },
       { path: '/faq', element: <FaqPage /> },
+      { path: '/library/:category?', element: <LibraryPage /> },
+      { path: '/library/:category/:id', element: <LibraryDetailPage /> },
       { path: '*', element: <Home /> },
     ],
   },

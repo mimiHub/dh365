@@ -1,162 +1,59 @@
-import { useRef, type FormEvent } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import type { Board } from './boards';
-import { Button, Pagination, cx } from '../../components/ui';
-import { QuoteHero } from './QuoteHero';
+import { useListQuery } from '../../hooks/useListQuery';
+import { Button, Icon, Pagination, cx } from '../../components/ui';
+import { BoardTable, EmptyState, ListHead, SearchBox, StatusChip, SubHero } from '../../components/page';
 import s from './QuoteList.module.css';
 
 const PAGE_SIZE = 10;
-const squash = (t: string) => t.replace(/\s+/g, '').toLowerCase(); // 띄어쓰기 무시 검색
 
 /**
  * 문의 목록 — /quote · /design (?q=검색어 &page=번호)
- * 시공사례 페이지와 같은 방식: 검색어·페이지를 주소에 담고, 목록은 주소에서 계산
+ * 목록 규칙(useListQuery)·머리(ListHead)·검색(SearchBox)·표(BoardTable)는 자료실과 같은 공용 조각.
+ * 이 파일에는 '견적문의만의 것'(비밀글 안내, 글쓰기 버튼, 칸 구성)만 남음
  */
 export function QuoteListPage({ board }: { board: Board }) {
-  const QUOTES = board.items;
-  const [params] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const top = useRef<HTMLDivElement>(null);
-
-  const q = (params.get('q') ?? '').trim();
-  const list = q ? QUOTES.filter((it) => squash(it.title).includes(squash(q))) : QUOTES;
-  const pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-  const page = Math.min(Math.max(1, Number(params.get('page')) || 1), pages);
-  const shown = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  const go = (next: { q?: string; page?: number }) => {
-    const sp = new URLSearchParams();
-    const nq = next.q ?? q;
-    if (nq) sp.set('q', nq);
-    if (next.page && next.page > 1) sp.set('page', String(next.page));
-    const qs = sp.toString();
-    navigate({ pathname: board.path, search: qs ? `?${qs}` : '' }, { state: { keepScroll: true } });
-  };
-
-  const onSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    go({ q: String(new FormData(e.currentTarget).get('q') ?? '').trim(), page: 1 });
-  };
-
-  const goPage = (n: number) => {
-    go({ page: n });
-    top.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const lq = useListQuery({ items: board.items, pageSize: PAGE_SIZE, path: board.path });
 
   return (
     <>
-      <QuoteHero board={board} sub="목록" />
+      <SubHero en={board.en} title={board.title} desc={board.desc} sub="목록" />
 
       <div className={cx('container', s.body)}>
-        <div className={s.toolbar} ref={top}>
-          <h2 className={s.summary} aria-live="polite">
-            {board.title}
-            <span className={s.total}>
-              {q && <>‘{q}’ 검색 결과 </>}총 <strong>{list.length}</strong>건 · {page} / {pages} 페이지
-            </span>
-          </h2>
-
-          <div className={s.actions}>
-            <form key={q} className={s.search} role="search" onSubmit={onSearch}>
-              <label htmlFor="quote-q" className="sr-only">제목 검색</label>
-              <input id="quote-q" name="q" type="search" defaultValue={q} placeholder="제목으로 검색" className={s.searchInput} />
-              <button type="submit" className={s.searchBtn} aria-label="검색">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-                  <circle cx="11" cy="11" r="6.5" />
-                  <path d="m20 20-4.2-4.2" />
-                </svg>
-              </button>
-            </form>
-            <Button href={`${board.path}/write`} className={s.write}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 20h4L19 9l-4-4L4 16v4Z" />
-                <path d="m13.5 6.5 4 4" />
-              </svg>
-              글쓰기
-            </Button>
-          </div>
-        </div>
+        <ListHead ref={lq.topRef} title={board.title} total={lq.list.length} q={lq.q} page={lq.page} pages={lq.pages}>
+          <SearchBox key={lq.q} id="quote-q" label="제목 검색" placeholder="제목으로 검색" defaultValue={lq.q} onSearch={lq.search} />
+          <Button href={`${board.path}/write`} className={s.write}>
+            <Icon name="pencil" />
+            글쓰기
+          </Button>
+        </ListHead>
 
         <p className={s.notice}>
-          <LockIcon />
+          <Icon name="lock" size={16} strokeWidth={2} />
           모든 {board.title}는 비밀글로 등록되어 작성자와 담당자만 볼 수 있습니다.
         </p>
 
-        {shown.length ? (
-          // 게시판 = 진짜 표(table) — 열 머리(th)가 있어 스크린리더가 '번호 215, 제목 …'처럼 칸 이름과 함께 읽어 줌
-          <table className={s.table}>
-            <caption className="sr-only">{board.title} 목록 — 번호, 제목, 처리 상태, 글쓴이, 조회수</caption>
-            <colgroup>
-              <col className={s.colNo} />
-              <col />
-              <col className={s.colState} />
-              <col className={s.colAuthor} />
-              <col className={s.colViews} />
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col">번호</th>
-                <th scope="col">제목</th>
-                <th scope="col">상태</th>
-                <th scope="col">글쓴이</th>
-                <th scope="col">조회</th>
-              </tr>
-            </thead>
-            {/* key: 검색·페이지가 바뀌면 목록을 새로 그려 등장 모션 재생 */}
-            <tbody key={`${q}|${page}`}>
-              {shown.map((it, i) => (
-                <tr key={it.id} style={{ animationDelay: `${i * 30}ms` }}>
-                  <td className={s.no}>{it.id}</td>
-                  <td className={s.titleCell}>
-                    {/* 상세 — 비밀글이면 비밀번호 확인부터. state.from: 상세의 '목록'이 보던 검색·페이지로 돌아오게 */}
-                    <Link to={`${board.path}/${it.id}`} state={{ from: `${board.path}${location.search}` }} className={s.title}>
-                      {it.secret && (
-                        <span className={s.lock}>
-                          <LockIcon />
-                          <span className="sr-only">비밀글</span>
-                        </span>
-                      )}
-                      <span className={s.titleText}>{it.title}</span>
-                    </Link>
-                  </td>
-                  <td className={s.state}>
-                    <span className={cx(s.chip, it.answered && s.chipDone)}>{it.answered ? '답변완료' : '접수'}</span>
-                  </td>
-                  <td className={s.author}>
-                    <span className={s.metaLabel}>글쓴이 </span>
-                    {it.author}
-                  </td>
-                  <td className={s.views}>
-                    <span className={s.metaLabel}>조회 </span>
-                    {it.views}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {lq.shown.length ? (
+          <BoardTable
+            caption={`${board.title} 목록 — 번호, 제목, 처리 상태, 글쓴이, 조회수`}
+            rows={lq.shown}
+            rowKey={(it) => it.id}
+            motionKey={`${lq.q}|${lq.page}`}
+            // 상세 — 비밀글이면 비밀번호 확인부터. state.from: 상세의 '목록'이 보던 검색·페이지로 돌아오게
+            title={(it) => ({ to: `${board.path}/${it.id}`, text: it.title, secret: it.secret, state: { from: lq.here } })}
+            columns={[
+              { key: 'no', header: '번호', width: 96, cell: (it) => it.id, mobile: 'hide' },
+              { key: 'title', header: '제목', cell: () => null },
+              { key: 'state', header: '상태', width: 120, cell: (it) => <StatusChip done={it.answered}>{it.answered ? '답변완료' : '접수'}</StatusChip>, mobile: 'badge' },
+              { key: 'author', header: '글쓴이', width: 180, cell: (it) => it.author, mobile: 'meta' },
+              { key: 'views', header: '조회', width: 88, cell: (it) => it.views, mobile: 'meta' },
+            ]}
+          />
         ) : (
-          <div className={s.empty}>
-            <p>{q ? <>‘{q}’에 맞는 {board.title}가 없습니다.</> : `등록된 ${board.title}가 없습니다.`}</p>
-            {q && (
-              <Link to={board.path} state={{ keepScroll: true }} className={s.emptyReset}>
-                검색어 지우기
-              </Link>
-            )}
-          </div>
+          <EmptyState noun={board.title} q={lq.q} resetTo={board.path} />
         )}
 
-        <Pagination page={page} pages={pages} onGo={goPage} />
+        <Pagination page={lq.page} pages={lq.pages} onGo={lq.goPage} />
       </div>
     </>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="5" y="10.5" width="14" height="10" rx="2" />
-      <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
-    </svg>
   );
 }

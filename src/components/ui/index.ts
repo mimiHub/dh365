@@ -9,3 +9,4 @@ export { cx } from './cx';
 export { SmartLink } from './SmartLink';
 export { SliderNav } from './SliderNav';
 export { Pagination } from './Pagination';
+export { Icon, type IconName } from './Icon';

@@ -2,8 +2,8 @@ import { useRef, useState, type FormEvent } from 'react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { MOCK_PASSWORD, quoteDetailOf, type QuoteItem } from '../../data/quotes';
 import type { Board } from './boards';
-import { Button, cx } from '../../components/ui';
-import { QuoteHero } from './QuoteHero';
+import { Button, Icon, cx } from '../../components/ui';
+import { AttachmentList, PostHeader, StatusChip, SubHero } from '../../components/page';
 import s from './QuoteDetail.module.css';
 
 // 한 번 연 비밀글은 이 탭을 닫기 전까지 다시 묻지 않음 (sessionStorage: 탭 단위, 닫으면 사라짐)
@@ -44,7 +44,7 @@ function QuoteDetail({ board, item }: { board: Board; item: QuoteItem }) {
 
   return (
     <>
-      <QuoteHero board={board} sub="상세" />
+      <SubHero en={board.en} title={board.title} desc={board.desc} sub="상세" />
       <div className={cx('container', s.body)}>
         {unlocked ? (
           <Post item={item} backTo={backTo} />
@@ -89,11 +89,7 @@ function Gate({ item, backTo, onOpen }: { item: QuoteItem; backTo: string; onOpe
   return (
     <section className={s.gate} aria-labelledby="gate-title">
       <span className={s.gateIcon} aria-hidden="true">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="5" y="10.5" width="14" height="10" rx="2" />
-          <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
-          <path d="M12 14.5v2.5" />
-        </svg>
+        <Icon name="lock" size={28} />
       </span>
       <h2 id="gate-title" className={s.gateTitle}>비밀글입니다</h2>
       <p className={s.gateDesc}>글을 쓸 때 입력한 비밀번호를 입력해 주세요.</p>
@@ -151,17 +147,12 @@ function Post({ item, backTo }: { item: QuoteItem; backTo: string }) {
 
   return (
     <article className={s.post} aria-labelledby="post-title">
-      <header className={s.postHead}>
-        <div className={s.postTop}>
-          <span className={cx(s.chip, item.answered && s.chipDone)}>{item.answered ? '답변완료' : '접수'}</span>
-          <span className={s.no}>No. {item.id}</span>
-        </div>
-        <h2 id="post-title" className={s.postTitle}>{item.title}</h2>
-        <p className={s.postMeta}>
-          <span>글쓴이 {item.author}</span>
-          <span>조회 {item.views}</span>
-        </p>
-      </header>
+      <PostHeader
+        badges={<StatusChip done={item.answered}>{item.answered ? '답변완료' : '접수'}</StatusChip>}
+        no={item.id}
+        title={item.title}
+        meta={[`글쓴이 ${item.author}`, `조회 ${item.views}`]}
+      />
 
       <p className={s.sample}>목업 예시 내용입니다. 실제 글 내용은 비밀번호 확인 후 서버에서 불러옵니다.</p>
 
@@ -175,31 +166,14 @@ function Post({ item, backTo }: { item: QuoteItem; backTo: string }) {
         <div>
           <dt>첨부자료</dt>
           <dd>
-            <ul className={s.files}>
-              {d.files.map((f) => (
-                <li key={f}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="m20 11.5-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8" />
-                  </svg>
-                  {f}
-                </li>
-              ))}
-            </ul>
+            <AttachmentList items={d.files.map((name) => ({ name }))} />
           </dd>
         </div>
         <div>
           <dt>동영상</dt>
           <dd>
             {d.video ? (
-              <ul className={s.files}>
-                <li>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <rect x="3" y="5" width="13" height="14" rx="2" />
-                    <path d="m16 10 5-3v10l-5-3" />
-                  </svg>
-                  {d.video}
-                </li>
-              </ul>
+              <AttachmentList label="동영상" items={[{ name: d.video, kind: 'video' }]} />
             ) : (
               '—'
             )}
