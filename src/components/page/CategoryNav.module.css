@@ -23,7 +23,10 @@
   /* 좁아지면 가로 스크롤 (칸 폭은 글자만큼) — 구분선은 잘린 지점에 막대처럼 보여서 없앰 */
   .list { display: flex; gap: var(--space-1); overflow-x: auto; scrollbar-width: none; }
   .list::-webkit-scrollbar { display: none; }
-  .list li { flex: 1 0 auto; }
+  .list li { flex: 1 0 auto; } /* 기본(itemWidth="auto"): 글자 폭 + 남는 공간을 나눠 가짐 → 칸마다 폭이 다름 */
+  /* itemWidth="equal": flex-basis 0 → 남는 공간을 처음부터 똑같이 나눠 모든 칸이 같은 폭
+     min-width: max-content — 글자보다 좁아지지는 않음 → 칸이 많아 넘치면 기본처럼 가로 스크롤 */
+  .equal li { flex: 1 0 0; min-width: max-content; }
   .list li + li::before { display: none; }
   .item { padding-inline: var(--space-5); }
 }

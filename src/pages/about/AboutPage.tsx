@@ -26,7 +26,7 @@ export function AboutPage() {
         withNav
       />
       <div className={s.page}>
-        <CategoryNav items={ABOUT_SECTIONS.map(({ key, name, to }) => ({ key, name, to }))} current={cur.key} label="회사소개 메뉴" id="about-nav" />
+        <CategoryNav items={ABOUT_SECTIONS.map(({ key, name, to }) => ({ key, name, to }))} current={cur.key} label="회사소개 메뉴" id="about-nav" itemWidth="equal" />
         {/* key: 화면을 바꾸면 등장 모션을 다시 */}
         <div key={cur.key} className={s.body}>
           <Body />

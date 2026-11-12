@@ -16,7 +16,23 @@ const pad = (n: number) => String(n).padStart(2, '0');
  * 분류 패널 — 히어로 아래에 걸친 흰 패널. 각 칸에 개수를 같이 보여 '어디에 얼마나 있는지'를 먼저 알 수 있게.
  * 칸이 화면보다 넓으면(모바일) 가로 스크롤 + 아래에 SliderNav [01 / 07 ‹ ›]. 시공사례·자료실 공용
  */
-export function CategoryNav({ items, current, label, id }: { items: CategoryItem[]; current: string; label: string; id: string }) {
+interface Props {
+  items: CategoryItem[];
+  current: string;
+  /** nav 이름 (스크린리더) — 예: '자료실 분류' */
+  label: string;
+  /** 칸 목록 id — 넘칠 때 SliderNav가 aria-controls로 가리킴 */
+  id: string;
+  /**
+   * 좁은 화면(≤1199px, 가로 스크롤 배치)에서 칸 폭
+   * - auto  : 글자 길이만큼 + 남는 공간 나눔 → 칸마다 폭이 다름 (분류가 많은 시공사례·자료실)
+   * - equal : 모든 칸 같은 폭 (칸이 적고 이름 길이가 비슷한 회사소개처럼 '탭'으로 보여야 할 때)
+   * PC(≥1200px)는 원래 균등 칸이라 차이 없음
+   */
+  itemWidth?: 'auto' | 'equal';
+}
+
+export function CategoryNav({ items, current, label, id, itemWidth = 'auto' }: Props) {
   const navigate = useNavigate();
   const listRef = useRef<HTMLUListElement>(null);
   const [overflow, setOverflow] = useState(false);
@@ -52,7 +68,7 @@ export function CategoryNav({ items, current, label, id }: { items: CategoryItem
   return (
     <nav className={s.wrap} aria-label={label}>
       <div className={cx(s.panel, overflow && s.scroll)}>
-        <ul ref={listRef} id={id} className={s.list} style={{ ['--count' as string]: items.length }}>
+        <ul ref={listRef} id={id} className={cx(s.list, itemWidth === 'equal' && s.equal)} style={{ ['--count' as string]: items.length }}>
           {items.map((c) => {
             const on = c.key === current;
             return (
