@@ -1,0 +1,15 @@
+/* 공지사항 — 배치(폭·여백)만. 모양은 components/page 조각이 담당 */
+.body { max-width: calc(var(--container-narrow) + var(--gutter) * 2); padding-top: var(--space-12); padding-bottom: var(--space-16); }
+.body > :global(table) { margin-top: var(--space-6); }
+
+.detailBody { max-width: calc(880px + var(--gutter) * 2); padding-top: var(--space-12); padding-bottom: var(--space-16); }
+.text { margin-top: var(--space-8); font-size: 16px; line-height: 28px; color: var(--ink); white-space: pre-line; word-break: keep-all; }
+.sample { margin-top: var(--space-5); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); background: var(--surface-alt); font-size: 13px; color: var(--ink-subtle); }
+.actions { display: flex; justify-content: center; margin-top: var(--space-10); }
+.actions :global(.dh-btn) { min-width: 180px; }
+
+@media (max-width: 767px) {
+  .body { padding-top: var(--space-10); padding-bottom: var(--space-12); }
+  .detailBody { padding-top: var(--space-8); padding-bottom: var(--space-12); }
+  .actions :global(.dh-btn) { width: 100%; }
+}

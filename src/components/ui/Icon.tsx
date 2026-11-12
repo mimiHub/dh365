@@ -45,6 +45,7 @@ const PATHS = {
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
   left: <path d="M15 5.5 8.5 12l6.5 6.5" />,
   right: <path d="M9 5.5 15.5 12 9 18.5" />,
+  chat: <path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4.5 19.5l1.3-4.2A7.5 7.5 0 1 1 20 11.5Z" />,
 } as const;
 
 export type IconName = keyof typeof PATHS;

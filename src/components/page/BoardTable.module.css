@@ -8,6 +8,10 @@
 @media (prefers-reduced-motion: reduce) { .table tbody tr { animation: none; } }
 
 .table .titleCell { text-align: left; }
+/* 강조 줄(상단 고정 공지) — 브랜드 규칙상 레드는 아끼고 연한 블루로 */
+.table tbody tr.highlight { background: var(--accent-soft); }
+.table tbody tr.highlight .titleText { font-weight: 600; }
+.comments { flex-shrink: 0; display: inline-flex; align-items: center; gap: 3px; font-size: 13px; font-weight: 600; color: var(--accent-text); font-variant-numeric: tabular-nums; }
 /* 긴 제목은 한 줄 말줄임 — table-layout: fixed라 칸 폭이 고정돼야 ellipsis가 동작 */
 .title { display: flex; align-items: center; gap: var(--space-2); min-width: 0; color: var(--ink); text-decoration: none; }
 .title:hover .titleText { color: var(--accent-text); text-decoration: underline; text-underline-offset: 4px; }
@@ -18,21 +22,25 @@
 
 .chip { display: inline-block; min-width: 72px; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--surface-alt); border: 1px solid var(--line); font-size: 13px; line-height: 18px; font-weight: 600; color: var(--ink-subtle); text-align: center; }
 .chipDone { background: var(--accent-soft); border-color: transparent; color: var(--accent-text); }
+.chipSolid { background: var(--brand); border-color: transparent; color: #ffffff; }
 .metaLabel { display: none; }
 
 /* ── 모바일: 표를 '카드형 줄'로 — 칸 머리는 숨기고, 제목을 위에, 나머지는 아래 한 줄 ── */
 @media (max-width: 767px) {
   .table, .table tbody { display: block; }
   .table thead, .table colgroup { display: none; }
-  .table tr { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+  /* 좌우 여백 — 표가 흰 박스(연회색 띠 위)라 0이면 글자가 박스 가장자리에 붙어 보임. 호버 배경도 이 안쪽까지 차서 '한 줄 = 한 덩어리'로 보임 */
+  .table tr { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); padding: var(--space-4); border-bottom: 1px solid var(--line); }
   .table td { display: block; height: auto; padding: 0; border: 0; font-size: 13px; text-align: left; }
-  .table .titleCell { order: -1; flex: 1 0 100%; }
-  .titleText { white-space: normal; font-size: 16px; line-height: 24px; }
-  .title { align-items: flex-start; }
+  /* 모바일도 한 줄 말줄임(…) — 줄 높이가 제목 길이와 상관없이 일정해 목록이 고르게 보임. 전체 제목은 상세에서
+     min-width: 0 — flex 자식은 기본값(auto)이면 내용 폭 아래로 안 줄어들어 말줄임 대신 박스 밖으로 넘침 */
+  .table .titleCell { order: -1; flex: 1 0 100%; min-width: 0; }
+  .titleText { font-size: 16px; line-height: 24px; }
   .icon { width: 24px; height: 24px; }
   .mHide { display: none !important; }
   .mBadge { order: 0; }
   .chip { min-width: 0; padding: 2px 8px; font-size: 12px; }
   .metaLabel { display: inline; }
-  .mMeta + .mMeta::before { content: "·"; margin-right: var(--space-3); color: var(--line-strong); }
+  /* ~ (뒤에 오는 형제 전부): 제목 칸이 DOM에서는 번호와 조회 사이에 있어서(화면에서만 order로 위로) + (바로 다음)로는 점이 안 붙음 */
+  .mMeta ~ .mMeta::before { content: "·"; margin-right: var(--space-3); color: var(--line-strong); }
 }

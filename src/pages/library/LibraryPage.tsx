@@ -49,7 +49,7 @@ export function LibraryPage() {
                 icon: <Icon name={key === 'video' ? 'video' : 'file'} size={15} />,
               })}
               columns={[
-                { key: 'no', header: '번호', width: 96, cell: (it) => it.id, mobile: 'hide' },
+                { key: 'no', header: '번호', width: 96, cell: (it) => it.id, mobile: 'meta' },
                 { key: 'title', header: '제목', cell: () => null },
                 { key: 'views', header: '조회', width: 120, cell: (it) => it.views.toLocaleString(), mobile: 'meta' },
               ]}

@@ -32,3 +32,15 @@
   .item { min-height: 0; padding: var(--space-3) var(--space-4); }
   .name { font-size: 15px; line-height: 22px; }
 }
+
+/* 넘쳐서 가로 스크롤될 때(.scroll — 컴포넌트가 실제 넘침을 감지해 붙임)
+   세로선이 없으면 선택 안 된 칸은 글자만 떠 있는 것처럼 보임 → 칸마다 연회색 배경 + 테두리로 '누르는 버튼'임을 보여 줌.
+   화면 끝에서 잘린 칸도 버튼 모서리가 보여 '옆에 더 있다'는 신호가 됨.
+   테두리는 border 대신 inset box-shadow — 칸 크기가 1px도 안 변해서 선택이 바뀔 때 글자가 흔들리지 않음 */
+/* 바깥 여백(패널 padding) = 칸 사이 간격 → 칸들이 패널 안에 고르게 놓여 보임 (모바일 padding 4px ↔ gap 8px로 어긋나던 것)
+   바깥 라운드 = 안쪽 라운드 + 여백 → 패널 모서리와 칸 모서리가 같은 간격으로 평행하게 돎 */
+.panel.scroll { --inset: var(--space-2); padding: var(--inset); border-radius: calc(var(--radius-md) + var(--inset)); }
+.scroll .list { gap: var(--inset); }
+.scroll .item { background: var(--surface-alt); box-shadow: inset 0 0 0 1px var(--line); }
+.scroll .item:hover { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.scroll .on, .scroll .on:hover { background: var(--brand); box-shadow: none; }

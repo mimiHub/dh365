@@ -1,7 +1,7 @@
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { LIBRARY, LIBRARY_CATEGORIES, libraryPath } from '../../data/library';
-import { Button, Icon, Media, cx } from '../../components/ui';
-import { AttachmentList, PostHeader, StatusChip, SubHero } from '../../components/page';
+import { Button, Media, cx } from '../../components/ui';
+import { AttachmentList, PostHeader, PostNav, StatusChip, SubHero } from '../../components/page';
 import s from './Library.module.css';
 
 /**
@@ -52,11 +52,12 @@ export function LibraryDetailPage() {
             <p className={s.text}>{`${item.title} 자료입니다.\n설계·감리 검토용으로 내려받아 사용하세요. 현장 조건에 맞는 상세 검토는 설계문의로 남겨 주세요.`}</p>
           </section>
 
-          {/* 이전·다음 글 — 목록으로 돌아가지 않고 이어서 보기 */}
-          <nav className={s.siblings} aria-label="이전·다음 자료">
-            <Sibling label="다음 글" dir="up" to={newer && libraryPath(cat.key, newer.id)} title={newer?.title} from={backTo} />
-            <Sibling label="이전 글" dir="down" to={older && libraryPath(cat.key, older.id)} title={older?.title} from={backTo} />
-          </nav>
+          <PostNav
+            label="이전·다음 자료"
+            newer={newer && { to: libraryPath(cat.key, newer.id), title: newer.title }}
+            older={older && { to: libraryPath(cat.key, older.id), title: older.title }}
+            from={backTo}
+          />
 
           <div className={s.actions}>
             <Button href={backTo} variant="secondary">목록으로</Button>
@@ -64,32 +65,5 @@ export function LibraryDetailPage() {
         </article>
       </div>
     </>
-  );
-}
-
-function Sibling({ label, dir, to, title, from }: { label: string; dir: 'up' | 'down'; to?: string; title?: string; from: string }) {
-  const head = (
-    <span>
-      <span style={{ display: 'inline-flex', transform: `rotate(${dir === 'up' ? -90 : 90}deg)` }}>
-        <Icon name="right" size={14} />
-      </span>
-      {label}
-    </span>
-  );
-  // 없는 쪽은 링크가 아니라 글자로 (누를 수 없는 것을 링크로 만들지 않음)
-  if (!to) {
-    return (
-      <div className={cx(s.sibling, s.siblingNone)}>
-        {head}
-        <span>{dir === 'up' ? '다음 글이 없습니다.' : '이전 글이 없습니다.'}</span>
-      </div>
-    );
-  }
-  return (
-    // replace: 이전·다음으로 여러 번 옮겨 다녀도 뒤로가기 한 번이면 목록으로
-    <Link to={to} replace state={{ from }} className={s.sibling}>
-      {head}
-      <span>{title}</span>
-    </Link>
   );
 }

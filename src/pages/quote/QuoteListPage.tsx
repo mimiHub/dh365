@@ -41,7 +41,7 @@ export function QuoteListPage({ board }: { board: Board }) {
             // 상세 — 비밀글이면 비밀번호 확인부터. state.from: 상세의 '목록'이 보던 검색·페이지로 돌아오게
             title={(it) => ({ to: `${board.path}/${it.id}`, text: it.title, secret: it.secret, state: { from: lq.here } })}
             columns={[
-              { key: 'no', header: '번호', width: 96, cell: (it) => it.id, mobile: 'hide' },
+              { key: 'no', header: '번호', width: 96, cell: (it) => it.id, mobile: 'meta' },
               { key: 'title', header: '제목', cell: () => null },
               { key: 'state', header: '상태', width: 120, cell: (it) => <StatusChip done={it.answered}>{it.answered ? '답변완료' : '접수'}</StatusChip>, mobile: 'badge' },
               { key: 'author', header: '글쓴이', width: 180, cell: (it) => it.author, mobile: 'meta' },

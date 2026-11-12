@@ -46,7 +46,7 @@ export function About() {
               (주)대한방화는 국내 대형 건설사와 협업하며 방화스크린셔터를 포함한 방화·방범 셔터를 전문으로 설계·시공하는
               금속창호공사 전문회사입니다. 방화셔터 인정 승인을 완료한 제품으로 설계·시공합니다.
             </p>
-            <MoreLink href="#about" className={s.more}>회사소개</MoreLink>
+            <MoreLink href="/about/greeting" className={s.more}>회사소개</MoreLink>
           </div>
         </div>
 

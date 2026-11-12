@@ -10,11 +10,12 @@ export interface NavItem {
 export const NAV: NavItem[] = [
   {
     label: '회사소개',
-    href: '/#about',
+    href: '/about/greeting',
     children: [
-      { label: '인사말', href: '/#about' },
-      { label: '조직도', href: '#' },
-      { label: '오시는길', href: '#' },
+      // 인사말도 /about이 아니라 /about/greeting — '/about'이면 조직도(/about/organization)에서도 인사말이 '현재 메뉴'로 잡힘
+      { label: '인사말', href: '/about/greeting' },
+      { label: '조직도', href: '/about/organization' },
+      { label: '오시는길', href: '/about/location' },
     ],
   },
   {
@@ -51,12 +52,13 @@ export const NAV: NavItem[] = [
       { label: '동영상자료', href: '/library/video' },
     ],
   },
-  { label: '견적문의', href: '/quote', children: [{ label: '견적문의', href: '/quote' }, { label: '견적문의 작성', href: '/quote/write' }] },
+  // 글쓰기는 목록의 '글쓰기' 버튼·퀵메뉴로 들어가므로 메뉴에는 게시판 하나만
+  { label: '견적문의', href: '/quote', children: [{ label: '견적문의', href: '/quote' }] },
   {
     label: '고객센터',
-    href: '/#news',
+    href: '/notice',
     children: [
-      { label: '공지사항', href: '/#news' },
+      { label: '공지사항', href: '/notice' },
       // 설계문의 — 견적문의와 같은 폼의 별도 게시판
       { label: '설계문의', href: '/design' },
       { label: 'FAQ', href: '/faq' },
@@ -72,10 +74,11 @@ export const COMPANY = {
   tel: '031-388-0023',
   mobile: '010-4223-6477',
   email: 'dh365@dh365.co.kr',
+  // mapQuery: 지도 검색용 주소 — 표기용 address는 '광주시'라서 그대로 검색하면 경기도 광주시로 잡힘 → 광역시명·도로명까지만
   offices: [
-    { label: '본사', address: '경기도 과천시 관문로 92, 102동 814호(힐스테이트과천중앙)' },
-    { label: '부산지사', address: '부산시 동래구 금강공원로20번길 70 4층' },
-    { label: '광주지사', address: '광주시 북구 일곡로7-5 둥지빌딩 1층' },
+    { label: '본사', address: '경기도 과천시 관문로 92, 102동 814호(힐스테이트과천중앙)', mapQuery: '경기도 과천시 관문로 92' },
+    { label: '부산지사', address: '부산시 동래구 금강공원로20번길 70 4층', mapQuery: '부산광역시 동래구 금강공원로20번길 70' },
+    { label: '광주지사', address: '광주시 북구 일곡로7-5 둥지빌딩 1층', mapQuery: '광주광역시 북구 일곡로 7-5' },
   ],
 };
 
@@ -185,12 +188,6 @@ export const CASES: CaseItem[] = [
   { id: 24, product: 'wind', title: 'OO차고지 내풍압셔터' },
   { id: 25, product: 'security', title: '웨이브셔터' },
   { id: 26, product: 'security', title: '파이프셔터' },
-];
-
-export const NOTICES = [
-  { id: 10, title: '대형방화셔터 인정서 발급 안내', date: '2025.00.00', summary: '방화스크린셔터 인정 사이즈를 기존 8,000 × 4,000에서 최대 12,000 × 8,500으로 상향, 2025년 3월 인정서 발급. 철재방화셔터는 기존 사이즈 유지.' },
-  { id: 9, title: '[가안] 공지사항 제목이 들어갑니다', date: '2025.00.00', summary: '' },
-  { id: 8, title: '[가안] 공지사항 제목이 들어갑니다', date: '2025.00.00', summary: '' },
 ];
 
 export const ARCHIVES = [

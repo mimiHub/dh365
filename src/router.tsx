@@ -10,12 +10,17 @@ import { BOARDS } from './pages/quote/boards';
 import { FaqPage } from './pages/FaqPage';
 import { LibraryPage } from './pages/library/LibraryPage';
 import { LibraryDetailPage } from './pages/library/LibraryDetailPage';
+import { NoticePage } from './pages/notice/NoticePage';
+import { AboutPage } from './pages/about/AboutPage';
+import { NoticeDetailPage } from './pages/notice/NoticeDetailPage';
 
 const routes: RouteObject[] = [
   {
     element: <App />,
     children: [
       { path: '/', element: <Home /> },
+      // 회사소개 — 인사말·조직도·오시는길 (:section 없으면 인사말로)
+      { path: '/about/:section?', element: <AboutPage /> },
       // :slug? — 선택 사항. 없으면 카테고리의 첫 제품을 보여줌 (/products/steel = 철재방화셔터)
       { path: '/products/:category/:slug?', element: <ProductPage /> },
       // :category? — 없으면 전체. 검색어·페이지는 ?q= &page= (주소에 담아 새로고침·공유해도 그대로)
@@ -31,6 +36,9 @@ const routes: RouteObject[] = [
       { path: '/faq', element: <FaqPage /> },
       { path: '/library/:category?', element: <LibraryPage /> },
       { path: '/library/:category/:id', element: <LibraryDetailPage /> },
+      // 공지사항 (고객센터) — 검색·페이지는 ?q= &page=
+      { path: '/notice', element: <NoticePage /> },
+      { path: '/notice/:id', element: <NoticeDetailPage /> },
       { path: '*', element: <Home /> },
     ],
   },

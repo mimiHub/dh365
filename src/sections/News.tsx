@@ -1,4 +1,8 @@
-import { ARCHIVES, NOTICES } from '../data/site';
+import { ARCHIVES } from '../data/site';
+import { NOTICES, noticePath } from '../data/notices';
+
+// 메인에는 3건 — 고정 공지 먼저, 그다음 최신 순
+const LATEST = [...NOTICES].sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned)).slice(0, 3);
 import { MoreLink, SmartLink, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
 import s from './News.module.css';
@@ -16,16 +20,17 @@ export function News() {
           <div className={cx(s.col, 'reveal')}>
             <div className={s.colHead}>
               <h3 className={s.colTitle}>공지사항</h3>
-              <MoreLink href="#news">MORE</MoreLink>
+              <MoreLink href={noticePath()}>MORE</MoreLink>
             </div>
             <ul className={s.notices}>
-              {NOTICES.map((n) => (
+              {LATEST.map((n) => (
                 <li key={n.id}>
-                  <a href="#news" className={s.notice}>
-                    <time className={s.date}>{n.date}</time>
+                  <SmartLink href={noticePath(n.id)} className={s.notice}>
+                    {/* 등록일을 받으면 날짜, 그 전엔 고정 공지만 'NOTICE' 표시 */}
+                    {n.date ? <time className={s.date}>{n.date}</time> : n.pinned && <span className={s.date}>NOTICE</span>}
                     <span className={s.nTitle}>{n.title}</span>
-                    {n.summary && <span className={s.summary}>{n.summary}</span>}
-                  </a>
+                    {n.body && <span className={s.summary}>{n.body.split('\n')[0]}</span>}
+                  </SmartLink>
                 </li>
               ))}
             </ul>

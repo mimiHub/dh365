@@ -1,0 +1,13 @@
+.band { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); padding: var(--space-8) var(--space-10); border-radius: var(--radius-lg); background: var(--brand); color: #ffffff; }
+.title { font-size: 22px; line-height: 32px; font-weight: 700; letter-spacing: -0.02em; word-break: keep-all; }
+.desc { margin-top: var(--space-2); font-size: 15px; line-height: 24px; opacity: .85; word-break: keep-all; }
+.desc a { color: inherit; font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
+.actions { display: flex; gap: var(--space-2); flex-shrink: 0; }
+/* 네이비 위 보조 버튼 — 흰 테두리 */
+.actions :global(.dh-btn-secondary) { color: #ffffff; border-color: rgba(255, 255, 255, .5); }
+.actions :global(.dh-btn-secondary:hover) { background: #ffffff; color: var(--brand); border-color: #ffffff; }
+@media (max-width: 767px) {
+  .band { flex-direction: column; align-items: stretch; padding: var(--space-6); }
+  .actions { flex-direction: column; }
+  .actions :global(.dh-btn) { width: 100%; }
+}

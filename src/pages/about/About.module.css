@@ -1,0 +1,129 @@
+/* 회사소개 — 인사말·조직도·오시는길. 색·간격은 토큰만 (사진 위 흰 글자 제외) */
+.page { display: flow-root; /* 분류 패널의 음수 margin이 밖으로 새지 않게 */ padding-bottom: var(--space-16); }
+.body { animation: bodyIn .5s cubic-bezier(.22,1,.36,1); }
+@keyframes bodyIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.narrow { max-width: calc(var(--container-narrow) + var(--gutter) * 2); }
+.section { padding-top: var(--space-16); }
+.first { padding-top: var(--space-12); }
+.h2 { font-size: 36px; line-height: 48px; font-weight: 700; letter-spacing: -0.025em; word-break: keep-all; }
+.h3 { margin: var(--space-12) 0 var(--space-4); font-size: 20px; line-height: 30px; font-weight: 700; }
+
+/* ── 인사말 ── 왼쪽 글(세로 블루 선) + 오른쪽 회사 개요 카드(스크롤 따라옴) */
+.greeting { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--space-12); align-items: start; padding-top: var(--space-12); }
+.headline { font-size: 40px; line-height: 54px; font-weight: 700; letter-spacing: -0.03em; word-break: keep-all; }
+.headline em { font-style: normal; color: var(--accent-text); }
+.letter { margin-top: var(--space-8); padding-left: var(--space-6); border-left: 2px solid var(--accent); }
+.letter p { font-size: 17px; line-height: 30px; color: var(--ink-muted); word-break: keep-all; }
+.letter p + p { margin-top: var(--space-4); }
+.letter p:first-child { font-size: 18px; font-weight: 600; color: var(--ink); }
+.sign { display: flex; align-items: baseline; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-8); font-size: 15px; color: var(--ink-muted); }
+.sign strong { font-size: 24px; font-weight: 700; letter-spacing: .12em; color: var(--ink); }
+.overview { position: sticky; top: calc(var(--header-height) + var(--space-6)); }
+.overviewTitle { margin-bottom: var(--space-3); font-size: 15px; font-weight: 700; color: var(--brand); }
+.overview a { color: inherit; font-weight: 600; }
+
+/* ── 핵심 가치 ── 카드 3개, 위 선이 호버 때 파랗게 */
+.values { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); margin-top: var(--space-8); }
+.value { position: relative; padding: var(--space-8) var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease; }
+.value::before { content: ""; position: absolute; left: var(--space-6); right: var(--space-6); top: -1px; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.22,1,.36,1); }
+.value:hover { border-color: transparent; box-shadow: var(--shadow-card); transform: translateY(-4px); }
+.value:hover::before { transform: scaleX(1); }
+.valueNo { font-size: 14px; font-weight: 700; letter-spacing: .08em; color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.valueEn { margin-top: var(--space-5); font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--ink-subtle); }
+.valueTitle { margin-top: var(--space-2); font-size: 22px; line-height: 32px; font-weight: 700; letter-spacing: -0.02em; word-break: keep-all; }
+.valueBody { margin-top: var(--space-3); font-size: 15px; line-height: 26px; color: var(--ink-muted); word-break: keep-all; }
+
+/* ── 숫자 ── 유리 건물 사진 위 네이비 (data-theme=dark라 StatItem 글자색이 자동으로 밝게) */
+.statsBand { position: relative; margin-top: var(--space-16); padding: var(--space-16) 0; overflow: hidden; background: #0a2a66; }
+.statsBg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .45; mix-blend-mode: luminosity; }
+.statsBand::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(6, 14, 30, .92) 0%, rgba(10, 42, 102, .7) 55%, rgba(10, 42, 102, .35) 100%); }
+.statsInner { position: relative; z-index: 1; }
+.statsBand .h2 { color: #ffffff; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6); margin-top: var(--space-10); }
+.stats :global(.dh-stat) { min-width: 0; border-top-color: rgba(255, 255, 255, .3); }
+
+/* ── 사업 분야 ── 제품소개로 가는 큰 링크 */
+.business { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); margin-top: var(--space-8); border-top: 2px solid var(--brand); }
+.biz { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 88px; padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--line); font-size: 17px; font-weight: 600; letter-spacing: -0.015em; color: var(--ink); text-decoration: none; word-break: keep-all; transition: background-color .2s ease, color .2s ease; }
+.biz:hover { background: var(--accent-soft); color: var(--accent-text); }
+.biz:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.bizArrow { color: var(--accent-text); transition: transform .2s ease; }
+.biz:hover .bizArrow { transform: translateX(4px); }
+.cta { margin-top: var(--space-16); }
+
+/* ── 조직도 ── 대표 카드 → 세로선 → 사업장 3칸 (가로 연결선은 첫·끝 칸 가운데까지) */
+.tree { margin-top: var(--space-10); }
+.head { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 240px; margin: 0 auto; padding: var(--space-5); border-radius: var(--radius-lg); background: var(--brand); color: #ffffff; box-shadow: 0 16px 32px -12px rgba(10, 42, 102, .5); }
+.headRole { font-size: 14px; font-weight: 600; color: #9cc4f5; }
+.headName { font-size: 24px; line-height: 34px; letter-spacing: .12em; }
+.units { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); margin-top: var(--space-12); }
+.units::before { content: ""; position: absolute; left: 50%; top: calc(var(--space-12) * -1); height: calc(var(--space-12) / 2); width: 1px; background: var(--line-strong); }
+.unit { position: relative; padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); text-align: center; }
+/* 각 칸 위로 올라가는 선 + 칸들을 잇는 가로선 */
+.unit::before { content: ""; position: absolute; left: 50%; top: calc(var(--space-12) / -2 - 1px); height: calc(var(--space-12) / 2); width: 1px; background: var(--line-strong); }
+/* 가상 요소의 기준은 테두리 안쪽(padding box) → 칸 테두리 1px만큼 더 뻗어야 옆 칸 선과 끊김 없이 이어짐 */
+.unit::after { content: ""; position: absolute; top: calc(var(--space-12) / -2 - 1px); left: calc(var(--space-6) / -2 - 1px); right: calc(var(--space-6) / -2 - 1px); height: 1px; background: var(--line-strong); }
+.unit:first-child::after { left: 50%; }
+.unit:last-child::after { right: 50%; }
+.unitPlace { font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--accent-text); }
+.unitName { margin-top: var(--space-1); font-size: 22px; line-height: 32px; font-weight: 700; }
+.roles { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-4); }
+.roles li { padding: 4px 12px; border-radius: var(--radius-pill); background: var(--accent-soft); font-size: 13px; font-weight: 600; color: var(--accent-text); }
+.unitAddr { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); font-size: 14px; line-height: 22px; color: var(--ink-muted); word-break: keep-all; }
+
+/* ── 오시는길 ── 지도 | 사업장 카드 */
+.location { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--space-8); align-items: stretch; margin-top: var(--space-8); }
+/* 지도 — 오른쪽 카드 3장 높이에 맞춰 늘어남(stretch), 최소 높이는 확보 */
+.map { position: relative; min-height: 420px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-alt); }
+.map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.offices { display: grid; gap: var(--space-4); }
+.office { padding: var(--space-5) var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg); transition: border-color .2s ease, box-shadow .2s ease; }
+/* 지도에 띄운 사업장 — 바깥 링(본사 '면' 강조와 겹치지 않는 다른 신호) + '지도 보는 중' 표시 */
+.officeOn { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow-card); }
+.officePick { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; text-align: left; color: inherit; cursor: pointer; }
+.officePick:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--radius-sm); }
+.officePick:hover .officeAddr { color: var(--ink); }
+.officeOnMark { display: none; align-items: center; gap: 2px; margin-left: auto; font-size: 12px; font-weight: 600; color: var(--accent-text); }
+.officeOn .officeOnMark { display: inline-flex; }
+/* 본사 — 테두리·막대 대신 '면'으로: 연한 블루 바탕 + 이름 옆 HEAD OFFICE 칩. 지사 카드와 모양(크기·여백)은 같아 줄이 흐트러지지 않음 */
+.officeMain { border-color: transparent; background: var(--accent-soft); }
+.officeName { display: flex; align-items: center; gap: var(--space-2); font-size: 18px; font-weight: 700; }
+.officeTag { padding: 2px 8px; border-radius: var(--radius-sm); background: var(--brand); font-size: 11px; line-height: 16px; font-weight: 700; letter-spacing: .08em; color: #ffffff; }
+.officeMain .mapLinks a { background: var(--surface); border-color: transparent; }
+.officeMain .mapLinks a:hover { background: var(--brand); color: #ffffff; }
+.officeAddr { display: block; margin-top: var(--space-1); font-size: 15px; line-height: 24px; color: var(--ink-muted); word-break: keep-all; }
+.mapLinks { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+.mapLinks a { display: inline-flex; align-items: center; gap: 2px; height: 32px; padding: 0 var(--space-3) 0 var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: none; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+.mapLinks a:hover { background: var(--brand); border-color: var(--brand); color: #ffffff; }
+.mapLinks a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) { .body { animation: none; } .value, .value::before { transition: none; } }
+
+@media (max-width: 1024px) {
+  .greeting { grid-template-columns: 1fr; }
+  .overview { position: static; }
+  .values { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); row-gap: var(--space-10); }
+  .location { grid-template-columns: 1fr; }
+  .map { min-height: 0; aspect-ratio: 4 / 3; }
+}
+@media (max-width: 767px) {
+  .section { padding-top: var(--space-12); }
+  .first, .greeting { padding-top: var(--space-10); }
+  .h2 { font-size: 28px; line-height: 38px; }
+  .headline { font-size: 28px; line-height: 40px; }
+  .letter { margin-top: var(--space-6); padding-left: var(--space-4); }
+  .letter p { font-size: 16px; line-height: 28px; }
+  .letter p:first-child { font-size: 17px; }
+  .value { padding: var(--space-6) var(--space-5); }
+  .statsBand { margin-top: var(--space-12); padding: var(--space-12) 0; }
+  .stats :global(.dh-stat-value) { font-size: 40px; line-height: 48px; }
+  /* 조직도 — 세로로 쌓고 가로 연결선은 숨김, 왼쪽 세로선 하나로 이음 */
+  .units { grid-template-columns: 1fr; gap: var(--space-4); margin-top: var(--space-8); }
+  .units::before { top: calc(var(--space-8) * -1); height: var(--space-8); }
+  /* 모바일 — 가로선은 숨기고, 카드 사이를 짧은 세로선으로 이어 '대표이사 아래 차례로'가 보이게 */
+  .unit::after { display: none; }
+  .unit::before { display: none; }
+  .unit + .unit::before { display: block; top: calc(var(--space-4) * -1 - 1px); height: var(--space-4); }
+  .head { width: 100%; }
+}

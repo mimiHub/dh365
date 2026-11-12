@@ -1,10 +1,26 @@
 import logo from '../../assets/logo.png';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { NAV, COMPANY } from '../../data/site';
+import { NAV, COMPANY, type NavItem } from '../../data/site';
 import { Button, SmartLink, cx } from '../ui';
 import { useScrolled } from '../../hooks/useScrolled';
 import s from './Header.module.css';
+
+/**
+ * 지금 주소가 어느 대메뉴에 속하는지 — 주소의 첫 마디로 비교 ('/library/spec/11' → 'library')
+ * 대메뉴 주소만 보면 고객센터(/notice)에 있는 설계문의(/design)·FAQ(/faq)를 놓치므로 하위 메뉴 주소까지 같이 봄.
+ * '/#about' 같은 메인 섹션 앵커는 '페이지'가 아니라서 비교하지 않음
+ */
+const sectionOf = (href: string) => (href.startsWith('/') && !href.startsWith('/#') ? href.split(/[/?#]/)[1] : '');
+const isCurrentSection = (item: NavItem, pathname: string) => {
+  const cur = sectionOf(pathname);
+  return !!cur && [item, ...(item.children ?? [])].some((n) => sectionOf(n.href) === cur);
+};
+/** 하위 메뉴 — 그 주소이거나 그 아래 주소면 현재 페이지 ('/library/spec/11'도 시방서) */
+const isCurrentPage = (href: string, pathname: string) => {
+  const path = href.split(/[?#]/)[0];
+  return !!sectionOf(href) && (pathname === path || pathname.startsWith(`${path}/`));
+};
 
 /**
  * GNB — 히어로 위에서는 투명+흰 글자, 스크롤하거나 메뉴에 마우스를 올리면 흰 배경.
@@ -14,7 +30,9 @@ import s from './Header.module.css';
 export function Header() {
   const scrolled = useScrolled(40);
   // 투명 헤더는 메인 히어로 위에서만. 하위 페이지는 상단에 흰 카테고리 탭이 붙으므로 처음부터 흰 배경
-  const isHome = useLocation().pathname === '/';
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
+  const currentIdx = NAV.findIndex((item) => isCurrentSection(item, pathname));
   const [megaOpen, setMegaOpen] = useState(false);
 
   /**
@@ -64,16 +82,17 @@ export function Header() {
           onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && closeMega()}
         >
           <ul className={s.depth1}>
-            {NAV.map((item) => (
+            {NAV.map((item, i) => (
               <li key={item.label}>
-                <SmartLink href={item.href} className={s.d1link}>
+                {/* aria-current: 화면엔 선택 표시, 스크린리더엔 '현재 위치'. 대메뉴는 '이 묶음 안'이라 true, 하위 메뉴는 정확한 페이지라 page */}
+                <SmartLink href={item.href} className={s.d1link} aria-current={i === currentIdx ? 'true' : undefined}>
                   {item.label}
                 </SmartLink>
                 {item.children && (
                   <ul className={cx(s.depth2, megaOpen && s.depth2Open)}>
                     {item.children.map((c) => (
                       <li key={c.label}>
-                        <SmartLink href={c.href} onClick={closeMega}>{c.label}</SmartLink>
+                        <SmartLink href={c.href} onClick={closeMega} aria-current={isCurrentPage(c.href, pathname) ? 'page' : undefined}>{c.label}</SmartLink>
                       </li>
                     ))}
                   </ul>
@@ -91,7 +110,11 @@ export function Header() {
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            onClick={() => setMobileOpen((v) => !v)}
+            onClick={() => {
+              // 열 때마다 지금 있는 대메뉴를 펼친 채로 (메인 등 해당 없으면 첫 번째)
+              if (!mobileOpen) setOpenIdx(Math.max(0, currentIdx));
+              setMobileOpen((v) => !v);
+            }}
           >
             {/* SVG 한 장으로 그림: span 3개 + gap 방식은 브라우저 확대(90%, 110%…)에서
                 줄마다 픽셀 반올림이 달라 한 줄만 두꺼워 보임 */}
@@ -115,7 +138,7 @@ export function Header() {
             <li key={item.label} className={s.mItem} style={{ ['--i' as string]: i }}>
               <button
                 type="button"
-                className={s.mHead}
+                className={cx(s.mHead, i === currentIdx && s.mHeadOn)}
                 aria-expanded={openIdx === i}
                 onClick={() => setOpenIdx(openIdx === i ? null : i)}
               >
@@ -125,7 +148,7 @@ export function Header() {
                 <ul className={s.mSub}>
                   {item.children.map((c) => (
                     <li key={c.label}>
-                      <SmartLink href={c.href} onClick={() => setMobileOpen(false)}>{c.label}</SmartLink>
+                      <SmartLink href={c.href} onClick={() => setMobileOpen(false)} aria-current={isCurrentPage(c.href, pathname) ? 'page' : undefined}>{c.label}</SmartLink>
                     </li>
                   ))}
                 </ul>
