@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { PRODUCTS } from '../data/site';
 import { Badge, Media, SliderNav, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
-import steelShutterImg from '../assets/product-steel-shutter.png';
-import screenShutterImg from '../assets/product-screen-shutter.png';
-import smokeScreenImg from '../assets/product-smoke-screen.png';
-import wiredGlassImg from '../assets/product-wired-glass.png';
-import windShutterImg from '../assets/product-wind-shutter.png';
-import securityShutterImg from '../assets/product-security-shutter.png';
+const steelShutterImg = '/images/product-steel-shutter.png';
+const screenShutterImg = '/images/product-screen-shutter.png';
+const smokeScreenImg = '/images/product-smoke-screen.png';
+const wiredGlassImg = '/images/product-wired-glass.png';
+const windShutterImg = '/images/product-wind-shutter.png';
+const securityShutterImg = '/images/product-security-shutter.png';
 import s from './Products.module.css';
 
 const pad = (n: number) => String(n).padStart(2, '0');

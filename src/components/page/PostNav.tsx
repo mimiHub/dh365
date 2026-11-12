@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { Icon, cx } from '../ui';
 import s from './PostNav.module.css';
 

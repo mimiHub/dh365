@@ -1,6 +1,6 @@
-import logo from '../../assets/logo.png';
+const logo = '/images/logo.png';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/lib/router';
 import { NAV, COMPANY, type NavItem } from '../../data/site';
 import { Button, SmartLink, cx } from '../ui';
 import { useScrolled } from '../../hooks/useScrolled';

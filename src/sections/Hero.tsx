@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { HERO_SLIDES } from '../data/site';
 import { Button, cx } from '../components/ui';
-import heroSlide1Img from '../assets/hero-slide-1.png';
-import heroSlide3Img from '../assets/hero-slide-3.jpg';
-import logoImg from '../assets/logo.png';
+const heroSlide1Img = '/images/hero-slide-1.png';
+const heroSlide3Img = '/images/hero-slide-3.jpg';
+const logoImg = '/images/logo.png';
 import s from './Hero.module.css';
 
 const DURATION = 6000;

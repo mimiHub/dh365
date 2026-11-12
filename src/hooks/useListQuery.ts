@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from '@/lib/router';
 
 // 검색: 띄어쓰기 차이는 무시 ("지하 주차장" = "지하주차장") — 한글 제목은 띄어쓰기가 제각각이라
 export const squash = (t: string) => t.replace(/\s+/g, '').toLowerCase();

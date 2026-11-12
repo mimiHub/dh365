@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from '@/lib/router';
 import { SliderNav, cx } from '../ui';
 import s from './CategoryNav.module.css';
 

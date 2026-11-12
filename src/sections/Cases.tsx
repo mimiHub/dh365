@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import { CASES, PRODUCTS } from '../data/site';
 import { Badge, Button, Media, MoreLink, SectionHeading, Tabs, cx, type TabItem } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';

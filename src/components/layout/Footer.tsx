@@ -1,4 +1,4 @@
-import logo from '../../assets/logo.png';
+const logo = '/images/logo.png';
 import { COMPANY, FAMILY_SITES, NAV } from '../../data/site';
 import { Icon, SmartLink } from '../ui';
 import s from './Footer.module.css';

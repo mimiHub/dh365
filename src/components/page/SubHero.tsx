@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import defaultImg from '../../assets/hero-slide-3.jpg';
+const defaultImg = '/images/hero-slide-3.jpg';
 import { cx } from '../ui';
 import s from './SubHero.module.css';
 

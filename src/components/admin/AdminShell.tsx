@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import logo from '../../assets/logo.png';
+const logo = '/images/logo.png';
 import { Icon, SmartLink, cx, type IconName } from '../ui';
 import s from './AdminShell.module.css';
 

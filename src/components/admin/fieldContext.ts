@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 /**
  * <Field> → 안쪽 입력칸으로 넘기는 연결 정보.
  * 컴포넌트 파일(Form.tsx)과 따로 둔 이유: 한 파일이 컴포넌트와 일반 값(Context·훅)을 같이 내보내면
- * Vite Fast Refresh가 파일을 갈아 끼우지 못하고 페이지를 새로고침함
+ * React Fast Refresh가 파일을 갈아 끼우지 못하고 페이지를 새로고침함
  */
 export interface FieldCtx {
   id: string;

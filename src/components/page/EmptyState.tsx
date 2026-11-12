@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@/lib/router';
 import s from './EmptyState.module.css';
 
 /** 빈 목록 — 검색 결과가 없으면 '검색어 지우기'까지 */

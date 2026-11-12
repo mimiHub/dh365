@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { STRENGTHS } from '../data/site';
 import { Media, MoreLink, cx } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
-import officesMapImg from '../assets/offices-map.png';
-import certFireShutterImg from '../assets/cert-fire-shutter.png';
-import caseSamsungOfficeImg from '../assets/case-samsung-office.png';
+const officesMapImg = '/images/offices-map.png';
+const certFireShutterImg = '/images/cert-fire-shutter.png';
+const caseSamsungOfficeImg = '/images/case-samsung-office.png';
 import s from './About.module.css';
 
 // 강점 항목별 사진. 실제 이미지가 있는 항목만 여기 채우고,
