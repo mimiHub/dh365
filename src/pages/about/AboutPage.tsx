@@ -1,17 +1,8 @@
 import { Navigate, useParams } from 'react-router-dom';
 import buildingsImg from '../../assets/about-buildings.jpg';
 import { CategoryNav, SubHero } from '../../components/page';
-import { Greeting } from './Greeting';
-import { Organization } from './Organization';
-import { Location } from './Location';
+import { ABOUT_SECTIONS } from './sections';
 import s from './About.module.css';
-
-/** 회사소개 세 화면 — 주소 /about/:section. 메뉴(site.ts NAV)와 분류 패널이 같은 목록을 씀 */
-export const ABOUT_SECTIONS = [
-  { key: 'greeting', name: '인사말', to: '/about/greeting', Body: Greeting },
-  { key: 'organization', name: '조직도', to: '/about/organization', Body: Organization },
-  { key: 'location', name: '오시는길', to: '/about/location', Body: Location },
-] as const;
 
 /**
  * 회사소개 — /about/:section (없거나 모르는 값이면 인사말로)
