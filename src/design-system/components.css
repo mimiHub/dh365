@@ -13,6 +13,8 @@ body { margin: 0; font-family: var(--font-sans); background: var(--surface); col
 .dh-btn-secondary:hover { border-color: var(--ink); }
 .dh-btn-solid { background: var(--brand); color: #ffffff; }
 .dh-btn-solid:hover { opacity: .88; }
+.dh-btn-danger { background: var(--fire); color: #ffffff; }
+.dh-btn-danger:hover { opacity: .88; }
 .dh-btn-ghost { background: rgba(255,255,255,0.08); color: #ffffff; border-color: rgba(255,255,255,0.6); backdrop-filter: blur(6px); }
 .dh-btn-ghost:hover { background: #ffffff; color: #0a2a66; }
 .dh-btn:focus-visible, .dh-tab:focus-visible, .dh-more:focus-visible, .dh-dot:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }

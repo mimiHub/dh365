@@ -12,9 +12,12 @@ import { LibraryPage } from './pages/library/LibraryPage';
 import { LibraryDetailPage } from './pages/library/LibraryDetailPage';
 import { NoticePage } from './pages/notice/NoticePage';
 import { AboutPage } from './pages/about/AboutPage';
+import { ComponentsPage } from './pages/catalog/ComponentsPage';
 import { NoticeDetailPage } from './pages/notice/NoticeDetailPage';
 
 const routes: RouteObject[] = [
+  // 컴포넌트 카탈로그 — 개발자용 문서. 사이트 머리·바닥 없이 따로 (App 바깥), 메뉴에는 없음
+  { path: '/components', element: <ComponentsPage /> },
   {
     element: <App />,
     children: [

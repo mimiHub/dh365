@@ -20,8 +20,11 @@ src/
 │  └─ components.css   dh- 컴포넌트 스타일
 ├─ components/
 │  ├─ ui/              디자인 시스템 컴포넌트의 TSX 버전 (Button, Tabs, SectionHeading …)
+│  ├─ page/            사용자 하위 페이지 조각 (SubHero, CategoryNav, BoardTable …)
+│  ├─ admin/           관리자 사이트 조각 (AdminShell, DataTable, Field, Modal …)
 │  └─ layout/          Header, Footer, QuickMenu
 ├─ sections/           메인 섹션 = 컴포넌트 + 섹션 전용 *.module.css
+├─ pages/catalog/      컴포넌트 카탈로그(/components) — 데모·코드·props 문서
 ├─ data/site.ts        메뉴·회사정보·제품·공지 등 콘텐츠 (마크업과 분리)
 ├─ hooks/              useReveal(스크롤 등장), useScrolled(헤더 전환)
 └─ styles/global.css   리셋, .container, 반응형 공통
@@ -59,6 +62,26 @@ src/
 |---|---|
 | `/` | 메인 (`pages/Home.tsx`) |
 | `/products/:category/:slug?` | 제품소개 (`pages/ProductPage.tsx`) — 코아드 제품 페이지 구성. slug 생략 시 카테고리 첫 제품 |
+| `/components` | 컴포넌트 카탈로그 (`pages/catalog/ComponentsPage.tsx`) — 개발자용. 메뉴에 없고 검색엔진 수집 막음 |
 
 - react-router-dom. 배포는 BrowserRouter + `vercel.json` rewrite(새로고침 404 방지), `build:preview` 한 파일 시안은 MemoryRouter.
 - 메뉴 href 규칙(`data/site.ts`): `/…` 페이지 이동, `/#id` 메인 섹션, `#id` 현재 페이지 앵커 → `SmartLink`가 알맞은 태그로 렌더.
+
+## 컴포넌트 카탈로그 — `/components`
+
+사용자 사이트와 관리자 사이트를 같은 조각으로 만들기 위한 문서 페이지입니다. 컴포넌트마다 **설명 · 가져오는 곳 · 실제 데모 · 복사 가능한 코드 · props 표**가 있습니다.
+
+| 묶음 | 위치 | 들어 있는 것 |
+|---|---|---|
+| 기초 UI | `components/ui` | Button(`danger` 추가), Badge, Icon, Tabs, Pagination, SliderNav, Media, SectionHeading, StatItem, MoreLink |
+| 사용자 화면 조각 | `components/page` | SubHero, CategoryNav, ListHead·SearchBox, BoardTable, EmptyState, PostHeader·PostNav, AttachmentList, InfoList, CtaBand |
+| 관리자 | `components/admin` | AdminShell, PageHeader, Panel, StatCard, FilterBar, DataTable·BulkBar, Field·TextInput·Textarea·Select·Checkbox·RadioGroup·Switch, ImageUpload, Modal·ConfirmDialog, Alert |
+| 조립 예시 | `pages/catalog/examples/screens.tsx` | 대시보드, 배너 목록·등록, Q&A 관리, 문의 관리 — 관리자 새 화면의 출발점 |
+
+**관리자 컴포넌트 규칙**
+- 다른 점은 props로: 모양(`variant`·`size`·`density`·`layout`), 동작(`selected`/`onSelectChange`, `onRowClick`).
+- 상태는 부모가 가짐(제어 컴포넌트) — 표 선택·모달 열림·스위치 값. 일괄 버튼과 표가 같은 상태를 보게 하기 위함.
+- 폼은 `<Field>` 안에 입력을 넣으면 label·도움말·오류·필수가 접근성 속성까지 자동 연결. 직접 만든 입력은 `useFieldControl()`로 연결.
+- 서버 통신 자리는 예시 화면에 `// 실제: await api…` 주석으로 표시 — 목업 데이터는 `pages/catalog/examples/mock.ts`.
+
+**새 컴포넌트를 만들면** `pages/catalog/entries/*.tsx` 배열에 항목 하나를 추가합니다(상태가 필요한 데모는 `pages/catalog/demos/`에).

@@ -1,0 +1,16 @@
+.alert { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); border: 1px solid transparent; font-size: 14px; line-height: 22px; }
+.icon { flex-shrink: 0; display: grid; place-items: center; height: 22px; }
+.text { flex: 1; min-width: 0; }
+.title { font-weight: 700; }
+.body { color: var(--ink-muted); word-break: keep-all; }
+.close { flex-shrink: 0; display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--ink-subtle); cursor: pointer; }
+.close:hover { background: rgba(0, 0, 0, .06); color: var(--ink); }
+/* 색은 아이콘·테두리에만 — 글자는 읽기 좋은 기본색 */
+.info { background: var(--accent-soft); border-color: rgba(1, 99, 206, .2); }
+.info .icon { color: var(--accent-text); }
+.success { background: var(--accent-soft); border-color: rgba(1, 99, 206, .2); }
+.success .icon { color: var(--accent); }
+.warning { background: #fff7e6; border-color: #f3d9a4; }
+.warning .icon { color: #b26b00; }
+.danger { background: var(--fire-soft); border-color: rgba(210, 35, 26, .25); }
+.danger .icon { color: var(--fire-text); }

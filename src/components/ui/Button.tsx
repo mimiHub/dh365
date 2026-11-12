@@ -2,7 +2,8 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'reac
 import { cx } from './cx';
 import { SmartLink } from './SmartLink';
 
-type Variant = 'primary' | 'secondary' | 'solid' | 'ghost';
+// danger: 삭제처럼 되돌릴 수 없는 동작 (관리자 화면) — 레드는 이 용도에만
+type Variant = 'primary' | 'secondary' | 'solid' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
 
 interface Common {

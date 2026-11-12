@@ -1,0 +1,44 @@
+/* 관리자 폼 — 높이 40px 입력칸, 각진 모서리(사용자 화면의 알약 모양보다 촘촘하게) */
+.field { min-width: 0; margin: 0; padding: 0; border: 0; }
+.stack { display: grid; gap: 6px; }
+.row { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: var(--space-4); align-items: start; padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+.row:first-child { padding-top: 0; }
+.row .label { padding-top: 9px; }
+.label { padding: 0; font-size: 13px; line-height: 20px; font-weight: 600; color: var(--ink-muted); }
+.req { color: var(--fire-text); }
+.control { min-width: 0; display: grid; gap: 6px; }
+.help { font-size: 12px; line-height: 18px; color: var(--ink-subtle); }
+.error { font-size: 12px; line-height: 18px; font-weight: 600; color: var(--fire-text); }
+
+.input { width: 100%; height: 40px; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); font: inherit; font-size: 14px; color: var(--ink); transition: border-color .15s ease, box-shadow .15s ease; }
+.input::placeholder { color: var(--ink-subtle); }
+.input:hover { border-color: var(--ink-muted); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input[aria-invalid="true"] { border-color: var(--fire); }
+.input[aria-invalid="true"]:focus { box-shadow: 0 0 0 3px var(--fire-soft); }
+.input:disabled { background: var(--surface-alt); color: var(--ink-subtle); cursor: not-allowed; }
+.textarea { height: auto; padding: var(--space-2) var(--space-3); line-height: 22px; resize: vertical; }
+.select { padding-right: 36px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23626c7a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; cursor: pointer; }
+
+.choices { display: grid; gap: var(--space-2); }
+.inline { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+.row .choices { padding-top: 9px; }
+.check { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 14px; color: var(--ink); cursor: pointer; }
+.check input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+
+.switch { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: var(--ink); cursor: pointer; }
+.switch:disabled { opacity: .45; cursor: not-allowed; }
+.track { position: relative; width: 40px; height: 22px; border-radius: var(--radius-pill); background: var(--line-strong); transition: background-color .2s ease; }
+.thumb { position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); transition: transform .2s cubic-bezier(.22,1,.36,1); }
+.switch[aria-checked="true"] .track { background: var(--accent); }
+.switch[aria-checked="true"] .thumb { transform: translateX(18px); }
+.switch:focus-visible .track { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-5); }
+
+@media (max-width: 767px) {
+  .row { grid-template-columns: 1fr; gap: 6px; }
+  .row .label, .row .choices { padding-top: 0; }
+  .actions > * { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .track, .thumb { transition: none; } }

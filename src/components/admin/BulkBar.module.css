@@ -1,0 +1,10 @@
+.bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5); background: var(--brand); color: #ffffff; animation: barIn .25s ease both; }
+@keyframes barIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.count { display: flex; align-items: center; gap: var(--space-3); font-size: 14px; }
+.count strong { font-variant-numeric: tabular-nums; }
+.clear { border: 0; background: none; padding: 0; font: inherit; font-size: 13px; color: #9cc4f5; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+/* 네이비 위 보조 버튼 */
+.actions :global(.dh-btn-secondary) { color: #ffffff; border-color: rgba(255, 255, 255, .45); }
+.actions :global(.dh-btn-secondary:hover) { background: #ffffff; color: var(--brand); border-color: #ffffff; }
+@media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
