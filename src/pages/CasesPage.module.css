@@ -56,7 +56,8 @@
 /* 사진 = 잘리지 않게 contain, 남는 자리는 어두운 배경 */
 .viewerMedia { flex: 1 1 auto; height: min(68dvh, 640px); background-color: #0b1424; }
 .viewerMedia:has(img) { background-image: none; } /* 사진이 있으면 슬랫 무늬(플레이스홀더용) 없이 단색 */
-.viewerMedia :global(img) { object-fit: contain; }
+/* cover — 칸을 사진으로 꽉 채움(가장자리는 조금 잘림). contain은 사진 비율이 칸과 다르면 위아래·양옆에 바탕색 여백이 생김 */
+.viewerMedia :global(img) { object-fit: cover; }
 .viewerBar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding: var(--space-5) var(--space-6); }
 .viewerText { min-width: 0; }
 .viewerTitle { margin-top: var(--space-2); font-size: 22px; line-height: 32px; font-weight: 700; letter-spacing: -0.02em; word-break: keep-all; }
