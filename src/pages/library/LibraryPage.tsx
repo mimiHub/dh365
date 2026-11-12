@@ -1,3 +1,5 @@
+// 히어로 사진: 문서 보관 서가 — 번호표와 손잡이가 보이게 세로 32% 지점 기준
+import heroImg from '../../assets/library-hero.jpg';
 import { Navigate, useParams } from 'react-router-dom';
 import { LIBRARY, LIBRARY_CATEGORIES, libraryPath, type LibraryKey } from '../../data/library';
 import { useListQuery } from '../../hooks/useListQuery';
@@ -24,7 +26,7 @@ export function LibraryPage() {
 
   return (
     <>
-      <SubHero en="Library" title="자료실" desc="시방서·상세도와 보도자료, 관련법규, 동영상 자료를 모았습니다." withNav />
+      <SubHero image={heroImg} position="50% 32%" en="Library" title="자료실" desc="시방서·상세도와 보도자료, 관련법규, 동영상 자료를 모았습니다." withNav />
 
       <div className={s.band}>
         <CategoryNav items={NAV} current={key} label="자료실 분류" id="library-cats" />

@@ -1,3 +1,5 @@
+// 히어로 사진: 문서 보관 서가 — 번호표와 손잡이가 보이게 세로 32% 지점 기준
+import heroImg from '../../assets/library-hero.jpg';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { LIBRARY, LIBRARY_CATEGORIES, libraryPath } from '../../data/library';
 import { Button, Media, cx } from '../../components/ui';
@@ -25,7 +27,7 @@ export function LibraryDetailPage() {
 
   return (
     <>
-      <SubHero en="Library" title="자료실" sub={cat.name} />
+      <SubHero image={heroImg} position="50% 32%" en="Library" title="자료실" sub={cat.name} />
       <div className={cx('container', s.detailBody)}>
         <article aria-labelledby="post-title">
           <PostHeader badges={<StatusChip done>{cat.name}</StatusChip>} no={item.id} title={item.title} meta={[`조회 ${item.views.toLocaleString()}`]} />
