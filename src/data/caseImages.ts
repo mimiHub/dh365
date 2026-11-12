@@ -2,6 +2,8 @@
 import caseSteelFactoryImg from '../assets/case-steel-factory.png';
 import caseSteelFoodWarehouseImg from '../assets/case-steel-food-warehouse.png';
 import caseSteelAptParkingImg from '../assets/case-steel-apt-parking.png';
+import caseSteelAsanBaebangImg from '../assets/case-steel-asan-baebang.jpg';
+import caseSteelUlsanJmcImg from '../assets/case-steel-ulsan-jmc.jpg';
 import caseScreenIncheonNamdongImg from '../assets/case-screen-incheon-namdong.png';
 import caseScreenAnsanSeonggokImg from '../assets/case-screen-ansan-seonggok.png';
 import caseScreenWirelessControllerImg from '../assets/case-screen-wireless-controller.png';
@@ -30,6 +32,8 @@ export const CASE_IMAGES: Partial<Record<number, string>> = {
   2: caseSteelFactoryImg, // 자동차 부품공장 철재방화셔터
   9: caseSteelFoodWarehouseImg, // OO식품 물류창고 철제방화셔터
   13: caseSteelAptParkingImg, // 아파트 지하주차장 철제방화셔터
+  27: caseSteelAsanBaebangImg, // 아산시 배방읍 세교리 근린생활 지하주차장
+  28: caseSteelUlsanJmcImg, // 울산 JMC현장 방폭형 철재방화셔터 설치
   1: caseScreenIncheonNamdongImg, // 인천남동물류센터 하역장 스크린방화셔터
   4: caseScreenAnsanSeonggokImg, // 안산성곡물류센터 하역장 스크린방화셔터
   7: caseScreenWirelessControllerImg, // 스크린방화셔터 무선제어기 시공
