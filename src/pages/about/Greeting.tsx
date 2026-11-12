@@ -1,4 +1,5 @@
 import glassImg from '../../assets/about-glass.jpg';
+import signatureImg from '../../assets/ceo-signature.png';
 import { COMPANY, NAV, STATS } from '../../data/site';
 import { GREETING, VALUES } from '../../data/about';
 import { Button, SmartLink, StatItem, cx } from '../../components/ui';
@@ -37,7 +38,11 @@ export function Greeting() {
           </div>
           <p className={s.sign}>
             {GREETING.sign.role}
-            <strong>{GREETING.sign.name}</strong>
+            <strong className={s.signName}>
+              {GREETING.sign.name}
+              {/* 이름 뒤에 겹쳐 놓는 친필 서명 — 이름이 이미 글자로 있으니 장식(alt 비움) */}
+              <img className={s.signature} src={signatureImg} alt="" aria-hidden="true" />
+            </strong>
           </p>
         </div>
         <aside className={s.overview} aria-labelledby="overview-title">
