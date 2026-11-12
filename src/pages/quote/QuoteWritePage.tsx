@@ -136,7 +136,7 @@ export function QuoteWritePage({ board }: { board: Board }) {
 
   return (
     <>
-      <SubHero en={board.en} title={board.title} desc={board.desc} sub="글쓰기" />
+      <SubHero en={board.en} title={board.title} desc={board.desc} image={board.hero?.image} position={board.hero?.position} sub="글쓰기" />
 
       <div className={cx('container', s.body)}>
 

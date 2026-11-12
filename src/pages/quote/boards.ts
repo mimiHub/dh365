@@ -1,3 +1,4 @@
+import quoteHeroImg from '../../assets/quote-hero.jpg';
 import { QUOTES, type QuoteItem } from '../../data/quotes';
 
 /**
@@ -10,6 +11,8 @@ export interface Board {
   en: string; // 히어로 영문
   path: string; // /quote
   desc: string; // 히어로 설명
+  /** 히어로 배경 사진 — 없으면 SubHero 기본 사진(상담). position: 사진에서 남길 부분 */
+  hero?: { image: string; position?: string };
   items: QuoteItem[];
   emailHint: string;
   purpose: string; // 개인정보 이용 목적
@@ -22,6 +25,7 @@ export const BOARDS: Record<Board['key'], Board> = {
     en: 'Estimate',
     path: '/quote',
     desc: '현장 규격과 용도를 남겨 주시면 담당자가 검토 후 견적을 안내해 드립니다.',
+    hero: { image: quoteHeroImg, position: '50% 58%' }, // 노트에 적는 손이 보이게
     items: QUOTES,
     emailHint: '견적서를 메일로도 받으실 수 있습니다.',
     purpose: '견적 산출 및 상담 안내',

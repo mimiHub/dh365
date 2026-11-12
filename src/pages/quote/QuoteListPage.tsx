@@ -16,7 +16,7 @@ export function QuoteListPage({ board }: { board: Board }) {
 
   return (
     <>
-      <SubHero en={board.en} title={board.title} desc={board.desc} sub="목록" />
+      <SubHero en={board.en} title={board.title} desc={board.desc} image={board.hero?.image} position={board.hero?.position} sub="목록" />
 
       <div className={cx('container', s.body)}>
         <ListHead ref={lq.topRef} title={board.title} total={lq.list.length} q={lq.q} page={lq.page} pages={lq.pages}>

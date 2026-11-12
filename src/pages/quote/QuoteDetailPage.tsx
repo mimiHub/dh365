@@ -44,7 +44,7 @@ function QuoteDetail({ board, item }: { board: Board; item: QuoteItem }) {
 
   return (
     <>
-      <SubHero en={board.en} title={board.title} desc={board.desc} sub="상세" />
+      <SubHero en={board.en} title={board.title} desc={board.desc} image={board.hero?.image} position={board.hero?.position} sub="상세" />
       <div className={cx('container', s.body)}>
         {unlocked ? (
           <Post item={item} backTo={backTo} />
