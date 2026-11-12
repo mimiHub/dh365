@@ -116,10 +116,37 @@
   font-size: 13px;
 }
 
-.copy {
+.copyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
   margin-top: var(--space-8);
+}
+
+.copy {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
+}
+
+/* 컴포넌트 카탈로그 바로가기 — 관련 사이트 버튼(.family a)과 같은 알약 모양, 눈에 덜 띄게 */
+.devLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color .2s ease, border-color .2s ease;
+}
+
+.devLink:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 @media (max-width: 1024px) {

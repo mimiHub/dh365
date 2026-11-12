@@ -1,6 +1,6 @@
 import logo from '../../assets/logo.png';
 import { COMPANY, FAMILY_SITES, NAV } from '../../data/site';
-import { SmartLink } from '../ui';
+import { Icon, SmartLink } from '../ui';
 import s from './Footer.module.css';
 
 export function Footer() {
@@ -42,7 +42,14 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <p className={s.copy}>Copyright © {COMPANY.name}. All Rights Reserved.</p>
+        <div className={s.copyRow}>
+          <p className={s.copy}>Copyright © {COMPANY.name}. All Rights Reserved.</p>
+          {/* 개발 협업용 — 컴포넌트 카탈로그 바로가기 (클라이언트 공개 전에 빼기) */}
+          <SmartLink href="/components" className={s.devLink}>
+            <Icon name="dashboard" size={14} />
+            컴포넌트
+          </SmartLink>
+        </div>
       </div>
     </footer>
   );
