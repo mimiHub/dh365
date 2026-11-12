@@ -2,7 +2,8 @@ import glassImg from '../../assets/about-glass.jpg';
 import signatureImg from '../../assets/ceo-signature.png';
 import { COMPANY, NAV, STATS } from '../../data/site';
 import { GREETING, VALUES } from '../../data/about';
-import { Button, SmartLink, StatItem, cx } from '../../components/ui';
+import { Button, CountUp, SmartLink, StatItem, cx } from '../../components/ui';
+import { useReveal } from '../../hooks/useReveal';
 import { CtaBand, InfoList } from '../../components/page';
 import s from './About.module.css';
 
@@ -20,23 +21,31 @@ const OVERVIEW = [
 
 /** 회사소개 > 인사말 — 인사말 / 핵심 가치 / 숫자로 보는 대한방화 / 사업 분야 / 문의 */
 export function Greeting() {
+  // 안의 .reveal 요소들이 화면에 들어올 때 하나씩 data-revealed → CSS 전환 (스크롤 등장)
+  const ref = useReveal<HTMLDivElement>();
   return (
-    <>
+    <div ref={ref}>
       {/* 인사말 + 회사 개요 */}
       <section className={cx('container', s.narrow, s.greeting)} aria-labelledby="greeting-title">
         <div className={s.message}>
-          <p className="dh-eyebrow">{GREETING.eyebrow}</p>
-          <h2 id="greeting-title" className={s.headline}>
-            {GREETING.headline[0]}
-            <br />
-            <em>{GREETING.headline[1]}</em>
+          <p className={cx('dh-eyebrow', 'reveal')}>{GREETING.eyebrow}</p>
+          {/* 줄마다 가림막(overflow hidden) 안에서 아래→위로 올라옴 */}
+          <h2 id="greeting-title" className={cx(s.headline, s.mask, 'reveal')}>
+            <span className={s.line}>
+              <span>{GREETING.headline[0]}</span>
+            </span>
+            <span className={s.line}>
+              <em style={{ ['--line-delay' as string]: '120ms' }}>{GREETING.headline[1]}</em>
+            </span>
           </h2>
-          <div className={s.letter}>
-            {GREETING.body.map((p) => (
-              <p key={p}>{p}</p>
+          <div className={cx(s.letter, 'reveal')}>
+            {GREETING.body.map((p, i) => (
+              <p key={p} className="reveal" style={{ ['--reveal-delay' as string]: `${150 + i * 90}ms` }}>
+                {p}
+              </p>
             ))}
           </div>
-          <p className={s.sign}>
+          <p className={cx(s.sign, 'reveal')}>
             {GREETING.sign.role}
             <strong className={s.signName}>
               {GREETING.sign.name}
@@ -45,7 +54,7 @@ export function Greeting() {
             </strong>
           </p>
         </div>
-        <aside className={s.overview} aria-labelledby="overview-title">
+        <aside className={cx(s.overview, s.fromRight, 'reveal')} style={{ ['--reveal-delay' as string]: '200ms' }} aria-labelledby="overview-title">
           <h3 id="overview-title" className={s.overviewTitle}>회사 개요</h3>
           <InfoList variant="card" rows={OVERVIEW} />
         </aside>
@@ -53,11 +62,11 @@ export function Greeting() {
 
       {/* 핵심 가치 */}
       <section className={cx('container', s.narrow, s.section)} aria-labelledby="values-title">
-        <p className="dh-eyebrow">CORE VALUES</p>
-        <h2 id="values-title" className={s.h2}>대한방화가 지키는 세 가지</h2>
+        <p className={cx('dh-eyebrow', 'reveal')}>CORE VALUES</p>
+        <h2 id="values-title" className={cx(s.h2, 'reveal')}>대한방화가 지키는 세 가지</h2>
         <ol className={s.values}>
           {VALUES.map((v, i) => (
-            <li key={v.key} className={s.value}>
+            <li key={v.key} className={cx(s.value, s.pop, 'reveal')} style={{ ['--reveal-delay' as string]: `${i * 120}ms` }}>
               <span className={s.valueNo}>{String(i + 1).padStart(2, '0')}</span>
               <p className={s.valueEn}>{v.en}</p>
               <h3 className={s.valueTitle}>{v.title}</h3>
@@ -68,14 +77,17 @@ export function Greeting() {
       </section>
 
       {/* 숫자로 보는 대한방화 — 다크 테마 토큰으로 StatItem 색이 자동 반전 */}
-      <section data-theme="dark" className={s.statsBand} aria-labelledby="stats-title">
+      <section data-theme="dark" className={cx(s.statsBand, 'reveal')} aria-labelledby="stats-title">
         <img className={s.statsBg} src={glassImg} alt="" aria-hidden="true" loading="lazy" />
         <div className={cx('container', s.narrow, s.statsInner)}>
-          <p className="dh-eyebrow">IN NUMBERS</p>
-          <h2 id="stats-title" className={s.h2}>숫자로 보는 대한방화</h2>
+          <p className={cx('dh-eyebrow', 'reveal')}>IN NUMBERS</p>
+          <h2 id="stats-title" className={cx(s.h2, 'reveal')}>숫자로 보는 대한방화</h2>
           <div className={s.stats}>
-            {STATS.map((st) => (
-              <StatItem key={st.label} value={st.value} unit={st.unit} label={st.label} />
+            {STATS.map((st, i) => (
+              <div key={st.label} className="reveal" style={{ ['--reveal-delay' as string]: `${i * 110}ms` }}>
+                {/* 화면에 들어오면 0부터 올라감 */}
+                <StatItem value={<CountUp value={st.value} />} unit={st.unit} label={st.label} />
+              </div>
             ))}
           </div>
         </div>
@@ -83,11 +95,11 @@ export function Greeting() {
 
       {/* 사업 분야 */}
       <section className={cx('container', s.narrow, s.section)} aria-labelledby="business-title">
-        <p className="dh-eyebrow">BUSINESS</p>
-        <h2 id="business-title" className={s.h2}>사업 분야</h2>
+        <p className={cx('dh-eyebrow', 'reveal')}>BUSINESS</p>
+        <h2 id="business-title" className={cx(s.h2, 'reveal')}>사업 분야</h2>
         <ul className={s.business}>
-          {BUSINESS.map((b) => (
-            <li key={b.href}>
+          {BUSINESS.map((b, i) => (
+            <li key={b.href} className={cx(s.fromLeft, 'reveal')} style={{ ['--reveal-delay' as string]: `${i * 70}ms` }}>
               <SmartLink href={b.href} className={s.biz}>
                 <span>{b.label}</span>
                 <span className={s.bizArrow} aria-hidden="true">→</span>
@@ -97,7 +109,7 @@ export function Greeting() {
         </ul>
       </section>
 
-      <div className={cx('container', s.narrow, s.cta)}>
+      <div className={cx('container', s.narrow, s.cta, s.zoomIn, 'reveal')}>
         <CtaBand
           title="현장에 맞는 방화셔터, 대한방화와 상의하세요"
           desc={
@@ -113,6 +125,6 @@ export function Greeting() {
           }
         />
       </div>
-    </>
+    </div>
   );
 }

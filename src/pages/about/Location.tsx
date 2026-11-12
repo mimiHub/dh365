@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { COMPANY } from '../../data/site';
 import { Icon, cx } from '../../components/ui';
 import { InfoList } from '../../components/page';
+import { useReveal } from '../../hooks/useReveal';
 import s from './About.module.css';
 
 /**
@@ -15,22 +16,27 @@ const mapRoute = (q: string) => `https://www.google.com/maps/dir/?api=1&destinat
 /** 회사소개 > 오시는길 — 사업장 카드를 고르면 왼쪽 구글 지도가 그 위치로 */
 export function Location() {
   const [sel, setSel] = useState(0);
+  const ref = useReveal<HTMLElement>();
   const office = COMPANY.offices[sel];
 
   return (
-    <section className={cx('container', s.narrow, s.section, s.first)} aria-labelledby="loc-title">
-      <p className="dh-eyebrow">LOCATION</p>
-      <h2 id="loc-title" className={s.h2}>오시는길</h2>
+    <section ref={ref} className={cx('container', s.narrow, s.section, s.first)} aria-labelledby="loc-title">
+      <p className={cx('dh-eyebrow', 'reveal')}>LOCATION</p>
+      <h2 id="loc-title" className={cx(s.h2, 'reveal')}>오시는길</h2>
 
       <div className={s.location}>
-        <div className={s.map}>
+        <div className={cx(s.map, s.fromLeft, 'reveal')}>
           {/* key: 사업장을 바꾸면 iframe을 새로 만들어 확실히 새 위치를 불러옴. title = 스크린리더가 읽는 지도 이름 */}
           <iframe key={office.label} src={mapEmbed(office.mapQuery)} title={`${office.label} 위치 — 구글 지도`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
         </div>
 
         <ul className={s.offices}>
           {COMPANY.offices.map((o, i) => (
-            <li key={o.label} className={cx(s.office, i === 0 && s.officeMain, i === sel && s.officeOn)}>
+            <li
+              key={o.label}
+              className={cx(s.office, i === 0 && s.officeMain, i === sel && s.officeOn, s.fromRight, 'reveal')}
+              style={{ ['--reveal-delay' as string]: `${120 + i * 110}ms` }}
+            >
               {/* 카드 안에 링크가 있어서 카드 전체를 버튼으로 만들 수 없음(버튼 안에 링크 금지) → 이름·주소 부분만 버튼 */}
               <button type="button" className={s.officePick} aria-pressed={i === sel} onClick={() => setSel(i)}>
                 <span className={s.officeName}>
