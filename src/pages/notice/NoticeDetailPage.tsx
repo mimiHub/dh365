@@ -1,3 +1,5 @@
+// 히어로 사진: 노트·만년필 — 'Notes' 글씨와 펜촉이 보이게 세로 62% 지점 기준
+import heroImg from '../../assets/notice-hero.jpg';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { NOTICES, noticePath } from '../../data/notices';
 import { Button, cx } from '../../components/ui';
@@ -21,7 +23,7 @@ export function NoticeDetailPage() {
 
   return (
     <>
-      <SubHero en="Notice" title="공지사항" sub="상세" />
+      <SubHero en="Notice" title="공지사항" sub="상세" image={heroImg} position="50% 62%" />
       <div className={cx('container', s.detailBody)}>
         <article aria-labelledby="post-title">
           <PostHeader

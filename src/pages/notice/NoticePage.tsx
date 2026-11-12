@@ -1,3 +1,5 @@
+// 히어로 사진: 노트·만년필 — 'Notes' 글씨와 펜촉이 보이게 세로 62% 지점 기준
+import heroImg from '../../assets/notice-hero.jpg';
 import { NOTICES, noticePath } from '../../data/notices';
 import { useListQuery } from '../../hooks/useListQuery';
 import { Icon, Pagination, cx } from '../../components/ui';
@@ -20,7 +22,7 @@ export function NoticePage() {
 
   return (
     <>
-      <SubHero en="Notice" title="공지사항" desc="대한방화의 인정 취득·제품·회사 소식을 알려 드립니다." />
+      <SubHero en="Notice" title="공지사항" desc="대한방화의 인정 취득·제품·회사 소식을 알려 드립니다." image={heroImg} position="50% 62%" />
 
       <div className={cx('container', s.body)}>
         <ListHead ref={lq.topRef} title="공지사항" total={lq.list.length} q={lq.q} page={lq.page} pages={lq.pages}>
