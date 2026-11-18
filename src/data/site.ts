@@ -106,7 +106,7 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
 ];
 
-// 회사 강점 — 코아드 'About' 섹션의 3탭 구조를 따름
+// 회사 강점 — 3탭 구조
 export const STRENGTHS = [
   {
     key: 'certified',

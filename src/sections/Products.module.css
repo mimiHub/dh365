@@ -1,7 +1,7 @@
 .products { background: var(--surface-alt); overflow: hidden; }
 .top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-8); }
 
-/* 왼쪽은 컨테이너에 맞추고 오른쪽은 화면 끝까지 흘러가게 (코아드식 블리드 슬라이더) */
+/* 왼쪽은 컨테이너에 맞추고 오른쪽은 화면 끝까지 흘러가게 (블리드 슬라이더) */
 /* 슬라이더 치수는 전부 '섹션 폭(cqw)'에서 계산 — 화면 폭이 달라도 항상
    [카드 --full장 온전히] + [다음 카드 --peek 만큼 살짝]이 컨테이너 안에 들어오고,
    컨테이너 밖으로 나간 부분은 페이드 처리됨.

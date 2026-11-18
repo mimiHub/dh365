@@ -24,7 +24,7 @@ const isCurrentPage = (href: string, pathname: string) => {
 
 /**
  * GNB — 히어로 위에서는 투명+흰 글자, 스크롤하거나 메뉴에 마우스를 올리면 흰 배경.
- * PC: 1뎁스 hover 시 전체 2뎁스를 한 번에 펼치는 '전체형 드롭다운'(코아드 방식)
+ * PC: 1뎁스 hover 시 전체 2뎁스를 한 번에 펼치는 '전체형 드롭다운'
  * 모바일(≤1024): 햄버거 → 전체화면 메뉴 + 아코디언
  */
 export function Header() {
