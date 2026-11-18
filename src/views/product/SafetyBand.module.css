@@ -121,6 +121,7 @@
 
 /* 유리 카드 — 반투명 + 흐림 */
 .glassRow { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: var(--space-5); }
+.glassNav { display: none; } /* 모바일 슬라이더 컨트롤 — PC·태블릿은 카드가 다 보여서 숨김 */
 .glass { display: flex; flex-direction: column; padding: var(--space-8) var(--space-6); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: var(--radius-lg); background: rgba(255, 255, 255, 0.08); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12); }
 .glassMain { background: linear-gradient(160deg, rgba(1, 99, 206, 0.45), rgba(1, 99, 206, 0.12)); border-color: rgba(156, 200, 255, 0.45); animation: glassIn .45s cubic-bezier(.22,1,.36,1) both; }
 @keyframes glassIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -161,10 +162,15 @@
   .light, .alignEnd { padding: var(--space-8) var(--space-5); }
   .title { font-size: 32px; line-height: 42px; }
   .accHead { font-size: 17px; }
-  .ringWrap { width: 280px; }
-  .coreTitle { font-size: 40px; }
-  .node { width: 52px; height: 52px; margin: -26px 0 0 -26px; }
-  .rings, .photoPanel { min-height: 380px; }
+  /* 장식 비주얼은 모바일에서 한 단계 작게 — 분위기는 유지하고 세로 길이만 줄임 */
+  .ringWrap { width: 220px; }
+  .coreTitle { font-size: 32px; }
+  .coreSub { margin-top: 6px; font-size: 12px; }
+  .node { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+  .node svg { width: 22px; height: 22px; }
+  .rings { min-height: 300px; }
+  .photoPanel { min-height: 0; }
+  .demoFrame { height: 160px; }
   /* 1·2·3 단계를 한 줄로 — 글자·번호 원을 줄이고 줄바꿈 금지 (줄바꿈되면 3번만 아래로 떨어져 하단 여백이 깨짐) */
   .photoPanel { padding: var(--space-10) var(--space-4); }
   .photoInner { width: 100%; } /* 80%로 줄이면 좁은 폰에서 제목·단계가 줄바꿈됨 → 좌우 여백은 패널 padding으로 */
@@ -172,15 +178,31 @@
   .steps { gap: var(--space-3); flex-wrap: nowrap; white-space: nowrap; }
   .steps li { gap: 5px; font-size: 12.5px; letter-spacing: -0.02em; }
   .steps span { width: 20px; height: 20px; font-size: 11px; }
-  .cells, .voice { grid-template-columns: 1fr; }
+  .voice { grid-template-columns: 1fr 1fr; }
+  .voice li { padding: var(--space-3) 10px; font-size: 12.5px; line-height: 18px; letter-spacing: -0.02em; word-break: keep-all; }
+  /* 안전 브라켓트 3칸 — 세로로 쌓지 않고 한 줄 3열 유지 (짧은 글이라 세로로 쌓으면 높이만 차지) */
+  .cells { gap: var(--space-1); }
+  .cells li { padding: var(--space-3) var(--space-2); text-align: center; font-size: 12px; line-height: 17px; letter-spacing: -0.02em; word-break: keep-all; }
+  .cells b { margin-top: 4px; font-size: 14px; line-height: 20px; }
   .strip { margin-top: var(--space-12); padding: var(--space-12) 0; }
   .stripTitle { font-size: 26px; line-height: 34px; }
-  .glassRow { grid-template-columns: 1fr; }
+  /* 세부 안전 카드 3장: 한 장씩 꽉 차는 슬라이드 + 아래 [01 / 03 ‹ ›] (아래 여백 = 카드 그림자 자리) */
+  .glassRow { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--space-4); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding-bottom: var(--space-8); margin-bottom: calc(var(--space-8) * -1); }
+  .glassRow::-webkit-scrollbar { display: none; }
+  .glassNav { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: var(--space-6); }
+  /* 점 버튼 — 눈에 보이는 점은 작지만 누르는 영역은 넉넉하게(padding) */
+  .dot { width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 0; background: none; cursor: pointer; transition: width .3s cubic-bezier(.22, 1, .36, 1); }
+  .dot::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.35); transition: width .3s cubic-bezier(.22, 1, .36, 1), background-color .3s ease; }
+  .dot[aria-current="true"] { width: 36px; }
+  .dot[aria-current="true"]::before { width: 24px; background: #ffffff; }
+  .dot:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; border-radius: 999px; }
+  .glass { scroll-snap-align: start; padding: var(--space-6) var(--space-5); }
   /* 모바일: 알약을 한 줄로 두고 가로 스크롤 + 양옆 화살표 (여러 줄로 쌓이면 높이만 차지해서) */
-  .pills { flex: 1; min-width: 0; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px; margin: -2px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent); mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent); }
+  /* 모바일: 알약 한 줄 가로 스크롤. 끝 흐림·화살표는 전역 '가로 스크롤 탭 공통 규칙'(dh-fade·dh-edge-arrow) */
+  .pills { flex: 1; min-width: 0; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px; margin: -2px; }
   .pills::-webkit-scrollbar { display: none; }
   .pill { white-space: nowrap; }
-  .pillArrow { display: grid; }
+  .pillArrow { display: grid; background: #0a1f4a; } /* 알약 위에 겹쳐 뜨므로 불투명한 남색 바탕 */
   .pillsCol, .pillsRow { min-width: 0; } /* 그리드·flex 자식은 기본 min-width:auto라 긴 알약 줄만큼 늘어남 → 0으로 줄여 가로 스크롤이 생기게 */
 }
 
@@ -193,4 +215,6 @@
   .steps { gap: var(--space-2); }
   .steps li { gap: 4px; font-size: 11.5px; }
   .steps span { width: 18px; height: 18px; font-size: 10px; }
+  .cells li { padding: var(--space-3) 4px; font-size: 11px; }
+  .cells b { font-size: 13px; }
 }

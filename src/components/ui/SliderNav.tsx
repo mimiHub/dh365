@@ -15,6 +15,8 @@ interface Props {
   /** 버튼 이름 — 무엇을 넘기는지 (예: '제품', '사진') */
   itemLabel: string;
   className?: string;
+  /** 배경 톤 — 'dark'는 어두운 사진·남색 배경 위 (글자·버튼을 흰색 계열로) */
+  tone?: 'light' | 'dark';
 }
 
 /**
@@ -22,9 +24,9 @@ interface Props {
  * 랜딩 제품 슬라이더와 제품 상세 갤러리가 같이 씀 → 디자인·동작을 한 곳에서 관리.
  * 끝에 닿으면 버튼을 흐리게 비활성(눌러도 안 움직이는 버튼임을 보여줌)
  */
-export function SliderNav({ current, total, onPrev, onNext, prevDisabled, nextDisabled, controls, itemLabel, className }: Props) {
+export function SliderNav({ current, total, onPrev, onNext, prevDisabled, nextDisabled, controls, itemLabel, className, tone = 'light' }: Props) {
   return (
-    <div className={cx(s.nav, className)}>
+    <div className={cx(s.nav, tone === 'dark' && s.dark, className)}>
       {/* 스크린리더에는 숫자 변화를 읽히지 않음 — 내용(카드·사진) 자체로 탐색됨 */}
       <p className={s.count} aria-hidden="true">
         <strong>{pad(current + 1)}</strong> / {pad(total)}

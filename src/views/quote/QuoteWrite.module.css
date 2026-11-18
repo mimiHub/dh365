@@ -115,7 +115,8 @@ input:focus-visible + .fileBtn { outline: 2px solid var(--focus); outline-offset
   .formTitle { font-size: 20px; line-height: 28px; }
   /* 라벨을 입력칸 위로 */
   .row { grid-template-columns: 1fr; gap: var(--space-2); padding: var(--space-4) 0; }
-  .row > legend { float: none; }
+  /* float를 풀면 legend가 fieldset 테두리(맨 위)에 붙어 row의 위 여백을 무시함 → 모바일도 float 유지, 폭만 꽉 채움 */
+  .row > legend { width: 100%; }
   .label { padding-top: 0; font-size: 15px; }
   .labelSub { display: inline; margin: 0 0 0 var(--space-2); }
   .products { grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }

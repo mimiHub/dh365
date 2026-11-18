@@ -3,12 +3,14 @@ import { Link } from '@/lib/router';
 import { CASES, PRODUCTS } from '../data/site';
 import { Badge, Button, Media, MoreLink, SectionHeading, Tabs, cx, type TabItem } from '../components/ui';
 import { useReveal } from '../hooks/useReveal';
+import { MOBILE, useMediaQuery } from '../hooks/useMediaQuery';
 import { CASE_IMAGES } from '../data/caseImages';
 import s from './Cases.module.css';
 
 type Filter = 'all' | (typeof PRODUCTS)[number]['key'];
 
-const PAGE_SIZE = 6; // 처음에 보여줄 개수 = 더보기 한 번에 늘어나는 개수
+// 처음에 보여줄 개수 = 더보기 한 번에 늘어나는 개수. 모바일은 카드가 1열로 길게 쌓이므로 2개씩
+const PAGE_SIZE = { desktop: 6, mobile: 2 };
 const TABS: TabItem<Filter>[] = [{ value: 'all', label: '전체' }, ...PRODUCTS.map((p) => ({ value: p.key, label: p.name }))];
 const nameOf = (key: string) => PRODUCTS.find((p) => p.key === key)?.name ?? '';
 
@@ -17,7 +19,10 @@ const nameOf = (key: string) => PRODUCTS.find((p) => p.key === key)?.name ?? '';
 /** 시공사례 — 제품별 탭 필터 + 3열 그리드 + 더보기 */
 export function Cases() {
   const [filter, setFilter] = useState<Filter>('all');
-  const [visible, setVisible] = useState(PAGE_SIZE);
+  const pageSize = useMediaQuery(MOBILE) ? PAGE_SIZE.mobile : PAGE_SIZE.desktop;
+  // '몇 개'가 아니라 '몇 페이지'를 state로 둠 → 화면 폭이 바뀌어도 개수가 pageSize에 맞춰 자동 계산됨
+  const [pages, setPages] = useState(1);
+  const visible = pages * pageSize;
   const ref = useReveal<HTMLElement>();
   const cardRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const focusFrom = useRef<number | null>(null);
@@ -27,15 +32,15 @@ export function Cases() {
   const shown = list.slice(0, visible);
   const hasMore = list.length > visible;
 
-  // 탭을 바꾸면 다시 처음 6개부터 (이벤트 핸들러에서 같이 처리 — effect로 '필터 바뀌면 리셋'을 하면 한 번 더 렌더됨)
+  // 탭을 바꾸면 다시 첫 페이지부터 (이벤트 핸들러에서 같이 처리 — effect로 '필터 바뀌면 리셋'을 하면 한 번 더 렌더됨)
   const changeFilter = (f: Filter) => {
     setFilter(f);
-    setVisible(PAGE_SIZE);
+    setPages(1);
   };
 
   const loadMore = () => {
     focusFrom.current = visible; // 새로 붙는 첫 카드 인덱스
-    setVisible((v) => v + PAGE_SIZE);
+    setPages((n) => n + 1);
   };
 
   // 더보기 후 새로 나온 첫 카드로 포커스 이동 → 키보드·스크린리더 사용자가 이어서 탐색 가능
@@ -61,7 +66,7 @@ export function Cases() {
             <>
               <ul className={s.grid}>
                 {shown.map((c, i) => (
-                  <li key={c.id} className={cx(i >= PAGE_SIZE && s.added)}>
+                  <li key={c.id} className={cx(i >= pageSize && s.added)}>
                     <Link
                       to={`/cases/${c.product}`}
                       className={s.card}

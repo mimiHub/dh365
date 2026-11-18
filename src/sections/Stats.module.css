@@ -9,6 +9,16 @@
   .deco { width: 50%; opacity: .5; }
 }
 @media (max-width: 767px) {
-  .grid { grid-template-columns: 1fr; gap: var(--space-6); }
-  .grid :global(.dh-stat-value) { font-size: 44px; line-height: 52px; }
+  /* 숫자 4개를 1열 → 2×2로: 큰 숫자가 나란히 놓여 비교하기 쉽고 세로 길이는 절반 */
+  .inner { gap: var(--space-8); }
+  .more { margin-top: var(--space-5); }
+  .grid { grid-template-columns: 1fr 1fr; gap: var(--space-6) var(--space-8); }
+  .grid :global(.dh-stat) { min-width: 0; padding-top: var(--space-4); }
+  .grid :global(.dh-stat-value) { font-size: 30px; line-height: 36px; }
+  .grid :global(.dh-stat-unit) { margin-left: 2px; font-size: 15px; }
+  .grid :global(.dh-stat-label) { margin-top: var(--space-1); font-size: 13px; line-height: 19px; word-break: keep-all; }
+}
+/* 아주 좁은 폰: '12,000mm'가 칸을 넘지 않게 한 단계 더 */
+@media (max-width: 359px) {
+  .grid :global(.dh-stat-value) { font-size: 26px; line-height: 32px; }
 }

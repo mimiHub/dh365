@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, Navigate, useNavigate, useParams } from '@/lib/router';
 import {
   PRODUCT_CATEGORIES,
@@ -19,6 +19,8 @@ import { SafetyBand, SafetyDetails } from './product/SafetyBand';
 import { ProductTabBar } from './product/ProductTabBar';
 import { ProductGallery } from './product/ProductGallery';
 import { FeatureIcon } from './product/FeatureIcon';
+import { SectionNav } from './product/SectionNav';
+import { MOBILE, useMediaQuery } from '../hooks/useMediaQuery';
 import { PRODUCT_GALLERY } from './product/galleryImages';
 const steelShutterImg = '/images/product-steel-shutter.png';
 const screenShutterImg = '/images/product-screen-shutter.png';
@@ -256,22 +258,9 @@ function Highlight({ text }: { text: string }) {
   );
 }
 
-/**
- * CSS 미디어쿼리를 JS에서도 같은 기준으로 읽음. useSyncExternalStore: 브라우저 상태(화면 폭)를 React에 구독시키는 표준 방법
- * — resize마다 state를 갱신하는 것보다 정확하고, 경계값을 넘을 때만 리렌더됨
- */
-const MOBILE = '(max-width: 767px)'; // ProductPage.module.css 모바일 구간과 같은 값
-function useMediaQuery(query: string) {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia(query);
-      mq.addEventListener('change', onChange);
-      return () => mq.removeEventListener('change', onChange);
-    },
-    () => window.matchMedia(query).matches,
-    () => false, // 서버 렌더: 화면 폭을 모르므로 데스크톱 기준
-  );
-}
+
+// 화면에 떠 있는 제품 페이지 수 — 스크롤 앵커링 on/off 판단용 (아래 ProductPage의 effect 참고)
+let productPagesMounted = 0;
 
 /**
  * 제품소개 — 코아드 제품 페이지 구성
@@ -294,6 +283,21 @@ export function ProductPage() {
   const product = (slug && category?.slugs.includes(slug) ? getProduct(slug) : undefined) ?? (category && getProduct(category.slugs[0]));
   const group = category && product ? groupOf(category, product.slug) : undefined;
   const catIndex = PRODUCT_CATEGORIES.findIndex((c) => c.key === category?.key);
+
+  // 스크롤 앵커링 끄기 (제품 페이지에 있는 동안만)
+  // 카테고리를 바꾸면 주소의 [category]가 바뀌어 페이지가 통째로 다시 그려지는데, 브라우저의 '보던 위치 유지(scroll anchoring)'가
+  // 사라지는 요소를 기준점으로 잡아 스크롤을 맨 위로 보내는 문제가 있었음 (예: 철재 → 알루미늄 화살표).
+  // CSS로 특정 요소에만 끄면 교체되는 순간 규칙이 빠져서 실패 → 문서 스크롤러(html)에 직접 지정.
+  // 카테고리를 바꾸면 이전 화면 정리와 새 화면 지정의 순서가 바뀔 수 있어서, '지금 떠 있는 제품 화면 수'로 판단
+  // (이전 값을 저장했다 되돌리는 방식은 순서가 엇갈리면 새 화면에서 다시 켜져 버림)
+  useEffect(() => {
+    productPagesMounted += 1;
+    document.documentElement.style.overflowAnchor = 'none';
+    return () => {
+      productPagesMounted -= 1;
+      if (productPagesMounted === 0) document.documentElement.style.overflowAnchor = '';
+    };
+  }, []);
 
   /**
    * 카드 트랙 — 한 화면에 4장(CSS --visible). 넘치면 ‹ ›로 한 칸씩 이동.
@@ -445,9 +449,11 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
   return (
     <div className={s.body}>
+      {/* 모바일 전용: 스크롤하면 헤더 아래 붙는 구간 탭 — 아래 section들의 data-nav를 모아서 만듦 */}
+      <SectionNav watch={p.slug} />
 
       {/* 개요 */}
-      <section className={cx('container', s.overview)} aria-labelledby="product-name">
+      <section id="sec-overview" data-nav="개요" className={cx('container', s.overview)} aria-labelledby="product-name">
         <ProductGallery images={gallery} name={p.name} placeholder={`IMAGE — ${p.nameEn}`} />
         <div className={s.overviewText}>
           <p className="dh-eyebrow">{p.nameEn}</p>
@@ -483,7 +489,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
       {p.features.length > 0 && FEATURE_BG[p.slug] && !detail && <FeatureBand product={p} bg={FEATURE_BG[p.slug]!} />}
       {p.features.length > 0 && !(FEATURE_BG[p.slug] && !detail) && (
-        <section className={cx('container', s.block)} aria-labelledby="features-title">
+        <section id="sec-features" data-nav="특징" className={cx('container', s.block)} aria-labelledby="features-title">
           <BlockHead en="FEATURES" title="제품 특징" id="features-title" />
           {detail ? (
             // 구조 사진이 있으면: 왼쪽 사진(번호 핀) | 오른쪽 특징을 세로 목록으로
@@ -564,7 +570,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
       {drawing ? (
         <>
           {/* 도면이 있는 제품: [구조도 | 사양표] → (색상·센서) → 아래에 설치 장소 */}
-          <section className={cx('container', s.block)} aria-labelledby="spec-title">
+          <section id="sec-spec" data-nav="사양" className={cx('container', s.block)} aria-labelledby="spec-title">
             <BlockHead en="SPECIFICATION" title={drawing.title ?? '구조도 · 제품 사양'} id="spec-title" />
             {/* 도면 박스와 사양표의 높이를 맞춤: 그리드 행 높이(둘 중 큰 쪽)에 양쪽이 늘어남.
                 그래서 도면 설명은 그리드 밖(아래)으로 뺌 — 안에 두면 설명 줄만큼 도면 쪽이 더 길어져 끝선이 어긋남 */}
@@ -599,7 +605,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
             <SpecSlatBlock product={p} />
           </>
         ) : (p.specs.length > 0 || p.uses.length > 0) && (
-          <section className={cx('container', s.block, s.specWrap)} aria-labelledby="spec-title">
+          <section id="sec-spec" data-nav="사양" className={cx('container', s.block, s.specWrap)} aria-labelledby="spec-title">
             {p.specs.length > 0 && (
               <div>
                 <BlockHead en="SPECIFICATION" title="제품 사양" id="spec-title" />
@@ -626,7 +632,7 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
 
       {/* 주요 설치 장소 — 상세 맨 아래(상담 바로 위). 도면·슬랫이 없는 제품은 위에서 사양표 옆에 붙어 나옴 */}
       {(drawing || p.slatGroups) && p.uses.length > 0 && (
-        <section className={cx('container', s.block)} aria-labelledby="uses-title">
+        <section id="sec-uses" data-nav="설치장소" className={cx('container', s.block)} aria-labelledby="uses-title">
           <BlockHead en="APPLICATION" title="주요 설치 장소" id="uses-title" />
           <ul className={s.uses}>
             {p.uses.map((u) => <li key={u}>{u}</li>)}
@@ -643,6 +649,9 @@ function ProductBody({ product: p }: { product: ProductDetail }) {
  */
 function ReportBlock({ report: r }: { report: TestReport }) {
   const img = REPORT_IMAGES[r.reportNo];
+  // 모바일에서만 성적서 정보·결과표를 접어 둠 (PC는 CSS에서 항상 펼침) — 핵심(제목·적합·차열 그래프)은 늘 보임
+  const [more, setMore] = useState(false);
+  const detailId = `report-detail-${r.reportNo}`;
   const meta: [string, string][] = [
     ['시험기관', r.accreditation ? `${r.lab} · ${r.accreditation}` : r.lab],
     ['성적서 번호', r.reportNo],
@@ -653,7 +662,7 @@ function ReportBlock({ report: r }: { report: TestReport }) {
     ['시험일자', `${r.testDate} (발급 ${r.issueDate})`],
   ];
   return (
-    <section className={cx('container', s.block)} aria-labelledby={`report-${r.reportNo}`}>
+    <section id={detailId} data-nav="성적서" className={cx('container', s.block, !more && s.reportClosed)} aria-labelledby={`report-${r.reportNo}`}>
       <BlockHead en="TEST REPORT" title="공인 시험성적서" id={`report-${r.reportNo}`} />
       {/* 두 줄 모두 좌우를 채워 균형: [스캔 | 성적서 정보] / [결과표 | 차열 온도] */}
       <div className={s.reportHead}>
@@ -669,6 +678,13 @@ function ReportBlock({ report: r }: { report: TestReport }) {
           <p className={s.reportTitle}>
             {r.title} <Badge tone="solid">60분 전 항목 적합</Badge>
           </p>
+          {/* 모바일 전용 버튼: 펼쳐지는 내용이 항상 버튼 '아래'에 생겨야 눌렀을 때 변화가 보임 */}
+          <div className={s.reportMore}>
+            <Button variant="secondary" size="sm" aria-expanded={more} aria-controls={detailId} onClick={() => setMore((v) => !v)}>
+              {more ? '시험 정보 접기' : '시험 정보·결과표 자세히 보기'}
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+            </Button>
+          </div>
           <dl className={s.reportMeta}>
             {meta.map(([k, v]) => (
               <div key={k}>
@@ -739,6 +755,7 @@ function ReportBlock({ report: r }: { report: TestReport }) {
           </div>
         )}
       </div>
+
     </section>
   );
 }
@@ -837,7 +854,7 @@ function HeatDonut({ label, value, limit, delay = 0 }: { label: string; value: n
  */
 function FeatureBand({ product: p, bg }: { product: ProductDetail; bg: string }) {
   return (
-    <section className={s.featureBand} aria-labelledby="features-title">
+    <section id="sec-features" data-nav="특징" className={s.featureBand} aria-labelledby="features-title">
       <img className={s.featureBandBg} src={bg} alt="" aria-hidden="true" loading="lazy" />
       <div className={cx('container', s.featureBandInner)}>
         <div className={s.featureBandHead}>
@@ -869,8 +886,28 @@ function FeatureBand({ product: p, bg }: { product: ProductDetail; bg: string })
 function TypesBlock({ product: p }: { product: ProductDetail }) {
   const imgs = TYPE_IMAGES[p.slug] ?? [];
   const slatImg = USAGE_IMAGES[p.slug];
+  // 모바일 슬라이더 (PC는 3열 그리드라 화살표 숨김) — 생산 공정 슬라이더(ProductionBlock)와 같은 방식
+  const track = useRef<HTMLUListElement>(null);
+  const [index, setIndex] = useState(0);
+  const trackId = useId();
+  const total = p.types?.reduce((n, _x, i) => n + (imgs[i]?.length || 1), 0) ?? 0;
+  const go = (i: number) => {
+    const n = Math.max(0, Math.min(total - 1, i));
+    setIndex(n);
+    const el = track.current;
+    const item = el?.children[n] as HTMLElement | undefined;
+    if (el && item) el.scrollTo({ left: item.offsetLeft - el.offsetLeft, behavior: 'smooth' });
+  };
+  // 손으로 밀어 넘겨도 번호가 따라오게
+  const onScroll = () => {
+    const el = track.current;
+    const first = el?.children[0] as HTMLElement | undefined;
+    if (!el || !first) return;
+    const step = first.offsetWidth + parseFloat(getComputedStyle(el).columnGap || '0');
+    setIndex(Math.round(el.scrollLeft / step));
+  };
   return (
-    <section className={cx('container', s.block, s.typesSection)} aria-labelledby="types-title">
+    <section id="sec-types" data-nav="형태·용도" className={cx('container', s.block, s.typesSection)} aria-labelledby="types-title">
       {/* 머리: [빨간 점 + 큰 영문 제목 | 오른쪽 설명] */}
       <div className={s.typeIntro}>
         <div>
@@ -889,7 +926,7 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
       <p className={s.typeCardsLabel}>({p.types?.map((x) => x.name).join(" · ")})</p>
       {/* 카드 줄 — 두 번째 카드 뒤에 브랜드 색 블록(::before)이 화면 오른쪽 끝까지 깔림 */}
       <div className={s.typeCardsWrap}>
-        <ul className={s.typeCards}>
+        <ul ref={track} id={trackId} className={s.typeCards} onScroll={onScroll}>
           {p.types?.flatMap((x, i) => {
             const set = imgs[i]?.length ? imgs[i] : [undefined];
             return set.map((img, j) => (
@@ -905,6 +942,11 @@ function TypesBlock({ product: p }: { product: ProductDetail }) {
           })}
         </ul>
       </div>
+      {total > 1 && (
+        <div className={s.typeNav}>
+          <SliderNav current={index} total={total} onPrev={() => go(index - 1)} onNext={() => go(index + 1)} prevDisabled={index === 0} nextDisabled={index >= total - 1} controls={trackId} itemLabel="형태" />
+        </div>
+      )}
       {p.usages && (
         // 용도: 머리(가운데) → [방화용 카드 | 슬랫 그림 | 방범용 카드] — 슬랫이 가운데라 두 카드가 같은 높이로 마주 봄
         <div className={s.usageEd}>
@@ -984,7 +1026,7 @@ function ProductionBlock({ product: p }: { product: ProductDetail }) {
   useEffect(onScroll, []); // 처음 그릴 때 끝인지(카드가 화면에 다 들어오는지) 확인
 
   return (
-    <section className={cx('container', s.block)} aria-labelledby="production-title">
+    <section id="sec-production" data-nav="생산" className={cx('container', s.block)} aria-labelledby="production-title">
       <div className={s.prodHead}>
         <BlockHead en="PRODUCTION" title={pr.title} id="production-title" />
         <p className={s.productionBody}>{pr.body}</p>
@@ -1036,7 +1078,7 @@ function ComponentsBlock({ product: p }: { product: ProductDetail }) {
     return acc;
   }, []);
   return (
-    <section className={cx('container', s.block)} aria-labelledby="components-title">
+    <section id="sec-components" data-nav="구성품" className={cx('container', s.block)} aria-labelledby="components-title">
       <BlockHead en={p.componentsHead?.en ?? 'COMPONENTS'} title={p.componentsHead?.title ?? '구성품'} id="components-title" />
       {groups.map((g, gi) => (
         <div key={gi} className={s.componentGroup}>
@@ -1093,7 +1135,7 @@ function StepsBand({ product: p }: { product: ProductDetail }) {
 function OptionsBlock({ product: p }: { product: ProductDetail }) {
   const colorImgs = COLOR_IMAGES[p.slug];
   return (
-    <section className={cx('container', s.block, s.options)} aria-label="투시창·색상·센서 옵션">
+    <section id="sec-options" data-nav="옵션" className={cx('container', s.block, s.options)} aria-label="투시창·색상·센서 옵션">
       {p.window && (
         <div>
           <BlockHead en="WINDOW" title={p.window.title} />
@@ -1176,7 +1218,7 @@ function PanelBlock({ product: p }: { product: ProductDetail }) {
     </dl>
   );
   return (
-    <section className={cx('container', s.block)} aria-labelledby="panel-title">
+    <section id="sec-panel" data-nav="패널" className={cx('container', s.block)} aria-labelledby="panel-title">
       <BlockHead en={head.en} title={head.title} id="panel-title" />
       {cardImgs ? (
         <ul className={cx(s.panelImgCards, panels.length === 1 && s.panelImgSingle)}>
@@ -1215,7 +1257,7 @@ function PanelBlock({ product: p }: { product: ProductDetail }) {
  */
 function SlatGroupsBlock({ product: p }: { product: ProductDetail }) {
   return (
-    <section className={cx('container', s.block)} aria-labelledby="slat-title">
+    <section id="sec-slat" data-nav="슬랫" className={cx('container', s.block)} aria-labelledby="slat-title">
       <BlockHead en="SLAT" title="슬랫 종류" id="slat-title" />
       <SlatGroupList product={p} />
     </section>
@@ -1230,7 +1272,7 @@ function SpecSlatBlock({ product: p }: { product: ProductDetail }) {
   const imgs = SLAT_GROUP_IMAGES[p.slug] ?? [];
   const groups = p.slatGroups!;
   return (
-    <section className={cx('container', s.block)} aria-labelledby="spec-title">
+    <section id="sec-spec" data-nav="사양" className={cx('container', s.block)} aria-labelledby="spec-title">
       <BlockHead en="SPECIFICATION" title="제품 사양 · 슬랫" id="spec-title" />
       <div className={s.specSlat}>
         <div className={s.specSlatTables}>
@@ -1306,7 +1348,7 @@ function SlatGroupList({ product: p, stacked = false }: { product: ProductDetail
 function OpenTypesBlock({ product: p }: { product: ProductDetail }) {
   const imgs = OPEN_TYPE_IMAGES[p.slug] ?? [];
   return (
-    <section className={cx('container', s.block)} aria-labelledby="opentype-title">
+    <section id="sec-opentype" data-nav="개폐방식" className={cx('container', s.block)} aria-labelledby="opentype-title">
       <BlockHead en="DOOR OPEN TYPE" title="개폐 방식" id="opentype-title" />
       <p className={s.openLead}>천장까지 남는 공간(헤드룸)에 맞춰 도어가 열리는 방식을 고릅니다.</p>
       <ol className={s.openTypes}>

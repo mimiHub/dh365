@@ -8,5 +8,10 @@
 .meta dt { width: 56px; font-weight: 700; color: var(--ink-subtle); }
 .meta a:hover { color: var(--accent-text); }
 @media (max-width: 767px) {
-  .tel { font-size: 40px; line-height: 48px; }
+  /* 모바일: 제목·번호를 줄이고 C.P·E-mail을 촘촘하게 → 세로 길이 절약 */
+  .title { font-size: 20px; line-height: 28px; }
+  .tel { margin-top: var(--space-1); font-size: 32px; line-height: 40px; }
+  .meta { margin-top: var(--space-3); gap: var(--space-1); font-size: 14px; }
+  .meta div { gap: var(--space-3); }
+  .meta dt { width: 44px; }
 }

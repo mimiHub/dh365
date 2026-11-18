@@ -55,6 +55,17 @@
 .biz:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .bizArrow { color: var(--accent-text); transition: transform .2s ease; }
 .biz:hover .bizArrow { transform: translateX(4px); }
+/* PC·태블릿: 한 줄로 늘어선 '이름 → 이름 →'이 순서(흐름)처럼 읽히던 문제 →
+   칸마다 세로 구분선으로 독립된 칸을 만들고, 화살표는 칸 오른쪽 아래 동그란 '이동' 버튼으로 */
+@media (min-width: 768px) {
+  /* 칸(li)은 그리드가 같은 높이로 늘려 주지만 안의 링크(.biz)는 내용 높이 그대로 → li를 flex로 만들어 링크가 칸을 꽉 채우게 */
+  .business li { display: flex; }
+  .business li > .biz { flex: 1; }
+  .business li + li .biz { border-left: 1px solid var(--line); }
+  .biz { flex-direction: column; align-items: flex-start; justify-content: space-between; gap: var(--space-4); min-height: 136px; padding: var(--space-5); }
+  .bizArrow { align-self: flex-end; display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid transparent; border-radius: 50%; background: var(--accent-soft); font-size: 15px; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+  .biz:hover .bizArrow { transform: none; background: var(--brand); border-color: var(--brand); color: #ffffff; }
+}
 .cta { margin-top: var(--space-16); }
 
 /* ── 조직도 ── 대표 카드 → 세로선 → 사업장 3칸 (가로 연결선은 첫·끝 칸 가운데까지) */
@@ -83,6 +94,21 @@
 .map { position: relative; min-height: 420px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-alt); }
 .map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .offices { display: grid; gap: var(--space-4); }
+/* 모바일 전용 사업장 탭·선택 정보 — PC·태블릿에서는 숨김 */
+.officeTabs, .officeNow { display: none; }
+@media (max-width: 767px) {
+  .location { gap: var(--space-3); margin-top: var(--space-5); }
+  /* 지도 위 탭: 상단 하위 메뉴(인사말·조직도·오시는길)와 같은 모양 — 회색 칸 3개, 고른 칸만 남색 */
+  .officeTabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .officeTab { height: 48px; border: 0; border-radius: var(--radius-md); background: var(--surface-alt); font: inherit; font-size: 15px; font-weight: 600; color: var(--ink-muted); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+  .officeTab[aria-selected="true"] { background: var(--brand); color: #ffffff; box-shadow: 0 6px 14px -6px rgba(10, 42, 102, .5); }
+  .officeTab:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  /* 지도 바로 아래: 고른 사업장 이름·주소·링크 */
+  .officeNow { display: block; padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+  .officeNow .officeName { display: flex; align-items: center; gap: var(--space-2); }
+  /* 카드 목록은 탭이 대신하므로 숨김 */
+  .offices { display: none; }
+}
 .office { padding: var(--space-5) var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg); transition: border-color .2s ease, box-shadow .2s ease; }
 /* 지도에 띄운 사업장 — 바깥 링(본사 '면' 강조와 겹치지 않는 다른 신호) + '지도 보는 중' 표시 */
 .officeOn { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow-card); }
@@ -115,7 +141,7 @@
 }
 @media (max-width: 767px) {
   .section { padding-top: var(--space-12); }
-  .first, .greeting { padding-top: var(--space-10); }
+  .first, .greeting { padding-top: var(--space-6); } /* 하위 메뉴(인사말·조직도·오시는길) 바로 아래 — 여백이 과해 보여 줄임 */
   .h2 { font-size: 28px; line-height: 38px; }
   .headline { font-size: 28px; line-height: 40px; }
   .letter { margin-top: var(--space-6); padding-left: var(--space-4); }
@@ -123,7 +149,13 @@
   .letter p:first-child { font-size: 17px; }
   .signName { padding-right: 110px; }
   .signature { width: 120px; }
-  .value { padding: var(--space-6) var(--space-5); }
+  /* 핵심 가치 카드: 모바일은 여백·글자를 한 단계 줄여 세로 길이 절약 (번호·영문 라벨은 한 줄에) */
+  .values { gap: var(--space-3); margin-top: var(--space-6); }
+  .value { padding: var(--space-5) var(--space-5) var(--space-6); }
+  .valueNo { display: inline; font-size: 13px; }
+  .valueEn { display: inline; margin: 0 0 0 var(--space-2); font-size: 11px; letter-spacing: .12em; }
+  .valueTitle { margin-top: var(--space-2); font-size: 18px; line-height: 26px; }
+  .valueBody { margin-top: var(--space-2); font-size: 14px; line-height: 22px; }
   .statsBand { margin-top: var(--space-12); padding: var(--space-12) 0; }
   .stats :global(.dh-stat-value) { font-size: 40px; line-height: 48px; }
   /* 조직도 — 세로로 쌓고 가로 연결선은 숨김, 왼쪽 세로선 하나로 이음 */

@@ -7,6 +7,13 @@
 .arrow:disabled { opacity: .35; cursor: default; }
 .arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
+/* 어두운 배경용 (tone="dark") */
+.dark .count { color: rgba(255, 255, 255, 0.6); }
+.dark .count strong { color: #ffffff; }
+.dark .arrow { border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.06); color: #ffffff; }
+.dark .arrow:hover:not(:disabled) { background: #ffffff; border-color: #ffffff; color: var(--brand); }
+.dark .arrow:focus-visible { outline-color: #ffffff; }
+
 @media (max-width: 767px) {
   .arrow { width: 44px; height: 44px; } /* 터치 타깃 최소 44px */
 }

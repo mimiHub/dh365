@@ -19,8 +19,32 @@ button { font: inherit; color: inherit; }
 .skip-link { position: fixed; left: var(--space-4); top: -100px; z-index: var(--z-modal); padding: var(--space-3) var(--space-5); background: var(--accent); color: var(--on-accent); border-radius: var(--radius-pill); }
 .skip-link:focus { top: var(--space-4); }
 
-/* 탭 = 칩 한 줄 (PC·모바일 공통). 디자인 시스템의 '알약 트랙' 탭을 이 프로젝트에선 칩형으로 덮어씀.
-   넘치면 가로 스크롤 + 좌우 화살표(Tabs 컴포넌트가 넘침을 감지해 렌더) */
+/* ── 가로 스크롤 탭 공통 규칙 (FAQ·시공사례 분류 탭, 세부 안전 설계 알약, 제품 상세 구간 탭) ──
+   1) 평소: 화살표 없음 — 어느 페이지든 같은 모양
+   2) 넘칠 때: 더 있는 쪽 끝을 흐리게 (dh-fade-l / dh-fade-r, useScrollEdges 훅이 붙임)
+   3) 마우스 기기: 목록에 마우스를 올리면 흐린 끝 위에 동그란 화살표가 겹쳐 뜸 (자리를 차지하지 않아 탭 위치가 안 흔들림)
+   4) 터치 기기: 화살표 없이 스와이프 */
+.dh-edge-wrap { position: relative; }
+.dh-fade { --fade: 40px; }
+.dh-fade-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - var(--fade)), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - var(--fade)), transparent); }
+.dh-fade-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fade)); mask-image: linear-gradient(90deg, transparent, #000 var(--fade)); }
+.dh-fade-l.dh-fade-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent); mask-image: linear-gradient(90deg, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent); }
+/* 겹쳐 뜨는 화살표: 위치·보이기만 담당 (모양은 dh-tabs-arrow 또는 각 화면 클래스) */
+.dh-edge-arrow { position: absolute; z-index: 2; top: 50%; translate: 0 -50%; transition: opacity .2s ease; }
+/* 숨김은 선택자 2개로 — 각 화살표 모양 클래스의 :disabled { opacity } 보다 우선해야 비활성 화살표가 비쳐 보이지 않음 */
+.dh-edge-wrap .dh-edge-arrow { opacity: 0; pointer-events: none; }
+.dh-edge-prev { left: 0; }
+.dh-edge-next { right: 0; }
+@media (hover: hover) {
+  /* 마우스를 올렸거나 키보드로 안에 들어왔을 때만, 그리고 그쪽에 더 갈 곳이 있을 때만(disabled 아님) */
+  .dh-edge-wrap:hover .dh-edge-arrow:not(:disabled),
+  .dh-edge-wrap:focus-within .dh-edge-arrow:not(:disabled) { opacity: 1; pointer-events: auto; }
+}
+@media (hover: none) {
+  .dh-edge-wrap .dh-edge-arrow { display: none; } /* 터치 기기: 보이지 않는 버튼이 눌리지 않게 아예 숨김 */
+}
+
+/* 탭 = 칩 한 줄 (PC·모바일 공통). 디자인 시스템의 '알약 트랙' 탭을 이 프로젝트에선 칩형으로 덮어씀 */
 /* 상하 padding 4px: 포커스 링(outline-offset)이 스크롤 박스에 잘리지 않게 */
 .dh-tabs { display: flex; max-width: none; padding: 4px 2px; gap: var(--space-2); border: 0; border-radius: 0; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .dh-tabs::-webkit-scrollbar { display: none; }
@@ -28,12 +52,9 @@ button { font: inherit; color: inherit; }
 .dh-tab:hover { border-color: var(--ink); }
 .dh-tab[aria-selected="true"] { border-color: var(--accent); }
 
-/* 탭 좌우 화살표 — Tabs 컴포넌트가 넘칠 때만 렌더.
-   [‹] [스크롤 영역(flex:1)] [›] 를 나란히 배치 (친구야 Chip.List 방식).
-   화살표가 칩 위에 겹쳐 뜨지 않고, 칩은 스크롤 영역 가장자리에서 깔끔하게 잘림 */
-.dh-tabs-wrap.is-overflow { display: flex; align-items: center; gap: var(--space-2); }
-.dh-tabs-wrap.is-overflow .dh-tabs { flex: 1; min-width: 0; } /* min-width:0 없으면 flex 자식이 내용 폭 이하로 안 줄어 스크롤이 안 생김 */
+/* 동그란 화살표 모양 (위치·보이기는 위의 dh-edge-arrow 공통 규칙) */
 .dh-tabs-arrow { flex: none; width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+.dh-tabs-arrow { box-shadow: 0 4px 12px -4px rgba(10, 42, 102, .35); }
 .dh-tabs-arrow:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #ffffff; }
 .dh-tabs-arrow:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .dh-tabs-arrow:disabled { border-color: var(--line); color: var(--ink-subtle); cursor: default; opacity: .6; }

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { FIRE_SAFETY } from '../../data/products';
 import { Badge, cx } from '../../components/ui';
 import { useReveal } from '../../hooks/useReveal';
+import { edgeClass, useScrollEdges } from '../../hooks/useScrollEdges';
 const shutterPhoto = '/images/product-screen-shutter.png';
 const bandPhoto = '/images/banner-steel-shutter.jpg';
 import s from './SafetyBand.module.css';
@@ -23,7 +24,7 @@ export function SafetyBand() {
   const [patent, setPatent] = useState(0); // 아코디언에서 열린 특허 출원 항목
 
   return (
-    <section ref={ref} className={s.band} aria-labelledby="safety-title">
+    <section ref={ref} id="sec-safety" data-nav="안전장치" className={s.band} aria-labelledby="safety-title">
       {/* container(가운데 정렬 + 좌우 여백) 안에 grid를 따로 둠 — 그림자가 여백 포함 상자가 아니라 패널 크기에 딱 맞게 */}
       <div className="container">
         <div className={s.grid}>
@@ -144,6 +145,27 @@ export function SafetyDetails() {
   const caps = f.motor.capacities;
   const pillList = useRef<HTMLUListElement>(null);
   const last = f.details.length - 1;
+  const edges = useScrollEdges(pillList, [f.details.length]); // 넘침·양 끝 → 끝 흐림·호버 화살표 (가로 스크롤 탭 공통 규칙)
+
+  // 모바일: 유리 카드 3장 슬라이드 + 아래 점(도트) 버튼 (PC는 3열이라 숨김)
+  const glassTrack = useRef<HTMLDivElement>(null);
+  const [card, setCard] = useState(0);
+  const glassId = useId();
+  const GLASS = 3;
+  const goCard = (i: number) => {
+    const n = Math.max(0, Math.min(GLASS - 1, i));
+    setCard(n);
+    const el = glassTrack.current;
+    const item = el?.children[n] as HTMLElement | undefined;
+    if (el && item) el.scrollTo({ left: item.offsetLeft - el.offsetLeft, behavior: 'smooth' });
+  };
+  const onGlassScroll = () => {
+    const el = glassTrack.current;
+    const first = el?.children[0] as HTMLElement | undefined;
+    if (!el || !first) return;
+    const step = first.offsetWidth + parseFloat(getComputedStyle(el).columnGap || '0');
+    setCard(Math.round(el.scrollLeft / step));
+  };
 
   // 모바일(알약이 한 줄 가로 스크롤)일 때 고른 알약을 줄 가운데로 — 목록만 가로로 스크롤 (페이지 세로 스크롤은 그대로)
   useEffect(() => {
@@ -161,12 +183,12 @@ export function SafetyDetails() {
         <div className={s.pillsCol}>
           <p className={s.eyebrowLight}>SAFETY DETAILS</p>
           <h3 id="safety-details-title" className={s.stripTitle}>세부 안전 설계</h3>
-          {/* 모바일: [‹] [알약 한 줄 가로 스크롤] [›] — 메인 시공사례 분류 탭과 같은 방식. PC는 화살표 숨기고 세로 나열 */}
-          <div className={s.pillsRow}>
-            <button type="button" className={cx(s.pillArrow, s.pillPrev)} aria-label="이전 항목" disabled={detail === 0} onClick={() => setDetail((d) => Math.max(0, d - 1))}>
+          {/* 모바일: 알약 한 줄 가로 스크롤 — 가로 스크롤 탭 공통 규칙(끝 흐림 + 마우스 기기 호버 화살표). PC는 세로 나열 */}
+          <div className={cx(s.pillsRow, 'dh-edge-wrap')}>
+            <button type="button" className={cx(s.pillArrow, 'dh-edge-arrow', 'dh-edge-prev')} aria-label="이전 항목" disabled={detail === 0} onClick={() => setDetail((d) => Math.max(0, d - 1))}>
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
-            <ul ref={pillList} className={s.pills} role="tablist" aria-label="세부 안전 설계">
+            <ul ref={pillList} className={cx(s.pills, edgeClass(edges))} role="tablist" aria-label="세부 안전 설계">
               {f.details.map((d, i) => (
                 <li key={d.title}>
                   <button
@@ -183,13 +205,13 @@ export function SafetyDetails() {
                 </li>
               ))}
             </ul>
-            <button type="button" className={cx(s.pillArrow, s.pillNext)} aria-label="다음 항목" disabled={detail === last} onClick={() => setDetail((d) => Math.min(last, d + 1))}>
+            <button type="button" className={cx(s.pillArrow, 'dh-edge-arrow', 'dh-edge-next')} aria-label="다음 항목" disabled={detail === last} onClick={() => setDetail((d) => Math.min(last, d + 1))}>
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
           </div>
         </div>
 
-        <div className={s.glassRow}>
+        <div ref={glassTrack} id={glassId} className={s.glassRow} onScroll={onGlassScroll}>
           <article id="detail-panel" role="tabpanel" aria-labelledby={`detail-tab-${detail}`} className={cx(s.glass, s.glassMain)} key={detail}>
             <span className={s.glassIcon} aria-hidden="true">{DETAIL_ICONS[detail]}</span>
             <p className={s.glassNo}>DETAIL {pad(detail + 1)} / {pad(f.details.length)}</p>
@@ -214,6 +236,12 @@ export function SafetyDetails() {
             <h5 className={s.glassTitle}>특허 {f.patent.no}</h5>
             <p className={s.glassBody}>{f.patent.title}<br />{f.patent.registered} 등록</p>
           </article>
+        </div>
+        {/* 점 버튼: 지금 카드는 길쭉한 막대, 나머지는 작은 점 — 눌러서 바로 이동 */}
+        <div className={s.glassNav}>
+          {['세부 디테일', '모터 라인업', '특허'].map((name, i) => (
+            <button key={name} type="button" className={s.dot} aria-label={`${name} 카드 보기`} aria-current={i === card ? 'true' : undefined} aria-controls={glassId} onClick={() => goCard(i)} />
+          ))}
         </div>
       </div>
     </section>

@@ -25,9 +25,37 @@ export function Location() {
       <h2 id="loc-title" className={cx(s.h2, 'reveal')}>오시는길</h2>
 
       <div className={s.location}>
-        <div className={cx(s.map, s.fromLeft, 'reveal')}>
+        {/* 모바일 전용: 지도 위 사업장 탭 (PC·태블릿은 오른쪽 카드 목록으로 고름) */}
+        <div className={s.officeTabs} role="tablist" aria-label="사업장 선택">
+          {COMPANY.offices.map((o, i) => (
+            <button key={o.label} type="button" role="tab" aria-selected={i === sel} aria-controls="loc-map" className={s.officeTab} onClick={() => setSel(i)}>
+              {o.label}
+            </button>
+          ))}
+        </div>
+
+        <div id="loc-map" className={cx(s.map, s.fromLeft, 'reveal')}>
           {/* key: 사업장을 바꾸면 iframe을 새로 만들어 확실히 새 위치를 불러옴. title = 스크린리더가 읽는 지도 이름 */}
           <iframe key={office.label} src={mapEmbed(office.mapQuery)} title={`${office.label} 위치 — 구글 지도`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+        </div>
+
+        {/* 모바일 전용: 고른 사업장의 주소·링크를 지도 바로 아래에 */}
+        <div className={s.officeNow} aria-live="polite">
+          <p className={s.officeName}>
+            {office.label}
+            {sel === 0 && <span className={s.officeTag}>HEAD OFFICE</span>}
+          </p>
+          <p className={s.officeAddr}>{office.address}</p>
+          <p className={s.mapLinks}>
+            <a href={mapView(office.mapQuery)} target="_blank" rel="noopener noreferrer">
+              구글 지도에서 보기<span className="sr-only"> — {office.label} (새 창)</span>
+              <Icon name="right" size={14} />
+            </a>
+            <a href={mapRoute(office.mapQuery)} target="_blank" rel="noopener noreferrer">
+              길찾기<span className="sr-only"> — {office.label} (새 창)</span>
+              <Icon name="right" size={14} />
+            </a>
+          </p>
         </div>
 
         <ul className={s.offices}>

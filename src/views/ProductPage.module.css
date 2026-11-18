@@ -263,29 +263,30 @@
 }
 @media (max-width: 767px) {
   .detailImg { padding: var(--space-6); }
-  .hero { height: 400px; }
-  .heroText { margin-bottom: 160px; padding: 0 var(--gutter); }
+  .hero { height: 260px; } /* 첫 화면에 제품 선택·구간 탭·제품 사진까지 보이도록 배너·카드를 낮춤 */
+  .heroText { margin-bottom: 100px; padding: 0 var(--gutter); }
 
   .heroTitle { font-size: 36px; line-height: 46px; }
   .heroEn { font-size: 18px; line-height: 26px; }
-  .cardsWrap { margin-top: -212px; padding: 0; }
-  .introBand { padding-bottom: var(--space-10); }
+  .cardsWrap { margin-top: -120px; padding: 0; }
+  .introBand { padding-bottom: var(--space-6); }
   /* 모바일: 카드 한 장씩. 좌우 44px 여백에 화살표를 둬서 카드(사진)를 가리지 않음 */
   .cards { --visible: 1; --side: 28px; padding-left: var(--side); padding-right: var(--side); scroll-padding-inline: var(--side); } /* 양옆 28px에 이웃 카드가 살짝 보임 */
   .cardsNav { justify-content: center; margin-top: calc(var(--space-4) * -1); }
   /* 디자인은 공통, 크기만 한 단계 작게 */
-  .arrow { width: 40px; height: 40px; top: calc(var(--space-8) + 190px); } /* 모바일 카드 380px 가운데 */
+  .arrow { width: 40px; height: 40px; top: calc(var(--space-8) + 100px); } /* 모바일 카드 200px 가운데 */
   .arrow svg { width: 22px; height: 22px; }
   .prev { left: 2px; }
   .next { right: 2px; }
-  .card { height: 380px; }
+  .card { height: 200px; }
   .cardItem { flex: 0 0 100%; }
   .cardName { font-size: 24px; line-height: 32px; min-height: 0; }
-  .highlight { font-size: 17px; line-height: 28px; }
-  .body { margin-top: var(--space-12); }
+  .highlight { font-size: 15px; line-height: 24px; }
+  .body { margin-top: var(--space-6); }
   .name { font-size: 32px; line-height: 42px; }
   .size dd { font-size: 28px; line-height: 36px; }
-  .block, .body + section { margin-top: var(--space-12); }
+  .block, .body + section { margin-top: var(--space-10); }
+  .blockHead { margin-bottom: var(--space-6); }
   .spec th { width: 104px; }
   .specSlatGroup .slatTable thead th:first-child, .specSlatGroup .slatTable tbody th { width: 104px; }
   .reportMeta { grid-template-columns: 1fr; }
@@ -299,6 +300,19 @@
   .heatIcon { width: 44px; height: 44px; border-radius: 12px; }
   .heatIcon svg { width: 24px; height: 24px; }
   .heatTitle { font-size: 17px; line-height: 24px; }
+}
+
+/* 모바일 제품 특징 카드: [아이콘 | 제목·설명 | 번호] 가로 배치 — 세로로 쌓으면 카드 하나가 너무 길어짐
+   .featureHead(아이콘+번호 묶음)를 display:contents로 풀어서 아이콘·번호가 카드 그리드에 직접 배치되게 함 → TSX 수정 없음 */
+@media (max-width: 767px) {
+  .features { gap: var(--space-3); }
+  .feature { display: grid; grid-template-columns: 44px 1fr auto; column-gap: var(--space-4); align-items: start; padding: var(--space-5); }
+  .featureHead { display: contents; }
+  .feature .featureIcon { grid-column: 1; grid-row: 1 / span 2; width: 44px; height: 44px; border-radius: 12px; }
+  .feature .featureIcon svg { width: 22px; height: 22px; }
+  .feature .featureTitle { grid-column: 2; grid-row: 1; margin-top: 0; font-size: 17px; line-height: 24px; }
+  .feature .featureNo { grid-column: 3; grid-row: 1; font-size: 18px; line-height: 24px; }
+  .feature .featureBody { grid-column: 2 / -1; grid-row: 2; margin-top: var(--space-1); font-size: 14px; line-height: 22px; }
 }
 
 /* ── 제품 특징: 사진 배경 띠 + 원형 아이콘 ── */
@@ -348,6 +362,7 @@
 .typeCardsWrap::before { content: ""; position: absolute; z-index: 0; top: -40px; left: 66%; right: -100vw; height: calc((100cqi - var(--space-6) * 2) / 3 * 2 / 3 + 40px * 2); /* 사진(카드 폭의 2/3) 위·아래로 같은 40px */ background: linear-gradient(135deg, var(--accent), var(--brand)); }
 .typeCards { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); align-items: start; }
 .typeCard2 { display: flex; flex-direction: column; }
+.typeNav { display: none; } /* 모바일 슬라이더 화살표 — PC는 3열이라 숨김 */
 .typeCardImg { overflow: hidden; aspect-ratio: 3 / 2; background: var(--surface-alt); box-shadow: 0 20px 40px -24px rgba(10, 42, 102, .5); }
 .typeCardImg img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(.22,1,.36,1); }
 .typeCard2:hover .typeCardImg img { transform: scale(1.04); }
@@ -586,6 +601,16 @@
 /* 도면 이미지가 아직 없을 때의 자리 — 사양표 높이에 맞춰 늘어남 */
 .drawingEmpty { flex: 1; min-height: 360px; border-radius: var(--radius-md); }
 
+/* 시험성적서 '자세히 보기' — PC에서는 버튼 없이 전부 펼침, 모바일에서만 접힘 */
+.reportMore { display: none; }
+@media (max-width: 767px) {
+  .reportClosed .reportMeta, .reportClosed .reportNote, .reportClosed .resultTable { display: none; }
+  .reportMore { display: flex; margin-top: var(--space-5); }
+  .reportMore :global(.dh-btn) { width: 100%; background: var(--surface); }
+  .reportMore svg { transition: transform .3s ease; }
+  .reportMore [aria-expanded="true"] svg { transform: rotate(45deg); }
+}
+
 @media (max-width: 1023px) {
   .options { grid-template-columns: 1fr; gap: var(--space-12); }
   .prodTrack { grid-auto-columns: calc((100% - var(--space-6)) / 2); }
@@ -613,21 +638,29 @@
   .typeIntroTitle { font-size: 32px; line-height: 44px; }
   .typeIntroDesc { justify-self: start; }
   .typeCardsLabel { margin-top: var(--space-8); }
-  .typeCards { grid-template-columns: 1fr; gap: var(--space-10); }
-  .typeCardsWrap::before { top: -24px; left: 40%; height: calc(100cqi * 2 / 3 + 24px * 2); }
+  /* 형태 카드: 한 장씩 꽉 차는 슬라이드 + 아래 [01 / 03 ‹ ›] (옆 카드가 잘려 보이던 82% 방식 대신) */
+  .typeCards { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--space-4); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding-bottom: var(--space-5); margin-bottom: calc(var(--space-5) * -1); }
+  .typeCards::-webkit-scrollbar { display: none; }
+  .typeCard2 { scroll-snap-align: start; }
+  .typeCardsWrap::before { top: -24px; left: 40%; height: calc(100cqi * 2 / 3 + 24px * 2); } /* 사진 높이 = 카드 폭(100%)의 2/3 */
+  .typeNav { display: flex; justify-content: center; margin-top: var(--space-6); }
   .typeCardEn { margin-top: 40px; }
   .usageEd { padding: var(--space-8) var(--space-5); }
   .usageEdTitle { font-size: 24px; line-height: 34px; }
-  .usageEdGrid { grid-template-columns: 1fr; gap: var(--space-4); }
-  .usageEdFig { order: -1; width: 160px; aspect-ratio: 1; justify-self: center; margin-bottom: var(--space-2); } /* 원(::before)이 상자 높이를 넘지 않게 상자도 정사각형 */
+  /* 용도: 방화용·방범용 카드를 좌우로 나란히(PC처럼 좌·우 대칭) — 두께 숫자를 한눈에 비교, 슬랫 그림은 위에 작게 */
+  .usageEdGrid { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .usageEdFig { order: -1; grid-column: 1 / -1; width: 112px; aspect-ratio: 1; justify-self: center; margin-bottom: 0; } /* 원(::before)이 상자 높이를 넘지 않게 상자도 정사각형 */
   .usageEdFig::before { inset: 0; width: auto; }
   .usageEdFig figcaption { display: none; }
-  .usageEdCard { padding: var(--space-6); }
-  .usageEdSpec { font-size: 48px; }
-  .usageEdRight { align-items: stretch; text-align: left; }
-  .usageEdRight .usageEdName { flex-direction: row; }
-  .usageEdRight .usageEdItems { align-items: stretch; }
-  .usageEdRight .usageEdItems li { flex-direction: row; }
+  .usageEdCard { padding: var(--space-5) var(--space-4); }
+  .usageEdName { gap: var(--space-2); }
+  .usageEdIcon { width: 36px; height: 36px; }
+  .usageEdIcon svg { width: 18px; height: 18px; }
+  .usageEdLabel { font-size: 16px; line-height: 24px; }
+  .usageEdSpec { margin-top: var(--space-4); font-size: 40px; }
+  .usageEdSpec small { font-size: 12px; }
+  .usageEdItems { padding-top: var(--space-4); font-size: 12.5px; line-height: 19px; letter-spacing: -0.02em; }
+  .usageEdSpec + .usageEdItems { margin-top: var(--space-4); }
   /* 셔터의 구성 4개: 모바일은 2열 세로 카드 (가로형이면 사진이 너무 작아짐) */
   .componentsFour { grid-template-columns: 1fr 1fr; }
   .componentsFour .component { flex-direction: column; }

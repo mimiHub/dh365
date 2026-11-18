@@ -15,7 +15,14 @@
   .inner { grid-template-columns: 1fr; }
 }
 @media (max-width: 767px) {
-  .cards { grid-template-columns: 1fr; }
-  .card { min-height: 0; }
-  .go { display: none; }
+  /* 모바일: 카드 3개를 세로로 쌓지 않고 한 줄 3칸 버튼으로 → 제목만 남김 */
+  .inner { gap: var(--space-6); }
+  .cards { grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+  .card { min-height: 0; flex-direction: row; align-items: center; justify-content: center; gap: var(--space-1); padding: var(--space-3) var(--space-2); border-radius: var(--radius-pill); }
+  .card:hover { transform: none; }
+  .en, .desc { display: none; }
+  .cTitle { margin-top: 0; font-size: 15px; line-height: 22px; white-space: nowrap; }
+  /* PC의 동그란 화살표를 글자 옆 작은 화살표로 → '누르면 이동'하는 느낌 */
+  .go { margin: 0; width: auto; height: auto; border: 0; border-radius: 0; font-size: 15px; line-height: 1; color: var(--accent-text); transition: transform .2s ease; }
+  .card:active .go { transform: translateX(3px); }
 }

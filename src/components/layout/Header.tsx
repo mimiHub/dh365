@@ -157,8 +157,14 @@ export function Header() {
           ))}
         </ul>
         <a href={`tel:${COMPANY.tel}`} className={s.mTel} style={{ ['--i' as string]: NAV.length }}>
-          <span>견적상담</span>
-          {COMPANY.tel}
+          <span className={s.mTelLabel}>견적상담</span>
+          <strong className={s.mTelNum}>{COMPANY.tel}</strong>
+          <span className={s.mTelHint}>누르면 바로 전화 연결됩니다</span>
+          <span className={s.mTelIcon} aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />
+            </svg>
+          </span>
         </a>
       </div>
     </header>
